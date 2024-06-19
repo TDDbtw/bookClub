@@ -1,0 +1,131 @@
+body {
+  background-color: #081c15;
+}
+.cart-container {
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+  height: 100vh;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(51, 122, 3, 0.247);
+  padding: 20px;
+  width: 60%;
+}
+.cart-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.cart-items {
+  display: flex;
+  flex-direction: column;
+}
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-radius: 15px;
+  background: linear-gradient(to left, #081c15, #0d291f, #16372a);
+  margin-bottom: 10px;
+  box-shadow: 0 0 10px rgba(58, 158, 121, 0.164);
+  color: white;
+}
+.cart-item img {
+  max-width: 60px;
+  border-radius: 10px;
+}
+.item-details {
+  flex-grow: 1;
+}
+.price {
+  color: #27ae60;
+}
+.cart-total {
+  margin-top: 20px;
+  text-align: right;
+}
+.cart-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.checkout-button,
+.continue-shopping-button {
+  padding: 15px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.checkout-button {
+  background-color: #3498db;
+  color: #fff;
+}
+.continue-shopping-button {
+  background-color: #e74c3c;
+  color: #fff;
+}
+.quantity-control {
+  display: flex;
+  align-items: center;
+}
+.quantity-button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  /* border-radius: 50%; */
+  /* font-size: 18px; */
+  /* padding: 8px; */
+  margin: 0 5px;
+  cursor: pointer;
+}
+.remove-button {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.cart-summary {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+.total {
+  text-align: right;
+  font-size: 18px;
+}
+.checkout-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+/* ... Your existing styles ...
+          .cart-content {
+          display: flex;
+          justify-content: space-between;
+          }
+          .cart-summary {
+          width: 30%;
+          border-left: 1px solid #ddd;
+          padding: 20px;
+          }
+          .total {
+          text-align: right;
+          font-size: 18px;
+          margin-bottom: 20px;
+          }
+          .checkout-actions {
+          display: flex;
+          flex-direction: column;
+          }
+          .checkout-button,
+          .continue-shopping-button {
+          margin-bottom: 10px;
+          }
+          */
+body {
+  color: white;
+}

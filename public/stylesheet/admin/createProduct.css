@@ -1,0 +1,211 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color:white; 
+    background:linear-gradient(50deg, #185540, #0a1e16);
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background:linear-gradient(50deg, #185540, #0a1e16);
+    color:white;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+background:rgba(45, 106, 79, 0.49);
+    color:white;
+}
+
+.notifications {
+    position: relative;
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.notifications span {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: red;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 50%;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+}
+
+.breadcrumb a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.breadcrumb span {
+    color: #333;
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.left-section {
+    width: 65%;
+}
+
+.right-section {
+    width: 30%;
+}
+
+.general-info, .media, .pricing, .inventory, .category, .status {
+    background: #1a322a;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.general-info h2, .media h2, .pricing h2, .inventory h2, .category h2, .status h2 {
+    margin-top: 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    background:rgba(45, 106, 79, 0.49);
+    color:white;
+}
+
+textarea {
+    resize: none;
+    height: 100px;
+}
+
+.media label {
+    display: block;
+    cursor: pointer;
+}
+
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    background: rgba(45, 106, 79, 0.49);
+}
+
+.image-preview {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.image-preview span {
+    width: 50px;
+    height: 50px;
+    background: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+/* .removeImg{ */
+/* position:relative; */
+/* top:2rem; */
+/* left:44px; */
+/* font-size:17px; */
+/* color:#EB5252; */
+/* display:none; */
+/* } */
+/* .imgC:hover .removeImg { */
+/*   display: block; */
+/* } */
+.image-preview img {
+    width: 9rem;
+    background: #007bff;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 4px;
+}
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.save-product {
+    background: #007bff;
+    color: white;
+}
+
+.tags {
+    display: flex;
+    gap: 10px;
+}
+
+.tags span {
+    background: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+::placeholder {
+  color: white;
+  opacity: 1; /* Firefox */
+}
+
+.image-placeholder .imgC {
+  position: relative;
+  display: inline-block;
+}
+
+.image-placeholder .removeImg {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+color:#EB5252;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.image-placeholder .imgC:hover .removeImg {
+  display: block;
+}

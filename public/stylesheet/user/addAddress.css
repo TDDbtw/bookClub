@@ -1,0 +1,1093 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800,300i,400i,500i,600i,700i,800i&display=swap");
+@font-face {
+  font-family: "luma-icons";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Luma-Icons.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Luma-Icons.woff")
+      format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "PlutoCondBlack";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "PlutoMedium";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoMedium.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoMedium.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "PlutoLight";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoLight.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoLight.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Roboto-Light";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Roboto-Light.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Roboto-Light.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Pluto";
+  src: url(https://www.oreo.com/static/version1632989199/frontend/mondelez/oreo/en_US/fonts/PlutoLight.woff2);
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+body {
+  color: #4d4d4d;
+  font-family: "Roboto-Light";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.42857143;
+  font-size: 62.5%;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  color: #4d4d4d;
+  font-family: "PlutoCondBlack", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.42857143;
+  font-size: 1.4rem;
+}
+
+body {
+  background-color: #fff;
+}
+
+body {
+  font-family: "Roboto-Light";
+  font-size: 16px;
+}
+
+@media (min-width: 768px), print {
+  body {
+    height: 100%;
+  }
+}
+
+html {
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-size-adjust: 100%;
+}
+#mainAdd {
+  display: flex;
+  justify-content: space-around;
+}
+
+@media (min-width: 768px), print {
+  html {
+    height: 100%;
+  }
+
+  .column.main {
+    min-height: 300px;
+  }
+
+  .main {
+    padding-left: 2%;
+  }
+}
+
+.column.main {
+  box-sizing: border-box;
+}
+
+.column.main {
+  padding-bottom: 40px;
+  -webkit-flex-basis: auto;
+  flex-basis: auto;
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  -ms-flex-order: 1;
+  -webkit-order: 1;
+  order: 1;
+  width: 100%;
+}
+
+.column.main {
+  margin-bottom: 30px;
+}
+
+@media (min-width: 768px), print {
+  .column.main {
+    width: 79.16666667%;
+    float: right;
+    -ms-flex-order: 2;
+    -webkit-order: 2;
+    order: 2;
+  }
+}
+
+.column.main {
+  min-height: auto;
+}
+
+@media (min-width: 768px), print {
+  .column.main {
+    width: 77.7%;
+  }
+
+  .abs-add-clearfix-desktop:before,
+  .abs-add-clearfix-desktop:after,
+  .paypal-review .block-content::before,
+  .paypal-review .block-content::after,
+  .paypal-review-discount:before,
+  .paypal-review-discount:after,
+  .order-review-form:before,
+  .order-review-form:after,
+  .block-cart-failed .block-content::before,
+  .block-cart-failed .block-content::after,
+  .column .block-addbysku .block-content::before,
+  .column .block-addbysku .block-content::after,
+  .cart-container:before,
+  .cart-container:after,
+  .login-container:before,
+  .login-container:after,
+  .account .page-title-wrapper::before,
+  .account .page-title-wrapper::after,
+  .account .column.main .block:not(.widget) .block-content::before,
+  .account .column.main .block:not(.widget) .block-content::after,
+  .block-addresses-list .items.addresses::before,
+  .block-addresses-list .items.addresses::after,
+  .block-giftregistry-shared .item-options::before,
+  .block-giftregistry-shared .item-options::after,
+  .data.table .gift-wrapping .nested::before,
+  .data.table .gift-wrapping .nested::after,
+  .data.table .gift-wrapping .content::before,
+  .data.table .gift-wrapping .content::after,
+  .block-wishlist-management:before,
+  .block-wishlist-management:after,
+  .magento-rma-guest-returns
+    .column.main
+    .block.block-order-details-view::before,
+  .magento-rma-guest-returns
+    .column.main
+    .block.block-order-details-view::after,
+  .order-links:before,
+  .order-links:after,
+  .account .column.main .block.block-order-details-view::before,
+  .account .column.main .block.block-order-details-view::after,
+  [class^="sales-guest-"] .column.main .block.block-order-details-view::before,
+  [class^="sales-guest-"] .column.main .block.block-order-details-view::after,
+  .sales-guest-view .column.main .block.block-order-details-view::before,
+  .sales-guest-view .column.main .block.block-order-details-view::after,
+  .page-header .header.panel::before,
+  .page-header .header.panel::after,
+  .header.content:before,
+  .header.content:after {
+    content: "";
+    display: table;
+  }
+
+  .abs-add-clearfix-desktop::before,
+  .abs-add-clearfix-desktop::after,
+  .paypal-review .block-content::before,
+  .paypal-review .block-content::after,
+  .paypal-review-discount::before,
+  .paypal-review-discount::after,
+  .order-review-form::before,
+  .order-review-form::after,
+  .block-cart-failed .block-content::before,
+  .block-cart-failed .block-content::after,
+  .column .block-addbysku .block-content::before,
+  .column .block-addbysku .block-content::after,
+  .cart-container::before,
+  .cart-container::after,
+  .login-container::before,
+  .login-container::after,
+  .account .page-title-wrapper::before,
+  .account .page-title-wrapper::after,
+  .account .column.main .block:not(.widget) .block-content::before,
+  .account .column.main .block:not(.widget) .block-content::after,
+  .block-addresses-list .items.addresses::before,
+  .block-addresses-list .items.addresses::after,
+  .block-giftregistry-shared .item-options::before,
+  .block-giftregistry-shared .item-options::after,
+  .data.table .gift-wrapping .nested::before,
+  .data.table .gift-wrapping .nested::after,
+  .data.table .gift-wrapping .content::before,
+  .data.table .gift-wrapping .content::after,
+  .block-wishlist-management::before,
+  .block-wishlist-management::after,
+  .magento-rma-guest-returns
+    .column.main
+    .block.block-order-details-view::before,
+  .magento-rma-guest-returns
+    .column.main
+    .block.block-order-details-view::after,
+  .order-links::before,
+  .order-links::after,
+  .account .column.main .block.block-order-details-view::before,
+  .account .column.main .block.block-order-details-view::after,
+  [class^="sales-guest-"] .column.main .block.block-order-details-view::before,
+  [class^="sales-guest-"] .column.main .block.block-order-details-view::after,
+  .sales-guest-view .column.main .block.block-order-details-view::before,
+  .sales-guest-view .column.main .block.block-order-details-view::after,
+  .page-header .header.panel::before,
+  .page-header .header.panel::after,
+  .header.content::before,
+  .header.content::after {
+    content: "";
+    display: table;
+  }
+
+  .abs-add-clearfix-desktop:after,
+  .paypal-review .block-content::after,
+  .paypal-review-discount:after,
+  .order-review-form:after,
+  .block-cart-failed .block-content::after,
+  .column .block-addbysku .block-content::after,
+  .cart-container:after,
+  .login-container:after,
+  .account .page-title-wrapper::after,
+  .account .column.main .block:not(.widget) .block-content::after,
+  .block-addresses-list .items.addresses::after,
+  .block-giftregistry-shared .item-options::after,
+  .data.table .gift-wrapping .nested::after,
+  .data.table .gift-wrapping .content::after,
+  .block-wishlist-management:after,
+  .magento-rma-guest-returns
+    .column.main
+    .block.block-order-details-view::after,
+  .order-links:after,
+  .account .column.main .block.block-order-details-view::after,
+  [class^="sales-guest-"] .column.main .block.block-order-details-view::after,
+  .sales-guest-view .column.main .block.block-order-details-view::after,
+  .page-header .header.panel::after,
+  .header.content:after {
+    clear: both;
+  }
+}
+
+form {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+h1 {
+  font-family: "PlutoCondBlack";
+  font-weight: 300;
+  line-height: 1.1;
+  font-size: 4rem;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px), print {
+  h1 {
+    font-size: 62px;
+    margin-bottom: 40px;
+  }
+}
+
+.page-title-wrapper .page-title {
+  display: inline-block;
+  margin-top: 3rem;
+}
+
+.page-title-wrapper .page-title {
+  margin-right: 25px;
+}
+
+.fieldset {
+  border: 0;
+  margin: 0 0 40px;
+  padding: 0;
+  letter-spacing: -0.31em;
+}
+
+@media (min-width: 768px), print {
+  .form-address-edit > .fieldset {
+    width: 48%;
+  }
+
+  .form-address-edit > .fieldset:nth-child(1) {
+    clear: left;
+    float: left;
+  }
+
+  .form-address-edit > .fieldset:nth-child(2) {
+    float: right;
+  }
+
+  .actions-toolbar {
+    text-align: left;
+  }
+
+  .form-address-edit > .fieldset:nth-child(2) + * {
+    clear: both;
+  }
+
+  .actions-toolbar:before,
+  .actions-toolbar:after {
+    content: "";
+    display: table;
+  }
+
+  .actions-toolbar:after {
+    clear: both;
+  }
+}
+
+.fieldset > * {
+  letter-spacing: normal;
+}
+
+@media (min-width: 768px), print {
+  .legend {
+    border-bottom: 1px solid #c5c5c5;
+  }
+}
+
+.legend {
+  border-bottom: 1px solid #c6c6c6;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+}
+
+.fieldset > .legend {
+  margin: 0 0 20px;
+  padding: 0 0 10px;
+  width: 100%;
+  box-sizing: border-box;
+  float: left;
+  color: #4d4d4d;
+  font-family: "PlutoLight";
+  font-weight: 300;
+  line-height: 1.2;
+  font-size: 2.6rem;
+}
+
+.fieldset > .legend + br {
+  clear: both;
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.fieldset > .field {
+  margin: 0 0 20px;
+}
+
+.fieldset > .field:last-child {
+  margin-bottom: 0;
+}
+
+.actions-toolbar > .primary {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+@media (min-width: 768px), print {
+  .actions-toolbar .primary {
+    float: left;
+  }
+
+  .actions-toolbar .primary {
+    display: inline-block;
+  }
+
+  .actions-toolbar > .primary {
+    margin-bottom: 0;
+  }
+}
+
+.actions-toolbar > .secondary {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+@media (min-width: 768px), print {
+  .actions-toolbar .secondary {
+    display: inline-block;
+  }
+
+  .actions-toolbar > .secondary {
+    margin-bottom: 0;
+  }
+}
+
+.actions-toolbar > .secondary:last-child {
+  margin-bottom: 0;
+}
+
+.legend > span {
+  margin-right: 5px;
+}
+
+.legend > span {
+  font-size: 2.2rem;
+  font-weight: 300;
+}
+
+label {
+  letter-spacing: -0.44px;
+}
+
+.fieldset > .field > .label {
+  margin: 0 0 8px;
+  display: inline-block;
+}
+
+.fieldset > .field > .label {
+  color: #272425;
+  font-family: "PlutoMedium";
+  font-weight: 300;
+  line-height: 23px;
+  font-size: 1.6rem;
+}
+
+.fieldset > .field.required > .label::after,
+.fieldset > .fields > .field.required > .label::after,
+.fieldset > .field._required > .label::after,
+.fieldset > .fields > .field._required > .label::after {
+  content: "*";
+  color: #272425;
+  font-size: 1.6rem;
+  margin: 0 0 0 5px;
+}
+
+button {
+  background-image: none;
+  background: #272425;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "PlutoCondBlack", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  margin: 0;
+  padding: 16px 20px;
+  font-size: 1.8rem;
+  line-height: 2.3rem;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+button {
+  border-radius: 4px;
+}
+
+button {
+  border-radius: 4px;
+  font-size: 18px;
+  letter-spacing: -0.6px;
+  line-height: 23px;
+  padding: 16px 20px;
+}
+
+.action.primary {
+  background-image: none;
+  background: #0058c9;
+  background: #134433;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "PlutoCondBlack", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  padding: 16px 20px;
+  font-size: 1.8rem;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+.action.primary {
+  font-family: "Open Sans";
+}
+
+.actions-toolbar > .primary .action {
+  width: 100%;
+}
+
+.actions-toolbar > .primary .action {
+  margin-bottom: 10px;
+}
+
+.primary .action.primary {
+  font-family: "Open Sans";
+}
+
+@media (min-width: 768px), print {
+  .actions-toolbar .primary .action {
+    margin: 0 15px 0 0;
+  }
+
+  .actions-toolbar > .primary .action {
+    margin-bottom: 0;
+    width: auto;
+  }
+}
+
+.form-address-edit .actions-toolbar .action.primary {
+  line-height: 2.2rem;
+  padding: 14px 17px;
+  font-size: 1.8rem;
+}
+
+.actions-toolbar > .primary .action:last-child {
+  margin-bottom: 0;
+}
+
+button:hover {
+  background: #4d4d4d;
+  border: 0;
+  color: #fff;
+}
+
+.action.primary:hover {
+  background: #6bbce5;
+  border: 0;
+  color: #fff;
+}
+
+.action.primary:hover {
+  color: #0b376e;
+}
+
+a {
+  color: #4d4d4d;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #4d4d4d;
+  text-decoration: underline;
+}
+
+a.action {
+  font-family: "Roboto-Light";
+  font-size: 18px;
+}
+
+.actions-toolbar > .secondary .action {
+  width: 100%;
+}
+
+.actions-toolbar > .secondary .action {
+  margin-bottom: 10px;
+}
+
+@media (min-width: 768px), print {
+  .actions-toolbar > .secondary .action {
+    margin-bottom: 0;
+    width: auto;
+  }
+
+  .actions-toolbar .secondary a.action {
+    display: inline-block;
+  }
+
+  .actions-toolbar .secondary a.action {
+    margin-top: 6px;
+  }
+}
+
+.actions-toolbar > .secondary .action:last-child {
+  margin-bottom: 0;
+}
+
+.actions-toolbar > .secondary .action.back {
+  display: none;
+}
+
+a:hover {
+  color: #0058c9;
+  text-decoration: underline;
+}
+
+input[type="text"] {
+  background: rgba(45, 106, 79, 0.49);
+  background-clip: padding-box;
+  border: 1px solid #bbbcbc;
+  border-radius: 4px;
+  color: #f0f0f0;
+  font-family: Roboto-Light;
+  font-size: 20px;
+  height: 55px;
+  line-height: 1.42857143;
+  padding: 0 9px;
+  vertical-align: baseline;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+select {
+  background: rgba(45, 106, 79, 0.49);
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #f0f0f0;
+  font-family: Roboto-Light;
+  font-size: 20px;
+  height: 55px;
+  line-height: 1.42857143;
+  padding: 4px 25px 5px 10px;
+  vertical-align: baseline;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  background-size: 30px 60px;
+  text-indent: 0.01em;
+  text-overflow: "";
+}
+
+.form-address-edit .region_id {
+  display: none;
+}
+
+.message.warning {
+  margin: 0 0 10px;
+  padding: 12px 20px 12px 25px;
+  display: block;
+  font-size: 1.3rem;
+  background: #fdf0d5;
+  color: #6f4400;
+  padding-left: 45px;
+  position: relative;
+}
+
+.field .message.warning {
+  margin-top: 10px;
+}
+
+div.zip .message.warning {
+  display: none;
+}
+
+.field.street .field .label {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.fieldset > .field .additional {
+  margin-top: 10px;
+}
+
+.message.warning > :first-child::before {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 24px;
+  line-height: 24px;
+  color: #c07600;
+  content: "\e602";
+  font-family: "luma-icons";
+  margin: -12px 0 0;
+  vertical-align: middle;
+  display: inline-block;
+  font-weight: 400;
+  overflow: hidden;
+  speak: none;
+  left: 0;
+  top: 22px;
+  width: 45px;
+  position: absolute;
+  text-align: center;
+}
+
+/* These were inline style tags. Uses id+class to override almost everything */
+#authenticationPopup.style-loXXT {
+  display: none;
+}
+#region_id.style-rzg62 {
+  display: inline-block;
+}
+#region.style-MocQ5 {
+  display: none;
+}
+.column.main {
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+  color: white;
+  /* width: 80%; */
+  /* box-sizing: border-box; */
+}
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #081c15 !important;
+}
+
+.my-account {
+  display: flex;
+  margin: 0 auto;
+  position:sticky;
+  top:0;
+  padding: 20px;
+  height: inherit;
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+}
+
+.my-account-title {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.my-account-menu {
+  float: left;
+  width: 30%;
+  margin-right: 20px;
+}
+
+.my-account-menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.my-account-menu li {
+  margin-bottom: 10px;
+}
+
+.my-account-menu a {
+  align-self: center;
+  /* background: red; */
+  /* margin-left: 2rem; */
+  display: block;
+  width: 100%;
+  padding: 5px;
+  text-decoration: none;
+  color: #000;
+  transition: border-color 0.3s ease-in-out; /* Smooth transition for border color */
+}
+
+.my-account-menu a:hover {
+  background-color: #0e4935a3;
+
+  /* border-right: 4px solid #003366; */
+  /* background: linear-gradient(to right, #5c3a0c, #c99a5f); */
+  /* background: linear-gradient(to right, #6e6962, #d7cfcc); */
+  /* background: linear-gradient(to right, #2c2c54, #6a0572); */
+  background: linear-gradient(to right, #b71540, #e55039);
+  background: linear-gradient(to right, #b715406b, #e5503962);
+
+  /* background: linear-gradient(to right, #5d0a3a, #9a031e); */
+}
+
+.my-account-content {
+  float: left;
+  /* width: 80%; */
+  background: #000;
+}
+
+/* Custom styling */
+
+.my-account-menu {
+  /* background-color: #10382a; */
+  color: #fff;
+  padding: 10px;
+  width: 100%;
+}
+
+.my-account-menu a {
+  font-size: 22px;
+  color: #fff;
+}
+
+body {
+  font-family: "Helvetica", "Arial", sans-serif;
+}
+#accContainer {
+  /* width: 100%; */
+  height: 100%;
+  /* max-width: 1170px; */
+  /* padding: 20px; */
+}
+.account-information {
+  /* background-color: #f9f9f9; */
+  background-color: #0e4935a3;
+
+  color: white;
+
+  padding: 20px;
+}
+.account-information-header {
+  border-bottom: 1px solid #538d49;
+  padding-bottom: 20px;
+}
+.account-information-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+.account-information-links {
+  color: #468847;
+  /* display: flex-box; */
+}
+.account-information-link {
+  margin-left: 2px;
+  color: rgb(114, 181, 182);
+  padding-bottom: 10px;
+  text-decoration: none;
+}
+.account-information-body {
+  padding-top: 20px;
+}
+.account-information-section {
+  border-bottom: 1px solid #538d49;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.account-information-section-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.account-information-section-content {
+  padding-top: 10px;
+}
+.account-information-form {
+  padding-top: 20px;
+}
+.account-information-form-group {
+  margin-bottom: 20px;
+}
+.account-information-form-label {
+  font-size: 14px;
+  font-weight: bold;
+}
+.account-information-form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 3px;
+}
+.account-information-form-button {
+  background-color: #337ab7;
+    background-color:#134433;
+  color: #fff;
+  padding: 10px 20px;
+  border: 1px solid #337ab7;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.account-information-form-button:hover {
+  background-color: #286090;
+}
+.account-information-message {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 3px;
+}
+.account-information-message-success {
+  color: #468847;
+  background-color: #dff0d8;
+}
+.account-information-message-error {
+  color: #d9534f;
+  background-color: #ffcdd2;
+}
+span {
+  color: rgb(202, 197, 197);
+}
+.form-address-edit{
+max-width: 900px;
+    margin: 50px auto;
+    margin-left:8;
+    margin-top:10;
+    padding: 20px;
+    background-color: #183028;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)
+}
+#form-validate{
+/* max-width: 900px; */
+    margin: 50px auto;
+    margin-left:8;
+    margin-top:10;
+    padding: 20px;
+    background-color: #183028;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)
+
+}
+
+/* Styling for the address list */
+.addresses-list {
+  margin-top: 20px;
+  width:96%;
+    margin-left:8;
+}
+
+.address-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+.address-items{
+display:flex;
+}
+  .address-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+.address-information-links {
+  margin-top: 10px;
+}
+
+.address-information-links a {
+  margin-right: 15px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.address-information-links a.text-danger {
+  color: #ff2825;
+}
+
+.address-defaults {
+  margin-top: 10px;
+}
+
+.address-defaults p {
+  margin: 5px 0;
+}
+
+.address-defaults input {
+  margin-left: 0;
+}
+
+.address-defaults label {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.control {
+  margin-bottom: 15px;
+}
+
+input.input-text {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+select.required-entry {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.actions-toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.actions-toolbar .primary button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.actions-toolbar .secondary a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.fieldset {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.field label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.field .control {
+  margin-bottom: 15px;
+}
+
+input.input-text {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+select.required-entry {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button#saveAddress {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button#saveAddress:hover {
+  background-color: #0056b3;
+}
+
+.secondary a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.secondary a:hover {
+  text-decoration: underline;
+}

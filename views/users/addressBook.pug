@@ -1,0 +1,138 @@
+include ../partials/navbar
+link(rel='stylesheet' href='../../../stylesheet/user/addAddress.css')
+link(rel='stylesheet' href='../../../stylesheet/navbar.css')
+script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+.container-fluid#mainAdd
+  .my-account
+    .col-sm-3.my-account-menu
+      ul
+        li
+          a(href='/user/profile') My Account
+        li
+          a(href='/user/profile/edit') Account Information
+        li
+          a(href='/user/address/new') Address Book
+        li
+          a(href='#') My Orders
+        li
+          a(href='#') My Wallet
+  .column.main.snipcss-KcpgZ
+    .page-title-wrapper
+      h1.page-title
+        span.base(data-ui-id='page-title-wrapper')
+          | Address book
+    input(name='form_key' type='hidden' value='viRUoafbYsKQ7xXw')
+    #authenticationPopup.style-loXXT(data-bind="scope:'authenticationPopup', style: {display: 'none'}")
+    form.form-address-edit(action=`/user/address/${address._id}/edit`,method='patch')
+      //- Address
+      fieldset.fieldset.me-5
+        legend.legend
+          span
+            | Address
+        br
+        .field.street
+          label.label(for='street_1')
+            span
+              | Address
+          .control
+            .field.primary
+              label.label(for='street_1')
+                span
+                  | Street Address: Line 1
+              input#street_1.input-text.pac-target-input(type='text' name='address' value=`${address.address}` title='Street Address' placeholder='Address'  autocomplete='off')
+              .nested
+                .field.additional
+                  label.label(for='street_2')
+                    span
+                      | Street Address: Line 2
+                  .control
+                    input#street_2.input-text(type='text' name='street[2]' value='' title='Street Address 2' placeholder='Apartment,suite,etc.(optional)' )
+        .field.city
+          label.label(for='city')
+            span
+              | City
+          .control
+            input#city.input-text(type='text' name='city' value=`${address.city}`  title='City' )
+        .field.region
+          label.label(for='region_id')
+            span
+              | State
+          .control
+            select#region_id.validate-select.region_id.style-rzg62(name='state' title='State' value=`${address.state}`  )
+              option(value='')
+                | Please select a region, state or province.
+              option(value='1')
+                | Alabama
+              option(value='2')
+                | Iowa
+        .field.zip
+          label.label(for='zip')
+            span
+              | Zip Code
+          .control
+            input#zip.input-text.validate-zip-international(type='text' name='zip_code' value=`${address.zip_code}` title='Zip Code' )
+            .message.warning(role='alert')
+              span
+        .field.country
+          label.label(for='country')
+            span
+              | Country
+          .control
+            select#country(name='country_id' title='Country' data-validate="{'validate-select':true}"  value=`${address.country_id}`)
+              option(value='US' selected='selected')
+                | United States
+        input(type='hidden' name='default_billing' value='1')
+        input(type='hidden' name='default_shipping' value='1')
+
+      //- Actions Toolbar
+      .actions-toolbar
+        .primary
+          button.action.submit.primary(type='submit')
+            span
+              | Save Address
+        .secondary
+          a.action.back(href='/user/address/new')
+            span
+              | Go back
+
+  //- script.
+    //- $(document).ready(function() {
+    //-   // Get the current URL
+    //-   var currentUrl = window.location.pathname;
+
+    //-   // Loop through each anchor tag and compare the href attribute with the current URL
+    //-   $('.my-account-menu li a').each(function() {
+    //-     var href = $(this).attr('href');
+
+    //-     // Check if the current URL matches the href attribute
+    //-     if (currentUrl === href) {
+    //-       // Apply the background color to the parent li
+    //-       $(this).parent('li').css('background-color', 'blue');
+    //-     }
+    //-   });
+
+      // Function to handle form submission
+      function submitForm(event) {
+        event.preventDefault();
+        
+        // Collect form data
+        var formData = $('#editAddressForm').serializeArray();
+
+        // Convert form data to an object
+        var updatedAddress = {};
+        formData.forEach(function(field) {
+          updatedAddress[field.name] = field.value;
+        });
+
+        // Call the fetch API function
+        putEditAddress('${address._id}', updatedAddress)
+          .then(function(updatedUser) {
+            console.log('Successfully updated address:', updatedUser);
+            // Handle success as needed
+          })
+          .catch(function(error) {
+            console.error('Failed to update address:', error.message);
+            // Handle error as needed
+          });
+      }
+

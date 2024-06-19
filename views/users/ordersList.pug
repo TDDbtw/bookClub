@@ -1,0 +1,161 @@
+include ../partials/navbar
+link(rel='stylesheet' href='../../stylesheet/user/addAddress.css')
+link(rel='stylesheet' href='../../stylesheet/navbar.css')
+//- script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+style.
+  body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+  }
+
+  header {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+  }
+
+  .order-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+      gap: 20px;
+      padding: 20px;
+  }
+
+  .order-item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+  }
+
+  .order-item h2 {
+      margin-top: 0;
+  }
+
+  .order-item p {
+      margin: 5px 0;
+  }
+
+  .order-details {
+      //- display: none;
+      margin-top: 10px;
+      padding: 10px;
+      //- background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+  }
+
+  .order-details-btn {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+
+  .order-details-btn:hover {
+      background-color: #555;
+  }
+  .order-empty{
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+    align-items:center;
+    font-size: 19px; 
+    }
+    .shop-button{
+    height:4rem;  
+    font-size: 19px; 
+    }
+    .no-order{
+    font-size:23px;  
+    }
+.container-fluid#mainAdd
+  .my-account
+    .col-sm-3.my-account-menu
+      ul
+        li
+          a(href='/user/profile') My Account
+        li
+          a(href='/user/profile') My wishlist
+        li
+          a(href='/user/profile/edit') Account Information
+        li
+          a(href='/user/address/new') Address Book
+        li
+          a(href='/user/order') My Orders
+        li
+          a(href='/user/wallet') My Wallet 
+  .column.main.snipcss-KcpgZ
+    .page-title-wrapper
+      h1.page-title
+        span.base(data-ui-id='page-title-wrapper')
+          | My Orders
+    section.order-list
+      each order in orders
+        .order-item
+          h2 Order #{order._id}
+          p Product: 
+            if products.length > 2
+                |  #{products[0].name} | #{products[1].name} | and #{products.length-2} more item #{order.name}
+            else
+              each item in products
+                  |  #{item.name}|
+          p Price: $#{order.totalAmount}
+          p Status: #{order.status}
+          a.order-details-btn(href=`/user/order/${order._id}`) View Details
+          //- .order-details
+            p Order Date: MM/DD/YYYY
+            p Shipping Address: Address Line 1, City, Country
+            p Tracking Number: XXXXXXXX
+    if orders.length==0    
+        .order-empty
+            p.no-order.text-warning you havent ordered any items yet! 
+            a.shop-button.btn.btn-outline-info(href="/products") Shop Now
+  script(src="../../script/user/validateAddress.js") 
+  script.
+    $(document).ready(function() {
+        // Get the current URL
+        var currentUrl = window.location.pathname;
+
+        // Loop through each anchor tag and compare the href attribute with the current URL
+        $('.my-account-menu li a').each(function() {
+          var href = $(this).attr('href');
+
+          // Check if the current URL matches the href attribute
+          if (currentUrl === href) {
+            // Apply the background color to the parent li
+            $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
+
+          }
+        });
+      });
+      const countrySelect = document.getElementById('country');
+      const stateSelect = document.getElementById('state');
+      const countryData = countrySelect.getAttribute('data-country');
+
+        // Parse the JSON string to get the countries data
+        const countries = JSON.parse(countryData);
+      
+
+      // Populate state select based on country selection
+      countrySelect.addEventListener('change', () => {
+        stateSelect.innerHTML = ''; // Clear existing options
+
+        // Get the selected country
+        const selectedCountry = countrySelect.value;
+
+        // Get the states for the selected country
+        const states = countries.find(country => country.name === selectedCountry).states;
+        console.log(states)
+
+        // Add the states as options to the state select
+        states.forEach(state => {
+          const option = document.createElement('option');
+          option.value = state;
+          option.textContent = state;
+          stateSelect.appendChild(option);
+        });
+      });

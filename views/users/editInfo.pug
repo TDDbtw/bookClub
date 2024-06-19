@@ -1,0 +1,105 @@
+include ../partials/navbar
+link(rel='stylesheet' href='../../../stylesheet/user/addAddress.css')
+link(rel='stylesheet' href='../../../stylesheet/user/editInfo.css')
+link(rel='stylesheet' href='../../../stylesheet/navbar.css')
+script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+.container-fluid#mainAdd
+  .my-account
+    .col-sm-3.my-account-menu
+      ul
+        li
+          a(href='/user/profile') My Account
+        li
+          a(href='/user/wishlist') My Wishlist
+        li
+          a(href='/user/profile/edit') Account Information
+        li
+          a(href='/user/address/new') Address Book
+        li
+          a(href='/user/order') My Orders
+        li
+          a(href='#') My Wallet
+  .column.main.snipcss-KcpgZ
+    .page-title-wrapper
+      h1.page-title
+        span.base(data-ui-id='page-title-wrapper')
+          | Edit Profile
+    input(name='form_key' type='hidden' value='viRUoafbYsKQ7xXw')
+    legend.legend
+      span
+          | Account Information
+    br
+    section.profile-section
+
+      form.editInfo-form(action='#', method='post', enctype='multipart/form-data')
+        .profile-picture
+          if user.avatar
+            img#avatar(src= user.avatar alt="" )
+          img(src=''  alt="" id="imgView1")
+          input#input1.form-data(style='display: none;', type='file', name='image', accept='image/png, image/jpeg, image/jpg')
+          label.btn.btn-primary.rounded.font-md#upload(for='input1', style='cursor: pointer; margin-top: 10px;')
+           i.fa-solid.fa-upload
+             |  Upload
+        .image-cropper.mb-3(style='display:none; width: 200px;')
+          img#croppedImg1(src='', alt='')
+          button#saveButton1.btn.btn-warning(type='button' style="height:auto; font-size:18px; ") Save
+        .form-group
+          label(for='name') Name:
+          input#name(type='text', name='name', value=`${user.name} `)
+        .form-group
+          label(for='email') Email:
+          input#email(type='email', name='email',value=`${user.email}` )
+        .form-group
+          input#editPwd(type="radio")
+          | edit password
+        .form-group.pwdGroup
+          label(for='password') Password:
+          input#password(type='password', name='password')
+        .form-group.pwdGroup
+          label(for='confirm-password') Confirm Password:
+          input#confirm-password(type='password', name='confirm-password')
+        button(type='submit') Save Changes
+      .secondary
+        a.action.back(href='/user/address/new')
+          span
+            | Go back 
+  script(src="../../script/user/editInfo.js")
+  script(src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.js")
+  script(src="../../script/user/crop.js")
+  //script.
+    function saveData() {
+      var name = document.getElementById("name").value;
+      var password = document.getElementById("password").value;
+      var userId = document.getElementById("userId").value;
+
+      var data = {
+        name: name,
+        password: password,
+        id: userId
+      };
+
+      return data;  // Return the data object for further use if needed
+    }
+
+    // Register the event listener outside the saveData function
+    document.getElementById("formButton").addEventListener("click", (event) => {
+      event.preventDefault();
+      var formData = saveData();
+      alert(JSON.stringify(formData));
+    });
+    $(document).ready(function() {
+        // Get the current URL
+        var currentUrl = window.location.pathname;
+
+        // Loop through each anchor tag and compare the href attribute with the current URL
+        $('.my-account-menu li a').each(function() {
+          var href = $(this).attr('href');
+
+          // Check if the current URL matches the href attribute
+          if (currentUrl === href) {
+            // Apply the background color to the parent li
+            $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
+
+          }
+        });
+      });

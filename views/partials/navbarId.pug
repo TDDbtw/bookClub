@@ -1,0 +1,68 @@
+head
+  block link
+    link(rel="stylesheet", href="../stylesheet/navbarId.css")
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css")
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css')
+  block navbar
+    nav.one.container-fluid
+      .navbar#navbar.nav.container-fluid.d-flex
+        ul#navbar-list.container-fluid
+          li#logo
+            a(href="/")
+              img#logo-img(src="https://see.fontimg.com/api/renderfont4/044d/eyJyIjoiZnMiLCJoIjo2NSwidyI6MTAwMCwiZnMiOjY1LCJmZ2MiOiIjM0JCQ0UzIiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/UXVhc2FyWCA/robot-reavers.png", alt="Android fonts", style="width: 246.262px; height: 36px; margin-left: 5rem;")
+          li.dropdown#shop-dropdown
+            a(href="/products" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true")
+              | Shop
+            ul.dropdown-menu.dropdownUl
+              span.dropD
+                li.d-flex.align-items-center
+                  span.cat-img
+                    img(src="//www.roccat.com/cdn/shop/files/megamenu-technology_titan-switch-technology_200x.png?v=1671047986", alt="SFX Power Supplies")
+                  a(href="/products") All Products
+                li.d-flex.align-items-center
+                  span.cat-img
+                    img(src="//www.roccat.com/cdn/shop/files/megamenu-technology_titan-switch-technology_200x.png?v=1671047986", alt="SFX Power Supplies")
+                  a(href="/products") Desktop Power Supplies (PSUs)
+                li.d-flex.align-items-center
+                  span.cat-img
+                    img(src="//www.roccat.com/cdn/shop/files/megamenu-technology_titan-switch-technology_200x.png?v=1671047986", alt="ATX Power Supplies")
+                  a(href="/products") Server Power Supplies (PSUs)
+              | 
+          li#about
+            a(href="") About
+          li#contact
+            a(href="") Contact
+          li#login
+            a(href="/auth/login") Login
+          li#signup
+            a(href="/auth/signup") Signup
+          li#search
+            form
+              input#search-input(type="search", placeholder="Search...")
+              button#search-btn(type="submit") Search
+          div#icons-container.d-flex.iconCont
+            li#icon1
+              a(href="mlm.com")
+                svg(width="44" height="44" viewBox="0 0 44 44" fill="none")
+                  path(d="M15.151 10C11.4697 10 8.48438 12.9547 8.48438 16.6C8.48438 19.5427 9.65104 26.5267 21.135 33.5867C21.3408 33.7118 21.5769 33.778 21.8177 33.778C22.0585 33.778 22.2947 33.7118 22.5004 33.5867C33.9844 26.5267 35.151 19.5427 35.151 16.6C35.151 12.9547 32.1657 10 28.4844 10C24.803 10 21.8177 14 21.8177 14C21.8177 14 18.8324 10 15.151 10Z" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+            li#icon2
+              a(href="")
+                svg(width="44" height="44" viewBox="0 0 44 44" fill="none")
+                  path(d="M15.1497 36.6667C15.8861 36.6667 16.4831 36.0697 16.4831 35.3333C16.4831 34.597 15.8861 34 15.1497 34C14.4134 34 13.8164 34.597 13.8164 35.3333C13.8164 36.0697 14.4134 36.6667 15.1497 36.6667Z" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                  path(d="M33.8177 36.6667C34.5541 36.6667 35.151 36.0697 35.151 35.3333C35.151 34.597 34.5541 34 33.8177 34C33.0813 34 32.4844 34.597 32.4844 35.3333C32.4844 36.0697 33.0813 36.6667 33.8177 36.6667Z" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                  path(d="M4.48438 7.33398H9.81771L13.8177 30.0007H35.151" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                  path(d="M13.8171 22.89H34.6037C34.7579 22.8901 34.9074 22.8367 35.0266 22.739C35.1459 22.6413 35.2276 22.5053 35.2579 22.3541L37.6579 10.3541C37.6773 10.2574 37.6749 10.1575 37.651 10.0618C37.6271 9.96604 37.5822 9.8768 37.5196 9.8005C37.457 9.72421 37.3783 9.66275 37.2891 9.62058C37.1999 9.57841 37.1024 9.55657 37.0037 9.55664H11.1504" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+            li#icon3
+              a(href="/auth/logout")#navLogout
+                svg(width="44" height="44" viewBox="0 0 44 44" fill="none")
+                  path(d="M32.4831 36.6667V33.1111C32.4831 31.2251 31.8463 29.4164 30.7127 28.0828C29.5791 26.7492 28.0417 26 26.4386 26H15.8609C14.2578 26 12.7203 26.7492 11.5868 28.0828C10.4532 29.4164 9.81641 31.2251 9.81641 33.1111V36.6667" fill="#858181")
+                  path(d="M32.4831 36.6667V33.1111C32.4831 31.2251 31.8463 29.4164 30.7127 28.0828C29.5791 26.7492 28.0417 26 26.4386 26H15.8609C14.2578 26 12.7203 26.7492 11.5868 28.0828C10.4532 29.4164 9.81641 31.2251 9.81641 33.1111V36.6667" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                  path(d="M22.4844 19.334C25.7981 19.334 28.4844 16.6477 28.4844 13.334C28.4844 10.0203 25.7981 7.33398 22.4844 7.33398C19.1707 7.33398 16.4844 10.0203 16.4844 13.334C16.4844 16.6477 19.1707 19.334 22.4844 19.334Z" fill="#858181" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+      link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
+      script(src='../script/user/navbar.js')
+      script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+      script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js')
+      script(src='../script/user/confirmLogout.js')
+      script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL", crossorigin="anonymous")
+  block rest

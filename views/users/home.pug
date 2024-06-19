@@ -1,0 +1,34 @@
+include ../partials/navbar
+section 
+    link(rel="stylesheet", href="../stylesheet/home.css")
+    #slider
+        img#img-1(src="../imgs/coverImgs/cover.png")
+        img#img-1(src="../imgs/coverImgs/cov2.png")
+        img#img-1(src="../imgs/coverImgs/cov3.png")
+    #navigation-button
+        span#dot-1.dot.active(onclick="changeSlide(0)")
+        span#dot-2.dot(onclick="changeSlide(1)")
+        span#dot-3.dot(onclick="changeSlide(2)")
+    script(src="../script/home.js")
+.background
+.color
+.two
+  section.row.mt-5
+    each product, index in products.slice(3, 6)
+      include ../partials/card
+section 
+    link(rel="stylesheet", href="../stylesheet/home.css")
+    #slider
+
+        img#img-1(src="../imgs/coverImgs/covchil.png")
+        img#img-1(src="../imgs/coverImgs/covL.png")
+        img#img-1(src="../imgs/coverImgs/covF.png")
+    #navigation-button
+        span#dot-1.dot.active(onclick="changeSlide(0)")
+        span#dot-2.dot(onclick="changeSlide(1)")
+        span#dot-3.dot(onclick="changeSlide(2)")
+    //- script(src="../script/home.js") 
+.two
+  section.row.mt-5
+    each product, index in products.slice(0, 3)
+      include ../partials/card

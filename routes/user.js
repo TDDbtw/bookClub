@@ -1,0 +1,61 @@
+const express = require("express")
+const router = express.Router()
+const {
+  upload,
+  catImg,
+  uploadUser
+} = require("../utils/multerUpload")
+
+const {
+  getProfile,
+  getEditInfo,
+  updateUsers,
+  total,
+  updateProfile,
+} = require("../controllers/user/user")
+const {
+  getAddAddress,
+  getEditAddress,
+  postAddAddress,
+  putEditAddress,
+  deleteAddress,
+  test,
+} = require("../controllers/user/address")
+const {getWallet} = require("../controllers/user/wallet")
+const { getCheckout } = require("../controllers/user/cart")
+const { getUserOrder, createOrder } = require("../controllers/user/order")
+const { protect, admin } = require("../middleware/authMiddleware")
+
+
+
+router.route("/profile").get(protect, getProfile)
+router.post("/profile").get(protect, getProfile)
+router.route("/profile/edit").get(protect, getEditInfo)
+router.route("/profile/update").get(protect, getEditInfo).patch(protect, uploadUser.single('croppedImage'),updateProfile)
+router
+  .route(`/profile/:id/edit/save`)
+  .put(protect, updateUsers)
+  .get(protect, admin, getEditInfo)
+
+router
+  .route("/address/:id/edit")
+  .get(protect, getEditAddress)
+  .patch(putEditAddress)
+
+router
+  .route("/address/new")
+  .get(protect, getAddAddress)
+  .post(protect, postAddAddress)
+router.route("/address/:id/remove").delete(protect, deleteAddress)
+// .get(protect, getProfile)
+router.route("/checkout").get(protect, getCheckout).post(protect, createOrder)
+router.route("/").post(total)
+router.route("/set").get(test)
+
+/// Order
+
+router.route("/order").get(protect, getUserOrder)
+router.route("/order/:id").get(protect, getOrderById)
+
+router.route("/wallet").get(protect,getWallet)
+module.exports = router

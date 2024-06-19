@@ -1,0 +1,27 @@
+link(rel="stylesheet", href="/stylesheet/admin/dashboard.css")
+link(rel="stylesheet", href="/stylesheet/admin/sidemenu.css")
+script(defer src="/script/admin/sidemenu.js")
+script(defer src="/script/admin/confirmLogout.js")
+include ../partials/sidemenu
+link(defer rel="stylesheet", href="../../../stylesheet/admin/createPage.css")
+#content-wrapper
+  h2.userCreateHead Create User
+  form.userCreateForm(action="/admin/users/register", method="post")
+    label.userCreateLabel(for="name") Name:
+    input.userCreateInput(type="text", id="name", name="name", required)
+    label.userCreateLabel(for="password") Password:
+    input.userCreateInput(type="password", id="password", name="password", required)
+    label.userCreateLabel(for="email") Email:
+    input.userCreateInput(type="email", id="email", name="email", required)
+    label.userCreateLabel(for="role") Role:
+    select.userCreateSelect(id="role", name="role", required)
+      option.userCreateOption(value="admin") Admin
+      option.userCreateOption(value="user") User
+    label.userCreateLabel(for="status") Status:
+    select.userCreateSelect(id="status", name="status", required)
+      option.createUserOption(value="true") Active
+      option.createUserOption(value="false") Inactive
+    button.btn.mt-2.userCreateButton(type="submit") Create User
+    span.mt-3.ms-3.row.text-danger#errorMessage
+  script(src="https://unpkg.com/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js", integrity="sha384-kenU1KFdBIe4z\u04af\u0441Zuj70im9PJwowFy467q297y3BUG6w41U7xY2+89NQsy9wV5OG", crossorigin="anonymous")
+  script(src="../../../script/isError.js") 

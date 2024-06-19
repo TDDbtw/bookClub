@@ -1,0 +1,85 @@
+body {
+    background-color: #081c15;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+#container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #183028;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#page-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#table-container {
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+}
+
+#coupon-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #284840;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#coupon-table th, #coupon-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #335046;
+}
+
+#coupon-table th {
+    background-color: #335046;
+    font-weight: bold;
+}
+
+#edit-btn, #delete-btn, #add-coupon-btn {
+    background-color: #335046;
+    color: #fff;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+#edit-btn:hover {
+    background-color: #284840;
+}
+
+#delete-btn {
+    background-color: #d9534f;
+    transition: background-color 0.3s;
+}
+
+#delete-btn:hover {
+    background-color: #c9302c;
+}
+
+#add-coupon-btn {
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+#add-coupon-btn:hover {
+    background-color: #284840;
+}

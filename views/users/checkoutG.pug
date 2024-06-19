@@ -1,0 +1,121 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Checkout - Quasar
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css')
+    link(rel="stylesheet", href="../stylesheet/user/checkoutG.css")
+  body
+    .container-fluid.checkout-container
+      .account-info
+        h2 Contact Information
+        p
+          strong Name:
+          |  #{user.name}
+        p
+          strong Email:
+          |  #{user.email}
+        
+      if user.addresses && user.addresses.length > 0
+        .address-selection
+          h2 Select Shipping Address
+          each address, index in user.addresses
+            .address-item
+              input(type='radio', name='shipping_address', id=`address-${index}`, value=address._id)
+              label(for=`address-${index}`) #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
+        .address-selection
+          h2 Select Billing Address
+          each address, index in user.addresses
+            .address-item
+              input(type='radio', name='shipping_address', id=`address-${index}`, value=address._id)
+              label(for=`address-${index}`) #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
+      else
+        .address-form
+          h2 Shipping Information
+          form#shipping(action='/user/address/new', method='post', enctype='application/x-www-form-urlencoded')
+            label(for='address') Address:
+            input(type='text', id='address', name='address', required)
+            label(for='city') City:
+            input(type='text', id='city', name='city', required)
+            label(for='state') State:
+            input(type='text', id='state', name='state', required)
+            label(for='zip_code') Zip Code:
+            input(type='text', id='zip_code', name='zip_code', required)
+            label(for='country') Country:
+            select(name='country', id='country')
+              option(value='United States') United States
+              option(value='Canada') Canada
+              option(value='Mexico') Mexico
+            button(type='submit') Save Address
+
+      .payment-section
+        h2 Payment Information
+        label(for='payment_method') Payment Method:
+        select#payment_method(name='payment_method', required)
+          option(value='') Select a payment method
+          option(value='paypal') PayPal
+          option(value='cod') Cash on Delivery
+          option(value='razorpay') Razorpay
+          
+        #paypal_details(style='display: none;')
+          p Pay securely with PayPal.
+        #cod_details(style='display: none;')
+          p Pay with cash upon delivery.
+        #razorpay_details(style='display: none;')
+          label(for='razorpay_phone') Phone Number:
+          input#razorpay_phone(type='text', name='razorpay_phone', required)
+          label(for='razorpay_email') Email Address:
+          input#razorpay_email(type='email', name='razorpay_email', required)
+        #paymentError.text-warning.ms-2
+    .right
+      .order-summary
+        h2 Order Summary
+        table
+          thead
+            tr
+              th Product
+              th Quantity
+              th Price
+              th Total
+          tbody
+            each product in products
+              tr
+                td= product.name
+                td= product.quantity
+                td $#{product.productPrice.toFixed(2)}
+                td $#{(product.productPrice * product.quantity).toFixed(2)}
+          tfoot
+            tr
+              td(colspan='3', align='right') Subtotal:
+              td $#{cart.billTotal.toFixed(2)}
+            tr
+              td(colspan='3', align='right') Shipping:
+              td
+                if shippingTotal == 0
+                  | Free shipping
+                else
+                  | $#{shippingTotal.toFixed(2)}
+            tr
+              td(colspan='3', align='right') Tax:
+              td $#{(0.05 * cart.billTotal).toFixed(2)}
+            tr
+              td(colspan='3', align='right') Total:
+              td $#{(cart.billTotal + (0.05 * cart.billTotal) + shippingTotal).toFixed(2)}
+          .checkout-actions
+            form.checkoutForm(action='/order/complete', method='post')
+              input#userInput(type='hidden', name='user', value=user)
+              input(type='hidden', name='cart', value=cart)
+              input(type='hidden', name='total_amount', value=(cart.billTotal + (0.05 * cart.billTotal) + shippingTotal).toFixed(2))
+              button.btn.btn-primary#placeOrderBtn(type='submit') Place Order
+            a.btn.btn-secondary(href='/cart') Back to Cart
+            span#payment_method_Error
+
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js')
+  script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+  script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js')
+  //- script(src='../script/user/confirmLogout.js')
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL", crossorigin="anonymous")
+  script(src='../script/user/checkoutG.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js')

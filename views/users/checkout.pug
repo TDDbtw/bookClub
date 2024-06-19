@@ -1,0 +1,384 @@
+include ../partials/navbar
+if user.addresses && user.addresses.length > 0
+  link(rel='stylesheet' href='../../../stylesheet/user/checkout2.css')
+else
+  link(rel='stylesheet' href='../../../stylesheet/user/checkout.css')
+link(rel='stylesheet' href='../../../stylesheet/navbar.css')
+script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+script(src=`https://www.paypal.com/sdk/js?client-id=sb`)
+.container-fluid
+  section.ms-2
+    h2.account-information-section-title Contact Information
+    p.text-white 
+      strong Name:
+      |  #{user.name}   
+    p.text-white 
+      strong.text-white  Email:
+      |  #{user.email}
+  if user.addresses && user.addresses.length > 0
+    each address,index in user.addresses
+      //- -const addressId = #{address._id}
+      p.ms-3.mt-2.text-white  Address #{index+1} | Address: #{address.address} | City: #{address.city} | State: #{address.state} | Zip Code: #{address.zip_code} | Country: #{address.country}  
+    
+  else
+    p You have not added any addresses yet.
+    form#shipping(action='/user/address/new' , style="", method='post', enctype='application/x-www-form-urlencoded')
+      section
+        h2 Shipping Information
+        //- label(for="name") Name:
+        //- input(type="text", id="name", name="name", required)
+        label(for="address") Address:
+        input(type="text", id="address", oninput='validateAddress()' name="address", required)
+        span#addressError
+        label(for="city") City:
+        input(type="text", id="city", oninput="validateCity()" name="city", required)
+        span#cityError
+        label(for="state") State:
+        input(type="text", id="state", oninput="validateState()"  name="state", required)
+        span#stateError
+        label(for="zip_code") Zip Code:
+        input(type="text", id="zip", oninput="validateZip()"  name="zip_code", required)
+        span#zipError
+        label(for="country") Country:
+        span#checkoutInput(type="hidden", name="checkout", value=`true`)
+        select(name="country", id="country")
+          option(value="United States") United States
+          option(value="canada") Canada
+          option(value="mexico") Mexico
+        span#countryError
+        span#errorMessage
+        button.button#saveAddress(type="") Continue
+  section#payment
+    h2.mt-4 Payment Information
+    label(for='payment_method') Payment Method: 
+    //pypal-button-container
+    select#payment_method(name='payment_method' required='' value="") 
+      option() Select a payment method
+      option(value='cod') Cash on Delivery
+      option(value='razorpay') Razorpay
+      //- option(value='visa') Visa
+      //- option(value='mastercard') Mastercard
+      //- option(value='american_express') American Express
+    
+    //- // Display the appropriate payment fields based on the selected payment method
+    span#paymentError.text-warning
+    #cod_details(style='display: none;')
+      p
+        | Cash on Delivery | You can pay the delivery person in cash when you receive your order.
+    #razorpay_details(style='display: none;')
+      label(for='razorpay_phone') Phone Number:
+      input#razorpay_phone(type='text' name='razorpay_phone' required='')
+      label(for='razorpay_email') Email Address:
+      input#razorpay_email(type='email' name='razorpay_email' required='')
+    #card_details(style='display: none;')
+      label(for='card_type') Card Type:
+      select#card_type(name='card_type')
+        option(value='visa') Visa
+        option(value='mastercard') Mastercard
+        option(value='american_express') American Express
+      label(for='card_number') Card Number:
+      input#card_number(type='text' name='card_number' required='')
+      label(for='expiration_date') Expiration Date:
+      input#expiration_date(type='date' name='expiration_date' required='')
+      label(for='cvv') CVV:
+      input#cvv(type='text' name='cvv' required='')
+      label(for='billing_address') Billing Address:
+      input#billing_address(type='text' name='billing_address' value='')
+    section.mt-4.billing_shipping
+      h2 Billing & Shipping
+      table
+        thead
+          tr
+          style.
+            .accordion {
+            //- background-color: #eee;
+            background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+            //- color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            transition: 0.4s;
+            color: #cac5c5;
+            border: 1px solid #ddd;
+            }
+            .active, .accordion:hover {
+            //- background-color: #ccc;
+            }
+            .accordion:after {
+            content: '\002B';
+            //- color: #777;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+            }
+            .active:after {
+            content: "\2212";
+            }
+            .panel {
+            padding: 0 18px;
+            display: none;
+            //- background-color: white;
+            overflow: hidden;
+            background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+            color: #cac5c5;
+            
+            }
+          #accordion
+            if user.billing_address 
+              button.accordion Shipping Address
+              .panel
+                -let address=user.shipping_address
+                p  Address #{index+1} | Address: #{address.address} | City: #{address.city} | State: #{address.state} | Zip Code: #{address.zip_code} | Country: #{address.country} 
+                 
+            else 
+              .add.text-warning Please Select a Shipping  Adress
+                a.text-success.text-decoration-none.ms-2(href="/user/profile") Click here to add Shipping Address
+            if user.billing_address 
+              button.accordion Billing Address
+              .panel
+                -address=user.billing_address
+                p  Address #{index+1} | Address: #{address.address} | City: #{address.city} | State: #{address.state} | Zip Code: #{address.zip_code} | Country: #{address.country} 
+            else 
+              .add.text-warning Please Select a Billing Adress
+                a.text-success.text-decoration-none.ms-4(href="/user/profile") Click here to add  Billing Address
+          //script.
+            var acc = document.getElementsByClassName("accordion");
+            var i;
+            for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+            panel.style.display = "none";
+            } else {
+            panel.style.display = "block";
+            }
+            });
+            }
+
+  section.order-summary
+    h2 Order Summary
+    table
+      thead
+        tr
+          th Product
+          th Quantity
+          th Price
+          th total
+      tbody
+        each product in products
+          tr
+            td= product.name
+            td= product.quantity
+            td= product.productPrice
+            td= (product.productPrice*product.quantity).toFixed(2)
+      tfoot
+        tr
+          td(colspan="2", align="right") Subtotal:
+          td.border-left-0
+          td#subTotal= (cart.billTotal).toFixed(2)
+        tr
+          td(colspan="2", align="right") Shipping:
+          td
+          if shippingTotal ==0
+            td#shippingTotal Free shipping
+          else
+            td#amount(name="amount" data-value=shippingTotal) #{shippingTotal}
+        tr
+          td(colspan="2", align="right") Tax:
+          td
+          td#billTotal $#{(0.05 * cart.billTotal).toFixed(2)}
+        tr
+          td(colspan="2", align="right") Total:
+          td
+          td#totalAmount(name='totalAmount')= ((cart.billTotal) + (0.05 * cart.billTotal) + (shippingTotal)) 
+    
+    section.d-block
+      //- form.checkoutForm(action='/user/checkout', method='post')
+      form.checkoutForm(action='/order/test', method='post')
+
+        input#amount(type="hidden", name="amount")
+        input#userInput(type="hidden", name="user", value=user)
+        input#cartInput(type="hidden", name="cart", value=cart)
+        //- input#totalAmout(type="hidden", name="products", value=((cart.billTotal)+(0.05 * cart.billTotal)+shippingTotal).toFixed(2))
+        //- input#billing_address2(type='hidden' name='billing_address' value= user.billing_address)
+        //- input#shipping_address2(type='hidden' name='shipping_address' value=user.shipping_address)
+        button.btn#placeOrderBtn.mt-2.button(type="submit") Place Order
+      a.btn.ms-4.bg-warning.mt-2(href="/cart") Back to Cart 
+      span.ms-3#payment_method_Error 
+  
+  //- script(src="../../script/user/validateCheckout.js") 
+  //- script.
+    const billTotal = document.getElementById('billTotal').value
+    const shippingTotal = document.getElementById('shipping').value
+    const subTotal = document.getElementById('subTotal').value
+    const totalAmount = document.getElementById('totalAmount')
+    sum = (billTotal + shippingTotal+subTotal).toFixed(2)
+    totalAmount.value=sum 
+
+      function openDialog() {
+        document.getElementById("edit-address-dialog").showModal();
+      }
+    document.getElementById('payment_method').addEventListener('change', function() {
+        const paymentMethod = this.value;
+
+        // Hide all payment details sections
+        document.getElementById('cod_details').style.display = 'none';
+        document.getElementById('razorpay_details').style.display = 'none';
+        document.getElementById('card_details').style.display = 'none';
+
+        // Display the selected payment details section
+        if (paymentMethod === 'cod') {
+          document.getElementById('cod_details').style.display = 'block';
+        } else if (paymentMethod === 'razorpay') {
+          document.getElementById('razorpay_details').style.display = 'block';
+        } else {
+          document.getElementById('card_details').style.display = 'block';
+        }
+      });
+      // Previous script code...
+  script.
+    let payment_method = "";
+    let totalAmount=document.getElementById('totalAmount').innerHTML
+      function financial(x) {
+      return Number.parseFloat(x).toFixed(2);
+    }
+    totalAmount= financial(totalAmount)
+    paypal.Buttons({
+    createOrder: function(data, actions) {
+    return actions.order.create({
+    purchase_units: [{
+    amount: {
+    value: totalAmount // Amount to be paid by the user
+    }
+    }]
+    });
+    },
+    onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+    // Handle successful payment
+    alert('Transaction completed by ' + details.payer.name.given_name);
+    // Redirect or update UI as needed
+    });
+    }
+    }).render('#paypal-button-container');
+     document.addEventListener('DOMContentLoaded', () => {
+       const paymentMethodSelect = document.getElementById('payment_method');
+       const codDetails = document.getElementById('cod_details');
+       const razorpayDetails = document.getElementById('razorpay_details');
+       const cardDetails = document.getElementById('card_details');
+       const user=document.getElementById('userInput').value
+        console.log(`${paymentMethodSelect.value}`) 
+        if(paymentMethodSelect.value= "Select a payment method"){
+          document.getElementById("placeOrderBtn").disabled = true;
+          document.getElementById("paymentError").innerHTML = "Please select a Payment option";
+
+
+          }
+
+      
+       
+        console.log(`total amount: ${(totalAmount)}`)
+     
+       paymentMethodSelect.addEventListener('change', function() {
+         if(paymentMethodSelect.value=="Select a payment method"){
+          document.getElementById("placeOrderBtn").disabled = true ;
+           document.getElementById("paymentError").innerHTML = "Please select a Payment option";
+
+
+
+          }
+         payment_method = this.value;
+         console.log(`Selected payment method: ${payment_method}`);
+         // Hide all payment details sections
+         codDetails.style.display = 'none';
+         razorpayDetails.style.display = 'none';
+         cardDetails.style.display = 'none';
+     
+         // Display the selected payment details section
+         if (payment_method === 'cod') {
+           codDetails.style.display = 'block';
+         } else if (payment_method === 'razorpay') {
+           razorpayDetails.style.display = 'block';
+         } else {
+           cardDetails.style.display = 'block';
+         }
+          if(paymentMethodSelect.value!= "Select a payment method"){
+          document.getElementById("placeOrderBtn").disabled = false ;
+          document.getElementById("paymentError").innerHTML = "";
+
+          }
+
+       });
+       const checkoutForm = document.querySelector('.checkoutForm');
+
+      checkoutForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        // Display confirmation dialog using SweetAlert
+        Swal.fire({
+          title: 'Confirm Order',
+          text: 'Are you sure you want to place the order?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Place Order',
+          cancelButtonText: 'Cancel'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await fetch('/order/test', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ payment_method: payment_method, user: user }),
+              });
+
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+
+              const result = await response.json();
+              console.log(result);
+
+              // Display success message using SweetAlert
+              if (result.success == true) {
+                Swal.fire({
+                  title: 'Order Placed!',
+                  text: 'Your order has been successfully placed.',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                  window.location.href = '/order';
+                });
+              } else {
+                // Display error message using SweetAlert
+                Swal.fire({
+                  title: 'Order Failed',
+                  text: 'Failed to place the order. Please try again later.',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              }
+            } catch (error) {
+              console.error('Error:', error.message);
+              // Handle the error, show a message to the user, etc.
+            }
+          }
+        });
+      });
+
+         
+
+
+
+
+
+         });
+      
+      
+        

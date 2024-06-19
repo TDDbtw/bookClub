@@ -1,0 +1,45 @@
+//- inude ../partials/navbarId
+include ../partials/navbar
+link(rel="stylesheet", href="../stylesheet/product.css")
+//- link(rel="stylesheet", href="../stylesheet/home.css")
+link(rel='stylesheet', href='../stylesheet/user/sort.css')
+.container.d-flex
+  #sidebar
+    #heading Categories
+    ul
+      each category in categories
+        li.catLi
+          .catName= category.name
+          ul
+            each subcategory in subcategories
+              if subcategory.category._id == category.id
+                li(data-sub-cat=subcategory.id)= subcategory.name 
+  .filter-icon.text-decoration-none
+    label.text-white.me-3#clearBtn() clear all
+    label#sort-by-label(for='sortBy') Sort By:
+    select#sortBy
+      option(value='lowToHigh') Price: Low to High
+      option(value='highToLow') Price: High to Low
+      option(value='aToZ') A - Z
+      option(value='zToA') Z - A
+    svg#sort-button.icon.icon-tabler.icon-tabler-search( xmlns='http://www.w3.org/2000/svg', width='25', height='25', viewBox='0 0 24 24', stroke-width='1.5', stroke='#ffffff', fill='none', stroke-linecap='round', stroke-linejoin='round')
+      path(stroke='none' d='M0 0h24v24H0z' fill='none')
+      path(d='M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0')
+      path(d='M21 21l-6 -6') 
+  .two
+    section#cardSection.row(style="width:100%;  margin-left:10%;")
+      //each product in products
+        include ../partials/card 
+
+    nav 
+      ul#pagination.pagination
+  script(src='../script/admin/getProductsOneTwo.js')
+  script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js")
+  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+  script.
+    document.querySelectorAll('#sidebar > ul > li').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('open');
+      });
+    });
+

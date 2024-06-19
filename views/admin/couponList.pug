@@ -1,0 +1,31 @@
+include ../partials/sidemenu
+#content-wrapper
+  link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
+  link(rel="stylesheet", href="../../stylesheet/admin/coupons.css")
+  script(src="//https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous")
+  //- script(defer src="../../script/admin/panel.js") 
+  .container-fluid#containerFluid
+    h1#page-title Coupon Management
+      .table-container#table-container
+        table#coupon-table
+          thead
+            tr
+              th Coupon Code
+              th Discount Type
+              th Discount Value
+              th Validity Period
+              th Status
+              th Actions
+          tbody
+            tr
+              td SUMMER10
+              td Percentage
+              td 10%
+              td 2023-06-01 - 2023-09-30
+              td Active
+              td
+                button#edit-btn Edit
+                button#delete-btn Delete
+            // Add more coupon rows here
+      button.add-coupon-btn Add New Coupon

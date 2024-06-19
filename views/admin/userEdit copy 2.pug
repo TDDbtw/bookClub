@@ -1,0 +1,97 @@
+doctype html
+html(lang="en")
+
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title User Edit Page
+    link(href="https://unpkg.com/bootstrap@5.2.3/dist/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-rbsA2VBKQh+3Zuj70im9PJwowFyfn467q297y3BUG6w41U7xY2+89NQsy9wV5OG", crossorigin="anonymous")
+    
+    style.
+      body {
+        background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+        color: #fff;
+      }
+
+      h2 {
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #1e2130;
+        border-radius: 10px;
+      }
+
+      label {
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      input, select {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='black'%3E%3Cpath d='M6 9L12 3L10.6 1.6 6 6.2 1.4 1.6 0 3l6 6z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position-x: calc(100% - 10px);
+        background-position-y: center;
+      }
+
+      input:focus, select:focus {
+        outline: none;
+        border-color: #55acee;
+      }
+
+      button[type="submit"] {
+        background-color: #55acee;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #3f86c7;
+      }
+
+  body
+    h2 Edit User
+
+    form(action=`/admin/users/${user._id}/edit`, method="put")
+      label(for="name") Name:
+      input(type="text", id="name", name="name", value=user.name, required)
+
+      label(for="password") Password:
+      input(type="password", id="password", name="password")
+
+      label(for="email") Email:
+      input(type="email", id="email", name="email", value=user.email, required)
+
+      label(for="role") Role:
+      select(id="role", name="role", required)
+        option(value="admin", selected=user.role === "admin") Admin
+        option(value="user", selected=user.role === "user") User
+
+      label(for="status") Status:
+      select(id="status", name="status", required)
+        option(value="active", selected=user.status === "active") Active
+        option(value="inactive", selected=user.status === "inactive") Inactive
+
+      button(type="submit") Update User
+
+    script(src="https://unpkg.com/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js", integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9FWnBRsYkUPjuHZakrN9W0oWUhJGq48md4", crossorigin="anonymous")

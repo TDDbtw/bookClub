@@ -1,0 +1,146 @@
+include ../partials/sidemenu
+link(rel='stylesheet', href='../../../stylesheet/admin/dashboard.css')
+link(rel='stylesheet', href='../../../stylesheet/admin/sidemenu.css')
+link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
+script( defer src="../../../script/admin/subCat.js") 
+//- //- link(rel="stylesheet", href="../../stylesheet/admin/table.css")
+//- script(src="//https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
+//- //- script(defer src="../../script/admin/panel.js") 
+//- script(src="//https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous")
+style.
+  body {
+    color: #cac5c5;
+
+  }
+
+  #content-wrapper {
+      padding: 20px; /* Add some padding for better spacing */
+  }
+
+  .addSub {
+      margin-top: 2rem;
+  }
+
+  .addSub h2 {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      color: #007bff; /* Set a primary color for headings */
+  }
+
+  .addSub form {
+      display: grid;
+      gap: 1rem;
+  }
+
+  .addSub label {
+      margin-bottom: 0.5rem;
+  }
+
+  .addSub input,
+  .addSub select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ced4da; /* Add a subtle border */
+      border-radius: 5px;
+      box-sizing: border-box;
+  }
+
+  .addSub button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+  }
+
+  .added-categories {
+      margin-top: 2rem;
+  }
+
+  .container-fluid {
+      //- background-color: #ffffff;
+      margin-top : 4%;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h1.text-white {
+      color: #007bff;
+  }
+  .addSub {
+    margin-top: 2rem;
+  }
+  
+  .addSub form {
+      display: grid;
+      gap: 1rem;
+  }
+  
+  .addSub,
+  .added-categories {
+      flex: 1; 
+  }
+  
+  .added-categories {
+      margin-left:7%; 
+      margin-top:13%;
+  }
+  .form-control,.form-control:focus{   
+    background: rgba(45, 106, 79, 0.49);
+
+
+  }
+
+  
+#content-wrapper
+  .container-fluid#containerFluid.d-flex
+    .addSub.mt-4.ms-5
+      h2.mt-4.mb-4.text-white Add Category
+        form#createCategoryForm()
+          .form-group
+            label(for='name') Name
+            input#name.form-control(type='text' name='name' placeholder='Enter category name' required)
+          //- .form-group
+            label(for='subcategory') Subcategory
+            select#subcategory.form-control(name='subcategory')
+              option(value='') Select a subcategory
+              option(value='{{ subcategory.id }}') {{ subcategory.name }}
+          .form-group
+            label(for='new_subcategory') Add New Subcategory
+            input#new_subcategory.form-control(type='text' name='new_subcategory' placeholder='Enter new subcategory name')
+          button.btn.btn-primary(type='submit') Create
+    .added-categories
+      h3 Added Categories
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.querySelector('#createCategoryForm');
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+
+        try {
+          const response = await fetch(`/admin/category/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: name }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            window.location.href = "/admin/category";
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          // Handle errors as needed
+        }
+      });
+    });

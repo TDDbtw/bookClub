@@ -1,0 +1,147 @@
+include ../partials/navbar
+link(rel='stylesheet' href='../../../stylesheet/user/addAddress.css')
+link(rel='stylesheet' href='../../../stylesheet/navbar.css')
+script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+.container-fluid#mainAdd
+  .my-account
+    .col-sm-3.my-account-menu
+      ul
+        li
+          a(href='/user/profile') My Account
+        li
+          a(href='/user/profile/edit') Account Information
+        li
+          a(href='/user/address/new') Address Book
+        li
+          a(href='/user/order') My Orders
+        li
+          a(href='#') My Wallet
+  .column.main.snipcss-KcpgZ
+    .page-title-wrapper
+      h1.page-title
+        span.base(data-ui-id='page-title-wrapper')
+          | Edit Address
+    input(name='form_key' type='hidden' value='viRUoafbYsKQ7xXw')
+    #authenticationPopup.style-loXXT(data-bind="scope:'authenticationPopup', style: {display: 'none'}")
+      if user.addresses && user.addresses.length > 0
+        each address, index in user.addresses
+          p Address #{index+1} | Address: #{address.address} | City: #{address.city} | State: #{address.state} | Zip Code: #{address.zip_code} | Country: #{address.country} 
+          .address-information-links.ms-5.text-decoration-none
+            a#editAddress.mb-4.address-information-link.text-decoration-none(href=`/user/address/${address._id}/edit`) Edit
+              span.ms-3 |
+            a#deleteAddress.text-danger.ms-3.address-information-link.text-decoration-none(value=address.id onclick="removeAddress()") 
+              svg.icon.icon-tabler.icon-tabler-trash(xmlns='http://www.w3.org/2000/svg', width='20', height='20', viewBox='0 0 24 24', stroke-width='1.5', stroke='#ff2825', fill='none', stroke-linecap='round', stroke-linejoin='round')
+                path(stroke='none', d='M0 0h24v24H0z', fill='none')
+                path(d='M4 7l16 0')
+                path(d='M10 11l0 6')
+                path(d='M14 11l0 6')
+                path(d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12')
+                path(d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3')
+            if user.billing_address && user.billing_address._id == address.id
+              p.mt-3(style="color: #007d99;") Default Billing Address
+            else
+              input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
+              label(for='billing_address').ms-1.me-2 Billing Address
+            if user.shipping_address && user.shipping_address._id == address.id
+              p.mt-3(style="color: #007d99;") Default Shipping Address
+            else
+              input#shipping_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='shipping_address' hx-target="body" value=`${address._id}`).ms-3
+              label(for='shipping_address').ms-1  Shipping Address
+            form.deleteForm(action=`/user/address/${address._id}/remove` method="delete")
+              input#userInput(type="hidden", name="user", value=user.id)
+              input#addressInput(type="hidden", name="address", value=address._id)
+      else
+        p You have not added any addresses yet.          
+    form.form-address-edit(action=`/user/address/${address._id}/edit`,method='put')
+      //- Address
+      fieldset.fieldset.me-5
+        legend.legend
+          span
+            | Address
+        br
+        .field.street
+          label.label(for='street_1')
+            span
+              | Address
+          .control
+            .field.primary
+              label.label(for='street_1')
+                span
+                  | Street Address: Line 1
+              input#address.input-text.pac-target-input(type='text' name='address' value=`${address.address}` title='Street Address' placeholder='Address'  autocomplete='off')
+              span#addressError
+              .nested
+                .field.additional
+                  label.label(for='street_2')
+                    span
+                      | Street Address: Line 2
+                  .control
+                    input#street_2.input-text(type='text' name='street[2]' value='' title='Street Address 2' placeholder='Apartment,suite,etc.(optional)' )
+        .field.city
+          label.label(for='city')
+            span
+              | City
+          .control
+            input#city.input-text(type='text' name='city' value=`${address.city}`  title='City' )
+            span#cityError
+        .field.region
+          label.label(for='region_id')
+            span
+              | State
+          .control
+            select#state(name='state' oninput="validateState()" title='State' defaultvalue='0' aria-required='true')
+              option(value=`0`)
+                | #{address.state} 
+              option(value='1')
+                | kerala
+            span#stateError
+        .field.zip
+          label.label(for='zip')
+            span
+              | Zip Code
+          .control
+            input#zip.input-text.validate-zip-international(type='text' name='zip_code' value=`${address.zip_code}` title='Zip Code' )
+            .message.warning(role='alert')
+              span
+            span#zipError
+        .field.country
+          label.label(for='country')
+            span
+              | Country
+          .control
+            select#country(name='country_id' title='Country' data-validate="{'validate-select':true}"  value=`${address.country_id}`)
+              option(value='US' selected='selected')
+                | United States
+            span#countryError
+        input#addressId(type='hidden' name='default_billing' value=`${address.id}`)
+        input(type='hidden' name='default_shipping' value='1')
+
+      //- Actions Toolbar
+      .actions-toolbar
+        .primary
+          button#saveAddress.action.submit.primary(type='submit')
+            span
+              | Save Address
+        .secondary
+          a.action.back(href='/user/address/new')
+            span
+              | Go back
+        #errorMessage
+  script(src="/script/user/validateEditAddress.js") 
+  script.
+    $(document).ready(function() {
+        // Get the current URL
+        var currentUrl = window.location.pathname;
+
+        // Loop through each anchor tag and compare the href attribute with the current URL
+        $('.my-account-menu li a').each(function() {
+          var href = $(this).attr('href');
+
+          // Check if the current URL matches the href attribute
+          if (currentUrl === href) {
+            // Apply the background color to the parent li
+            $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
+
+          }
+        });
+      });

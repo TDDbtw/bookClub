@@ -1,0 +1,20 @@
+include ../../partials/navbar
+block rest
+  .mainC.d-flex
+    .imgDiv
+      img(src="../imgs/pic.png", alt="", srcset="")
+    #otp-form-container.text-white
+        h2.signUp-Head Verify Your Email
+        form#otpForm.px-5(action="/auth/otp/verify", method="POST")
+          p Please enter the OTP that has been sent to your email address.
+          input#otp-input(type="text", name="otp", placeholder="Enter OTP")
+          span#otpError
+          button#otpButton(type="") Submit
+    link(rel="stylesheet", href="../../stylesheet/user/signUpForm.css")
+  script(src="https://cdn.jsdelivr.net/npm/sweetalert2@10") 
+  script(src="../../script/verifyOtp.js") 
+
+ 
+    
+
+  

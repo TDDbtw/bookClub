@@ -1,0 +1,52 @@
+html
+  head
+    title Product List
+
+  body
+  
+    h1 Edit Product
+
+    if product 
+      html
+  head
+    title Product List
+
+  body
+  
+    h1 Edit Product
+
+    if product
+      form(action=`/products/${product._id}`, method='POST')
+        input(type='hidden', name='_method', value='PUT')
+
+        label(for='name') Name
+        input(type='text', name='name', value=product.name)
+
+        label(for='description') Description
+        textarea(name='description')= product.description
+
+        label(for='price') Price
+        input(type='number', name='price', value=product.price)
+
+        label(for='category') Category
+        select(name='category')
+          each category in categories
+            option(value=category._id, selected=product.category.equals(category._id)) #{category.name}
+
+        label(for='image') Image
+        input(type='text', name='image', value=product.image)
+
+        label(for='modularity') Modularity
+        select(name='modularity')
+          option(value='Fully Modular', selected=product.modularity === 'Fully Modular') Fully Modular
+          option(value='Semi-Modular', selected=product.modularity === 'Semi-Modular') Semi-Modular
+          option(value='Non-Modular', selected=product.modularity === 'Non-Modular') Non-Modular
+
+        label(for='wattage') Wattage
+        input(type='number', name='wattage', value=product.wattage)
+
+        input(type='submit', value='Save')
+
+      a(href='/products')
+    else
+      p Product not found

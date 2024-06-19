@@ -1,0 +1,56 @@
+include ../partials/sidemenu
+//- link(rel="stylesheet", href="../stylesheet/admin/dashboard.css")
+//- link(rel='stylesheet' href='/../stylesheet/admin/sidemenu.css')
+//- link(rel="stylesheet", href="../stylesheet/admin/dashboard.css")
+//- link(rel='stylesheet' href='/../stylesheet/admin/sidemenu.css')
+//- script(defer src="../../script/admin/panel.js")
+//- script(defer src='../../script/admin/sidemenu.js')
+//- script(defer src='../script/admin/confirmLogout.js')
+#content-wrapper
+  .container-fluid#containerFluid.w-50
+    h1.text-center.text-light.my-5 Edit User
+    form#userEditForm(action=`/admin/users/${user._id}/edit`, method="PUT")
+      div.form-group
+        label(for="name") Name:
+        input#name.form-control(type="text", name="name", value=user.name, required=true autocomplete=true)
+        span#nameError
+      div.form-group
+        label(for="email") Email:
+        input#email.form-control(type="email", name="email", value=user.email, required=true autocomplete=true)
+        span#emailError
+      div.form-group
+        label(for="password") Password:
+        input#password.form-control(type="password", name="password") 
+      div.form-group
+        label(for="role") Role:
+        select#role.form-control(name="role", required=true)
+          option(value="user", selected=user.role === "user") User
+          option(value="admin", selected=user.role === "admin") Admin
+      div.form-check
+        input#status.form-check-input(type="checkbox", name="status", checked=user.status)
+        label.form-check-label(for="status") Active
+      button.btn.bg-primary(type="submit") Update User
+    a#deleteUserButton.btn(type="submit").bg-danger Delete User
+  //- script.
+    fetch(`/admin/users/#{user._id}/edit`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name.value,
+        email: email.value,
+        password: password.value,
+        role: role.value,
+        status: status.checked,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        // Display success message
+      })
+      .catch(error => {
+        console.error(error);
+        // Display error message
+      });

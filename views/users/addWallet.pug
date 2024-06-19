@@ -1,0 +1,33 @@
+include ../partials/navbar
+title My Wallet
+link(rel='stylesheet' href='../stylesheet/user/profile.css')
+link(rel='stylesheet' href='../stylesheet/user/addWallet.css')
+.my-account
+  .col-sm-3.my-account-menu
+    ul
+      li
+        a(href='/user/profile') My Account
+      li
+        a(href='/user/wishlist') My Wishlist
+      li
+        a(href='/user/profile/edit') Account Information
+      li
+        a(href='/user/address/new') Address Book
+      li
+        a(href='/user/order') My Orders
+      li
+        a(href='/user/wallet') My Wallet 
+  .container
+    section.add-funds-form
+      h2 Add Funds to Your Wallet
+      form#addFundsForm
+        .form-group
+          label(for='amount') Amount:
+          input#amount(type='number' name='amount' min='1' required)
+        .form-group
+          label(for='paymentMethod') Payment Method:
+          select#paymentMethod(name='paymentMethod')
+            option(value='creditCard') Credit Card
+            option(value='paypal') PayPal
+            // Add more payment options as needed
+        button.add-funds-btn(type='submit') Add Funds

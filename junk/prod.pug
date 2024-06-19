@@ -1,0 +1,30 @@
+// prod.pug
+
+html
+  head
+    title Product List
+
+  body
+    h1 Welcome to the Product Page
+
+    table
+      thead
+        tr
+          th Name
+          th Price
+          th Category
+          th Modularity
+          th Wattage
+          th Actions
+
+      tbody
+        each product in products
+          tr
+            td= product.name
+            td= product.price
+            td= product.category.name
+            td= product.modularity
+            td= product.wattage
+            td
+              a(href=`/products/${product._id}/edit`) Edit
+              a(href=`/products/${product._id}/delete`) Delete

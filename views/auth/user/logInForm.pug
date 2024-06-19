@@ -1,0 +1,86 @@
+include ../../partials/navbar
+block rest
+  .mainC.d-flex
+    .imgDiv
+      img.sideImage(src="../imgs/pic.png", alt="", srcset="")
+    .signup-form-container.text-white
+      h2.signUp-Head Log In
+      form.signUpForm#signUpForm.px-5(action="/auth/login", method="POST")
+        label(for="email") E-mail *
+        input#email.form-input(type="email", name="email",oninput='validateEmail()', placeholder="Enter Your E-mail..", required)
+        span#emailError
+        label(for="password") Password *
+        input#password.form-input(type="password", name="password",oninput='validatePassword()', focusin="enterInput(event)",placeholder="Enter your password ..", required)
+        span#passwordError.ms-1
+        #feedback.text-warning.ms-3
+        .showHide
+          #show.ms-2.mt-2.d-flex
+            input.d-block(type=`checkbox` onclick=(`showPwd()`))
+            span Show password
+          #hide.ms-2.mt-2.d-flex(style="display: none;")
+            input.mb-1.d-block(type="checkbox" onclick="hidePwd()" style="display: none;") 
+            span Hide password
+
+        span.text-danger.ms-3#errorMessage
+        button#loginButton(type="submit") Login
+      p OR
+      a.signUp-text.text-white.text-decoration-none(href="/auth/signup")
+          | Don't have an account? Sign up
+      a.signUp-text.text-white.text-decoration-none(href="/auth/password")
+          | Forgot Password ?
+
+  link(rel="stylesheet", href="../../stylesheet/user/signUpForm.css")
+  script(src="../../script/validation.js")
+  script.
+    document.getElementById("loginButton").addEventListener("click", function(event) {
+      event.preventDefault();
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+    
+      fetch("/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      }).then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            document.getElementById("errorMessage").innerHTML = data.error;
+
+          } 
+       
+          //- else {
+          //-   console.log(data)
+          //-   // Optional: Provide a more informative success message to users
+          //-   document.getElementById("successMessage").innerHTML = "Login successful!";
+            
+          //-   // Redirect after form submission
+          //-   document.getElementById("signUpForm").action = "/";
+          //-   document.getElementById("signUpForm").submit();
+
+
+          //- }
+          else if(data.role=="user"){
+
+            window.location.href = "/";
+          }
+          else if(data.role=="admin"){
+            window.location.href = "/admin";
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Handle or display the error in an appropriate way
+        }); 
+    });
+    function showPwd() {
+         document.getElementById("password").type = "text";
+         document.getElementById("hide").style.display = "block";
+         document.getElementById("show").style.display = "none";
+      }
+    function hidePwd() {
+         document.getElementById("password").type = "password";
+         document.getElementById("show").style.display = "block";
+         document.getElementById("hide").style.display = "none";
+      }

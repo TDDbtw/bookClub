@@ -1,0 +1,55 @@
+link(rel="stylesheet", href="/stylesheet/admin/dashboard.css")
+link(rel="stylesheet", href="/stylesheet/admin/sidemenu.css")
+script(defer src="/script/admin/sidemenu.js")
+script(defer src="/script/admin/confirmLogout.js")
+include ../partials/sidemenu
+link(defer rel="stylesheet", href="../../../stylesheet/admin/editPage.css")
+#content-wrapper
+  h2.mt-5.text-center Edit User
+  form#userEditForm(action=`/admin/users/${user._id}/edit`, method="POST")
+    label.mt-4(for="name") Name:
+    input.editUserInput#name(type="text", name="name", value=user.name, required)
+    label.mt-4(for="password") Password:
+    input.editUserInput#password(type="password", name="password")
+    label.mt-4(for="email") Email:
+    input.editUserInput#email(type="email", name="email", value=user.email, required)
+    label.mt-4(for="role") Role:
+    select.editUserSelect#role(name="role", required)
+      option.editUserOption(value="admin", selected=user.role === "admin") Admin
+      option.editUserOption(value="user", selected=user.role === "user") User
+    label.mt-4(for="status") Status:
+    select.editUserSelect#status(name="status", required)
+      option.editUserOption(value="true", selected=user.status === "active") Active
+      option.editUserOption(value="false", selected=user.status === "inactive") Inactive
+    button.btn.mt-4#updateUserBtn(type="submit") Update User
+    button.btn.ms-4.mt-4#DeleteUserBtn() Delete User
+script(src="https://unpkg.com/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js", integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9FWnBRsYkUPjuHZakrN9W0oWUhJGq48md4", crossorigin="anonymous")
+script.
+      
+      //- document.querySelector("#userEditForm").addEventListener("submit", (event) => {
+      //-   event.preventDefault();
+      //-   const formData = new FormData(event.target);
+      //-   const user = {
+      //-     name: formData.get("name"),
+      //-     password: formData.get("password"),
+      //-     email: formData.get("email"),
+      //-     role: formData.get("role"),
+      //-     status: formData.get("status"),
+      //-   };
+        
+      //-   fetch(`/admin/users/${user._id}/edit`, {
+      //-     method: "PUT",
+      //-     headers: {
+      //-       "Content-Type": "application/json",
+      //-     },
+      //-     body: JSON.stringify(user),
+      //-   })
+      //-     .then((response) => response.json())
+      //-     .then((data) => {
+      //-       alert("User updated successfully!");
+      //-       window.location.href = "/admin/users";
+      //-     })
+      //-     .catch((error) => {
+      //-       alert("An error occurred while updating the user.");
+      //-     });
+      //- });

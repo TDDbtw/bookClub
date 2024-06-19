@@ -1,0 +1,58 @@
+//doctype html
+//html(lang='en')
+//  head
+//    meta(charset='UTF-8')
+//    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+//    title Cart - Quasar
+//    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css')
+//    link(rel='stylesheet', href='style.css')
+//  body
+//    header
+include ../partials/navbar
+  link(rel="stylesheet", href="../stylesheet/user/cartG.css")
+  main
+    .container-fluid.cart-container
+      h1 Your Cart
+      .cart-content
+        table.cart-table
+          thead
+            tr
+              th Product
+              th Price
+              th Quantity
+              th Total
+              th Actions
+          tbody
+            each item in cart.items
+              tr
+                td
+                  .product-info
+                    img(src=item.image , alt= item.name )
+                    span= item.name
+                td $#{item.productPrice.toFixed(2)}
+                td
+                  .quantity-controls
+                    button.decrement.decrement-button -
+                    input(type='number', value= item.quantity, min='1')
+                    button.increment.increment-button +
+                td $#{(item.productPrice * item.quantity).toFixed(2)}
+                td
+                  button.remove-btn Remove
+        .summary
+          h2 Cart Summary
+          ul
+            li
+              span Subtotal:
+              span.price= (cart.billTotal).toFixed(2)
+            li
+              span Tax (5%):
+              span.price= (0.05 * cart.billTotal).toFixed(2)
+            li
+              span Shipping:
+              span Calculated at next step
+            li.total-price
+              span Grand Total:
+              span.price= ((cart.billTotal)+(0.05 * cart.billTotal)).toFixed(2)
+          a.btn.checkout-btn(href="/user/checkout") Checkout
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js')
+  script(src='../script/user/cartGt.js')

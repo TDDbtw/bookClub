@@ -1,0 +1,154 @@
+/* public/stylesheets/cart.css */
+
+table {
+  width: 70%;
+  border-collapse: collapse;
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+  color: #cac5c5;
+  margin-left: 2%;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+}
+
+.card-image {
+  width: 100px;
+  height: 100px;
+}
+
+.deleteForm {
+  display: flex;
+  align-items: center;
+}
+
+#deleteButton {
+  margin-left: 10px;
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+tfoot {
+  font-weight: bold;
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+  color: #cac5c5;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  padding-top: 3%;
+  flex: 1;
+  margin-left: 20px;
+  position: absolute;
+  height: 50%;
+  width: 14%;
+  right: 1%;
+  top: 15rem;
+}
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3%;
+  margin-left: 5%;
+  width: 20%;
+  border: 1px solid #ddd;
+}
+
+.totals-item {
+  width: 90%;
+  margin-bottom: 10px;
+  margin-top: 9%;
+}
+
+label {
+  float: left;
+  clear: both;
+  text-align: right;
+}
+
+.totals-value {
+  float: right;
+  text-align: right;
+}
+
+.totals-item-total {
+  font-family: bold;
+}
+
+.checkout {
+  margin-left: 6%;
+  margin-bottom: 2%;
+  margin-top: 4%;
+}
+
+.checkout:hover {
+  background-color: #494;
+}
+
+.product-quantity {
+  display: flex;
+  align-items: center;
+}
+
+.quantity-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.decrement-button,
+.increment-button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: #0a1e1615;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.decrement-button:hover,
+.increment-button:hover {
+  background-color: #0a1e1615;
+}
+
+.quantity-input {
+  width: 60px;
+  height: 40px;
+  border: none;
+  color: white;
+  background-color: #0a1e1615;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#cart-shipping,
+#grandTotal {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+#empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+

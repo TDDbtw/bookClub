@@ -1,0 +1,253 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800,300i,400i,500i,600i,700i,800i&display=swap");
+@font-face {
+  font-family: "luma-icons";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Luma-Icons.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Luma-Icons.woff")
+      format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "PlutoCondBlack";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "PlutoMedium";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoMedium.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoMedium.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "PlutoLight";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoLight.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoLight.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Roboto-Light";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Roboto-Light.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/Roboto-Light.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Pluto";
+  src: url(https://www.oreo.com/static/version1632989199/frontend/mondelez/oreo/en_US/fonts/PlutoLight.woff2);
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+body {
+  color: #4d4d4d;
+  font-family: "Roboto-Light";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.42857143;
+  font-size: 19px;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  color: #4d4d4d;
+  font-family: "PlutoCondBlack", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.42857143;
+  font-size: 1.4rem;
+}
+
+body {
+  background-color: #081c15;
+}
+
+body {
+  font-family: "Roboto-Light";
+  font-size: 20px;
+  height: auto !important;
+}
+
+@media (min-width: 768px), print {
+  body {
+    height: 100%;
+  }
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+h1,
+h2 {
+  color: #cac5c5;
+}
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #cac5c5;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: whitesmoke;
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+}
+.button {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.button:hover {
+  background-color: #449d44;
+}
+.error {
+  color: red;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+tfoot td {
+  font-weight: bold;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  height: auto !important;
+}
+
+h1,
+h2 {
+  color: #cac5c5;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #cac5c5;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #cac5c5;
+}
+
+.button {
+  background-color: #4caf50;
+  color: white;
+  /* padding: 12px 20px; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #306130;
+}
+
+.error {
+  color: red;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  color: #cac5c5;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+  color: #cac5c5;
+}
+
+tfoot td {
+  font-weight: bold;
+  text-align: right;
+  color: #cac5c5;
+}
+
+.order-summary {
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+  color: #cac5c5;
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  flex: 1; /* Take remaining space */
+  margin-left: 20px; /* Add some spacing */
+  position: absolute;
+  right: 1%;
+  top: 17rem;
+}
+section {
+  flex: 2;
+}
+#shipping {
+  position: absolute;
+  left: 1%;
+  width: 70%;
+}
+#payment {
+  position: absolute;
+  left: 1%;
+  top: 53%;
+  margin-bottom: 4rem;
+}

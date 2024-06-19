@@ -1,0 +1,114 @@
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Edit Product
+    link(rel="stylesheet", href="../../../stylesheet/admin/createProduct.css")
+    script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+  body
+    .container
+      .main-content#mainContent
+        .left-section
+          .general-info
+            h2 Edit Product
+            label
+              | Product Name
+              input(type='text' id='name' name='name' value=`${product.name}` placeholder=`${product.name}`)
+              span#nameError
+            label
+              | Author Name
+              input(type='text' id='author' name='author' value=`${product.author}` placeholder=`${product.author}`)
+              span#authorError
+            label
+              | Description
+              textarea(id='description' name='description' placeholder=`${product.description}`)= product.description
+              span#descriptionError
+          .media
+            h2 Media
+            label(for='upload')
+              .image-placeholder
+                .image-preview
+                  each image in product.image
+                    .imgC(style="height=10px;")
+                      .removeImg remove
+                      img(src=`${image.substring(2)}`)
+                input(type='file' id='file-input' name='image' multiple)
+            #image-container(style='width:50px; display:flex;')
+            span#imageError
+          .pricing
+            h2 Pricing
+            label
+              | Base Price
+              input(type='text' id='price' name='price' style='padding-right:5px;' value=`${product.price}` placeholder=`${product.price}`)
+              span#priceError
+          .inventory
+            h2 Inventory
+            label
+              | Quantity
+              input(type='text' id='stockCount' name='stockCount' style='padding-right:5px;' value=`${product.stockCount}` placeholder=`${product.stockCount}`)
+              span#stockCountError
+
+        .right-section
+          .category
+            h2 Category
+            label
+              | Product Category
+              select#catSelect
+                option(value=`${product.category._id}` disabled selected)= product.category.name
+                each category in categories
+                  option(value=category._id)= category.name
+              #categoryError
+          .status
+            h2  Subcategory
+            label(for=`subcategory`)
+              | 
+              select.subcatSelect.category(id=`category`, name="subcategories")
+              #subCategoryError
+          .buttons
+            button.cancel Cancel
+            button#save-product(onclick="sendRequest()") Save Product
+            input#ss(type='hidden' value=subcategories)
+            input#productVal(type="hidden" value=product._id)
+
+    script.
+      function sendRequest() {
+          const productId = document.getElementById('productVal').value;
+          const name = document.getElementById('name').value;
+          const author = document.getElementById('author').value;
+          const description = document.getElementById('description').value;
+          const price = document.getElementById('price').value;
+          const stockCount = document.getElementById('stockCount').value;
+          const category = document.getElementById('catSelect').value;
+          //const subcategories = Array.from(document.getElementById('subcategory').selectedOptions).map(option => option.value);
+          const images = Array.from(document.getElementById('file-input').files);
+
+          const formData = new FormData();
+          formData.append('name', name);
+          formData.append('author', author);
+          formData.append('description', description);
+          formData.append('price', price);
+          formData.append('stockCount', stockCount);
+          formData.append('category', category);
+          //subcategories.forEach(subcategory => formData.append('subcategories', subcategory));
+          images.forEach(image => formData.append('image', image));
+
+          // Debugging: Log FormData entries
+          for (let pair of formData.entries()) {
+              console.log(pair[0]+ ', ' + pair[1]);
+          }
+
+          axios.patch(`/admin/products/${productId}/edit`, formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+          })
+          .then(response => {
+              console.log('Product updated successfully:', response.data);
+              alert('Product updated successfully!');
+              // Redirect or update the page as needed
+          })
+          .catch(error => {
+              console.error('There was an error updating the product:', error);
+              alert('Error updating product. Please try again.');
+          });
+      }

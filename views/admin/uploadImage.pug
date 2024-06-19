@@ -1,0 +1,22 @@
+html
+  head
+    title Image Upload Form
+
+  body
+    h1 Image Upload Form
+
+    form(action="/prouducts/:id/upload", method="post", enctype="multipart/form-data")
+      
+      label(for="images") Upload Images:
+      input(type="file", name="images", accept="image/*", multiple, required)
+
+      button(type="submit") Upload Product
+
+    // Display uploaded images (optional)
+    if images && images.length > 0
+      h2 Uploaded Images
+      each imagePath in images
+        img(src=imagePath, alt="Uploaded Image", style="max-width: 300px; margin: 10px;")
+
+    script.
+      // Add any client-side scripting if needed

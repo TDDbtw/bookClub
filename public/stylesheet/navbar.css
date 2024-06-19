@@ -1,0 +1,184 @@
+*{
+width:auto  ;
+}
+#navbar {
+  color: #fff;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 21.333px;
+  font-style: normal;
+
+  font-weight: 400;
+  line-height: 32px; /* 150% */
+}
+nav li {
+  list-style-type: none;
+  text-decoration: none;
+}
+.one {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 208px;
+  flex-shrink: 0;
+  /* background-color: #081c15; */
+  background-color: #142821;
+}
+/* .navUl{
+    display: flex;
+    justify-content: space-evenly;
+    
+} */
+.iconCont {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 2rem;
+
+  margin-right: 5rem;
+}
+
+/* input{
+    background: url("./Component\ 2.png") no-repeat scroll 7px 7px;
+padding-right:30px!important;
+margin-right: 2px;
+} */
+.navbar ul li a {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* navbar form and seach icon */
+
+nav form {
+  color: #555;
+  display: flex;
+  padding: 2px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  border-radius: 40px;
+  background: #b7b7b7;
+}
+nav input[type="search"] {
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 7px 8px;
+  font-size: 14px;
+  color: inherit;
+  border: 1px solid transparent;
+  border-radius: inherit;
+}
+
+nav input[type="search"]::placeholder {
+  color: #2a2828;
+}
+nav button[type="submit"] {
+  text-indent: -999px;
+  overflow: hidden;
+  width: 40px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+    no-repeat center;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+nav button[type="submit"]:hover {
+  opacity: 1;
+}
+
+#navbar .dropdown-menu {
+  background-color: #081c15;
+  width: 65vw;
+  padding: 7vh 2rem 2rem 2rem;
+  border-radius: 40px;
+  /* z-index: 6; */
+  /* position: absolute; */
+  margin-top: 6vh !important;
+}
+.dropdown .dropdown-toggle {
+  color: #fff;
+  font-weight: 500;
+  display: flex; /* Ensure horizontal layout */
+  align-items: center; /* Vertically center elements */
+  gap: 0.5rem;
+  /* Adjust spacing as needed */
+}
+
+.dropdown-menu .d-flex {
+  display: flex; /* Ensure horizontal layout */
+  align-items: center; /* Vertically center elements */
+  margin-bottom: 25px;
+  gap: 25px;
+
+  /* z-index: 100; */
+  /* Add spacing between items */
+}
+
+.dropD {
+  /* position: relative; */
+  display: flex;
+  justify-content: center;
+  /* background: #000; */
+
+  /* align-items: center; */
+}
+.dropD li {
+  /* margin: 2rem 2rem 2rem 2rem; */
+  margin-left: 2rem;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  /* row-gap: 4rem; */
+}
+.dropdownUl {
+  margin-top: auto;
+}
+
+.dropdownUl li {
+  /* background: yellow; */
+  margin-left: 6%;
+}
+.user-icon {
+  width: 24px;
+  height: 24px;
+  fill: #000;
+  cursor: pointer;
+}
+.profile-options {
+  position: absolute;
+  top: 85px;
+  right: 4;
+  background: #081c15;
+  border: 1px solid #143d0d;
+  z-index: 2;
+  padding: 10px;
+  display: none;
+}
+
+.profile-options.active {
+  background: #081c15;
+  display: block;
+}
+
+.profile-options a {
+  display: block;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #000;
+}
+
+.profile-options a:hover {
+  background-color: #081c1582;
+}
+.imgDiv{
+  width:20%;
+} 
+.sideImage{
+width:inderit;
+}

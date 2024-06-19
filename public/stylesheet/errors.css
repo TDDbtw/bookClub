@@ -1,0 +1,45 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500);
+
+body {
+  background-color: #081c15;
+  color: #fff;
+  font-size: 100%;
+  line-height: 1.5;
+  font-family: "Roboto", sans-serif;
+}
+
+.button {
+  font-weight: 300;
+  color: #fff;
+  font-size: 1.2em;
+  text-decoration: none;
+  border: 1px solid #efefef;
+  padding: 0.5em;
+  border-radius: 3px;
+  float: left;
+  margin: 6em 0 0 -155px;
+  left: 50%;
+  position: relative;
+  transition: all 0.3s linear;
+}
+
+.button:hover {
+  background-color: #11472781;
+  color: #fff;
+}
+
+p {
+  font-size: 2em;
+  text-align: center;
+  font-weight: 100;
+}
+
+h1 {
+  text-align: center;
+  font-size: 15em;
+  font-weight: 100;
+  text-shadow: #081c15 1px 1px, #0c291f 2px 2px, #0d251d 3px 3px,
+    #13362c 4px 4px, #245c45 5px 5px, #275f42 6px 6px, #204233 7px 7px,
+    #265f48 8px 8px, #284727 9px 9px, #195323 10px 10px, #1b4b23 11px 11px,
+    #2c4427 12px 12px, #355232 13px 13px, #395a3d 14px 14px, #415f41 15px 15px;
+}

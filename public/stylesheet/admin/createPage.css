@@ -1,0 +1,78 @@
+body {
+  background: linear-gradient(to right, #081c15, #0f332a, #122e25) !important;
+  color: #fff !important;
+}
+
+.userCreateHead {
+  /* margin-bottom: 30px !important;
+  text-align: center !important; */
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+
+.userCreateForm {
+  width: 70% !important;
+  margin: 0 auto !important;
+  padding: 30px !important;
+  background: linear-gradient(
+    to right,
+    #081c15,
+    #0d291f,
+    #16372a,
+    #1e4535
+  ) !important;
+  border-radius: 10px !important;
+}
+
+.userCreateLabel {
+  margin-bottom: 10px !important;
+  display: block !important;
+}
+
+.userCreateInput,
+.userCreateSelect {
+  width: 100% !important;
+  padding: 12px 20px !important;
+  margin: 8px 0 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  background-color: #081c1534 !important;
+  color: #ffffff !important;
+}
+
+.userEditOption {
+  background-color: #103b2ce2;
+  color: #ffffff;
+}
+
+.userCreateSelect {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='black'%3E%3Cpath d='M6 9L12 3L10.6 1.6 6 6.2 1.4 1.6 0 3l6 6z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position-x: calc(100% - 10px) !important;
+  background-position-y: center !important;
+}
+
+.userCreateInput:focus,
+.userCreateSelect:focus {
+  outline: none !important;
+  border-color: #6bae6b;
+}
+
+.userCreateButton[type="submit"] {
+  background-color: #55acee !important;
+  color: #fff !important;
+  padding: 12px 20px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease-in-out !important;
+}
+
+.userCreateButton:hover {
+  background-color: #3f86c7 !important;
+}

@@ -1,0 +1,21 @@
+.two
+  section.row.mt-4.px-5
+    each product in products
+      .cardCol.col-lg-4.col-md-4.col-sm-12.mb-5
+        .card#productCard(style="width: 410px; height: 752.094px; border-radius: 30.75px; opacity: 0.71; background: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(155deg, #266958 3.82%, rgba(34, 44, 41, 0.20) 76.99%)") 
+          .heart-icon(style="text-align: right; margin-top:26.67px;margin-right:25.3px;")
+            svg(xmlns="http://www.w3.org/2000/svg", width="34", height="34", viewBox="0 0 34 34", fill="none")
+              g(clip-path="url(#clip0_25_1073)")
+                path(d="M27.4152 17.4609L16.9985 27.7776L6.58185 17.4609C5.89478 16.7924 5.35358 15.9887 4.99234 15.1007C4.63109 14.2127 4.45763 13.2595 4.48288 12.3011C4.50812 11.3428 4.73152 10.4 5.13902 9.53225C5.54651 8.66447 6.12926 7.89047 6.85058 7.25898C7.5719 6.62748 8.41617 6.15218 9.3302 5.86301C10.2442 5.57383 11.2082 5.47704 12.1615 5.57873C13.1148 5.68042 14.0367 5.97839 14.8692 6.45388C15.7016 6.92936 16.4266 7.57206 16.9985 8.3415C17.5729 7.57765 18.2987 6.94056 19.1306 6.47012C19.9625 5.99968 20.8825 5.70602 21.8331 5.60751C22.7838 5.50899 23.7445 5.60775 24.6551 5.89761C25.5658 6.18746 26.4069 6.66216 27.1257 7.29201C27.8445 7.92186 28.4255 8.69329 28.8324 9.55802C29.2394 10.4228 29.4634 11.3622 29.4906 12.3175C29.5178 13.2728 29.3475 14.2234 28.9904 15.1099C28.6333 15.9964 28.097 16.7996 27.4152 17.4693", stroke="white", stroke-opacity="0.75", stroke-width="2.08333", stroke-linecap="round", stroke-linejoin="round")
+              defs
+                clipPath(id="clip0_25_1073")
+                  rect(width="33.3333", height="33.3333", fill="white", transform="translate(0.332031)")
+          img.card-image(src=image, style='width:177.734px; margin-top: 84.56px; margin-left: auto; margin-right: auto; display: block;')
+
+        p.card-price $19.99
+
+        ul
+          each spec in product.specifications
+            li= spec
+
+        button.card-button#card-button(type='button', style='margin-left:auto;margin-right:auto;background: linear-gradient(110deg, rgba(0, 128, 255, 0.99) 21.02%, rgba(0, 64, 128, 0.90) 73.51%); width: 371.562px; height: 49.969px; border-radius: 34.59px;') Buy Now

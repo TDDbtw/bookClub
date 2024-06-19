@@ -1,0 +1,67 @@
+.cardCol.col-md-4.col-sm-12.mb-5
+  #productCard.card.text-white(onclick="PDP()" disabled)
+    if product.stockCount<0 || !product.status
+      .card-img-overlay(style='background-color: rgba(0, 0, 0, 0.733); border-radius: 30.75px;')
+        .out-of-stock-overlay Sorry, this product is out of stock.
+    a(href=`/products/${product._id}`)
+      .heart-icon(style="text-align: right; margin-top:26.67px;margin-right:25.3px;", href=`/products/${product._id}`)
+        svg(xmlns="http://www.w3.org/2000/svg", width="34", height="34", viewBox="0 0 34 34", fill="none")
+          a(href=`/products/${product._id}`)
+          g(clip-path="url(#clip0_25_1073)")
+            path(d="M27.4152 17.4609L16.9985 27.7776L6.58185 17.4609C5.89478 16.7924 5.35358 15.9887 4.99234 15.1007C4.63109 14.2127 4.45763 13.2595 4.48288 12.3011C4.50812 11.3428 4.73152 10.4 5.13902 9.53225C5.54651 8.66447 6.12926 7.89047 6.85058 7.25898C7.5719 6.62748 8.41617 6.15218 9.3302 5.86301C10.2442 5.57383 11.2082 5.47704 12.1615 5.57873C13.1148 5.68042 14.0367 5.97839 14.8692 6.45388C15.7016 6.92936 16.4266 7.57206 16.9985 8.3415C17.5729 7.57765 18.2987 6.94056 19.1306 6.47012C19.9625 5.99968 20.8825 5.70602 21.8331 5.60751C22.7838 5.50899 23.7445 5.60775 24.6551 5.89761C25.5658 6.18746 26.4069 6.66216 27.1257 7.29201C27.8445 7.92186 28.4255 8.69329 28.8324 9.55802C29.2394 10.4228 29.4634 11.3622 29.4906 12.3175C29.5178 13.2728 29.3475 14.2234 28.9904 15.1099C28.6333 15.9964 28.097 16.7996 27.4152 17.4693", stroke="#b4ffff", stroke-opacity="0.75", stroke-width="2.08333", stroke-linecap="round", stroke-linejoin="round")
+        defs
+          clipPath(id="clip0_25_1073")
+            rect(width="33.3333", height="33.3333", fill="white", transform="translate(0.332031)")
+    img.card-image(onclick=`window.location.href='/products/${product._id}'` src=product.image[0] || 'default-image.jpg',href=`/products/${product._id}`, alt='Product Image', style='width:177.734px ; height: 272.906px; margin-top: 84.56px; margin-left: auto; margin-right: auto; display: block;')
+    h5.mx-5.mt-3.card-title(style="color:lightblue; ") #{product.name}
+    //- Assuming product is a variable in your template
+    p#productId(type="hidden", value=product.id)
+    p.author.mx-5 #{product.author}
+    p.card-price.mx-5 $#{product.price}
+    //ul
+      each spec in product.specifications
+        li.mx-4= `${spec.name}: ${spec.value}`
+    form(action=`/cart/add`, method="POST")
+      input(type="hidden", name="productId", value=product.id)
+      input( type="hidden", name="image", value=product.image[0])
+      input(type="hidden", name="name", value=product.name)
+      input(type="hidden", name="productPrice", value=product.price)
+      input(type="hidden", name="description", value=product.description)
+      //- input(type="hidden", name="category", value=product.category.name)
+      input(type="hidden", name="quantity", value=1)
+      if user
+        input(type="hidden", name="user" value=`${user.id}`)
+      //- button#addToCart.ms-3(type="submit")
+      button.card-button.ms-3(type='submit' style="color:#b4ffff;" ) Add to Cart
+       svg.icon.icon-tabler.icon-tabler-arrow-narrow-right(xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' stroke-width='1' stroke='#b4ffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
+        path(stroke='none' d='M0 0h24v24H0z' fill='none')
+        path(d='M5 12l14 0')
+        path(d='M15 16l4 -4')
+        path(d='M15 8l4 4')
+style.
+  .out-of-stock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  //- background-color: rgba(0, 0, 0, 0.5);
+  color:#912727;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  margin-top:40rem;
+  }
+  .card-price{
+  color: gold; /* Gold text color */
+  font-size: 18px; /* Adjust font size as needed */
+  font-weight: bold; /* Make the text bold for emphasis */
+
+  }
+script.
+  function PDP() {
+  window.location.href = `/products/${product._id}`;
+  }
+  
+

@@ -1,0 +1,234 @@
+include ../partials/sidemenu
+#content-wrapper
+  link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
+  //- link(rel="stylesheet", href="../../stylesheet/admin/table.css")
+  script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous")
+  //- script(defer src="../../script/admin/panel.js") 
+  .container-fluid#containerFluid
+    script(src='../../script/admin/Chart.js/Chart.min.js')
+    script(src='../../script/admin/index.js')
+    .card.mt-3
+      .card-content
+        .row.row-group.m-0#tempRow
+          .col-12.col-lg-6.col-xl-3.border-light
+            .card-body
+              h5.text-white.mb-0
+                | 9526 
+                span.float-right
+                  i.fa.fa-shopping-cart
+              .progress.my-3(style='height:3px;')
+                .progress-bar(style='width:55%')
+              p.mb-0.text-white.small-font
+                | Total Orders 
+                span.float-right
+                  | +4.2% 
+                  i.zmdi.zmdi-long-arrow-up
+          .col-12.col-lg-6.col-xl-3.border-light
+            .card-body
+              h5.text-white.mb-0
+                | 8323 
+                span.float-right
+                  i.fa.fa-usd
+              .progress.my-3(style='height:3px;')
+                .progress-bar(style='width:55%')
+              p.mb-0.text-white.small-font
+                | Total Revenue 
+                span.float-right
+                  | +1.2% 
+                  i.zmdi.zmdi-long-arrow-up
+          .col-12.col-lg-6.col-xl-3.border-light
+            .card-body
+              h5.text-white.mb-0
+                | 6200 
+                span.float-right
+                  i.fa.fa-eye
+              .progress.my-3(style='height:3px;')
+                .progress-bar(style='width:55%')
+              p.mb-0.text-white.small-font
+                | Visitors 
+                span.float-right
+                  | +5.2% 
+                  i.zmdi.zmdi-long-arrow-up
+          .col-12.col-lg-6.col-xl-3.border-light
+            .card-body
+              h5.text-white.mb-0
+                | 5630 
+                span.float-right
+                  i.fa.fa-envira
+              .progress.my-3(style='height:3px;')
+                .progress-bar(style='width:55%')
+              p.mb-0.text-white.small-font
+                | Messages 
+                span.float-right
+                  | +2.2% 
+                  i.zmdi.zmdi-long-arrow-up
+    .row#tempRow
+      .col-12.col-lg-8.col-xl-8
+        .card
+          .card-header
+            | Site Traffic
+            .card-action
+              .dropdown
+                a.dropdown-toggle.dropdown-toggle-nocaret(href='javascript:void();' data-toggle='dropdown')
+                  i.icon-options
+                .dropdown-menu.dropdown-menu-right
+                  a.dropdown-item(href='javascript:void();') Action
+                  a.dropdown-item(href='javascript:void();') Another action
+                  a.dropdown-item(href='javascript:void();') Something else here
+                  .dropdown-divider
+                  a.dropdown-item(href='javascript:void();') Separated link
+          .card-body
+            ul.list-inline
+              li.list-inline-item
+                i.fa.fa-circle.mr-2.text-white
+                | New Visitor
+              li.list-inline-item
+                i.fa.fa-circle.mr-2.text-light
+                | Old Visitor
+            .chart-container-1
+              canvas#chart1
+          .row#tempRow.m-0.row-group.text-center.border-top.border-light-3
+            .col-12.col-lg-4
+              .p-3
+                h5.mb-0 45.87M
+                small.mb-0
+                  | Overall Visitor 
+                  span
+                    i.fa.fa-arrow-up
+                    |  2.43%
+            .col-12.col-lg-4
+              .p-3
+                h5.mb-0 15:48
+                small.mb-0
+                  | Visitor Duration 
+                  span
+                    i.fa.fa-arrow-up
+                    |  12.65%
+            .col-12.col-lg-4
+              .p-3
+                h5.mb-0 245.65
+                small.mb-0
+                  | Pages/Visit 
+                  span
+                    i.fa.fa-arrow-up
+                    |  5.62%
+      .col-12.col-lg-4.col-xl-4
+        .card
+          .card-header
+            | Weekly sales
+            .card-action
+              .dropdown
+                a.dropdown-toggle.dropdown-toggle-nocaret(href='javascript:void();' data-toggle='dropdown')
+                  i.icon-options
+                .dropdown-menu.dropdown-menu-right
+                  a.dropdown-item(href='javascript:void();') Action
+                  a.dropdown-item(href='javascript:void();') Another action
+                  a.dropdown-item(href='javascript:void();') Something else here
+                  .dropdown-divider
+                  a.dropdown-item(href='javascript:void();') Separated link
+          .card-body
+            .chart-container-2
+              canvas#chart2
+          .table-responsive
+            table.table.align-items-center
+              tbody
+                tr
+                  td
+                    i.fa.fa-circle.text-white.mr-2
+                    |  Direct
+                  td $5856
+                  td +55%
+                tr
+                  td
+                    i.fa.fa-circle.text-light-1.mr-2
+                    | Affiliate
+                  td $2602
+                  td +25%
+                tr
+                  td
+                    i.fa.fa-circle.text-light-2.mr-2
+                    | E-mail
+                  td $1802
+                  td +15%
+                tr
+                  td
+                    i.fa.fa-circle.text-light-3.mr-2
+                    | Other
+                  td $1105
+                  td +5%
+    //- // End Row
+    .row#tempRow
+      .col-12.col-lg-12
+        .card
+          .card-header
+            | Recent Order Tables
+            .card-action
+              .dropdown
+                a.dropdown-toggle.dropdown-toggle-nocaret(href='javascript:void();' data-toggle='dropdown')
+                  i.icon-options
+                .dropdown-menu.dropdown-menu-right
+                  a.dropdown-item(href='javascript:void();') Action
+                  a.dropdown-item(href='javascript:void();') Another action
+                  a.dropdown-item(href='javascript:void();') Something else here
+                  .dropdown-divider
+                  a.dropdown-item(href='javascript:void();') Separated link
+          .table-responsive
+            table.table.align-items-center.table-flush.table-borderless
+              thead
+                tr
+                  th Product
+                  th Photo
+                  th Product ID
+                  th Amount
+                  th Date
+                  th Shipping
+              tbody
+                each product in products.slice(0, 5)
+                  tr
+                    td  #{product.name}
+                    td
+                      img(src=product.image && product.image[0], alt="Product image", class="img-thumbnail" width="70" )
+                    td #{product._id}
+                    td #{product.price.toFixed(2)}
+                    td 22 jan
+                    td done
+                    //- .progress.shadow(style='height: 3px;')
+                      .progress-bar(role='progressbar' style='width: 100%')
+    //- // End Row
+    //- // End Dashboard Content
+    //- // start overlay
+    .overlay.toggle-menu
+//-     // end overlay
+//-     // End container-fluid
+//- // End content-wrapper
+//- // Start Back To Top Button
+a.back-to-top(href='javaScript:void();')
+  i.fa.fa-angle-double-up
+//- // End Back To Top Button
+//- // Start footer
+.right-sidebar
+  .switcher-icon
+    i.zmdi.zmdi-settings.zmdi-hc-spin
+  .right-sidebar-content
+    p.mb-0 Gaussion Texture
+    hr
+    ul.switcher
+      li#theme1
+      li#theme2
+      li#theme3
+      li#theme4
+      li#theme5
+      li#theme6
+    p.mb-0 Gradient Background
+    hr
+    ul.switcher
+      li#theme7
+      li#theme8
+      li#theme9
+      li#theme10
+      li#theme11
+      li#theme12
+      li#theme13
+      li#theme14
+      li#theme15

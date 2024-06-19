@@ -1,0 +1,92 @@
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Edit Product
+    link(rel="stylesheet", href="../../../stylesheet/admin/createProduct.css")
+  body
+    .container
+      .main-content#mainContent
+        .left-section
+          .general-info
+            h2 General Information
+            label
+              | Product Name
+              input(type='text' id='name' name='name' )
+              span#nameError
+            label
+              | Author Name
+              input(type='text' id='author' name='author' )
+              span#authorError
+            label
+              | Description
+              textarea(id='description' name='description' placeholder="Enter the description of the product" )
+                |  
+              span#descriptionError
+          .media
+            h2 Media
+            label(for='upload')
+              .image-placeholder
+                .image-preview
+                  span &check;
+                  span &check;
+                  span &check;
+                span Drag and drop image here, or click add image
+                input(type='file' id='file-input' name='image'  multiple ) 
+            #image-container(style='width:50px; display:flex;')
+            span#imageError
+          .pricing
+            h2 Pricing
+            label
+              | Base Price
+              input(type='text' id='price' name='price' style='padding-right:5px;')
+              span#priceError
+          .inventory
+            h2 Inventory
+            label
+              | Quantity
+              input(type='text' id='stockCount' name='stockCount' style='padding-right:5px;')
+              span#stockCountError
+
+        .right-section
+          .category
+            h2 Category
+            label
+              | Product Category
+              select#catSelect
+                option(value='' disabled selected) Select a category
+                each category in categories
+                  option(value=category._id)= category.name
+              #categoryError
+          .status
+            h2  Subcategory
+            label(for=`subcategory`)
+              | 
+              select.subcatSelect.category(id=`category`, name="subcategories")
+              #subCategoryError
+          .buttons
+            button.cancel Cancel
+            button#save-product Save Product
+            input#ss(type='hidden' value=subcategories)
+    script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+    script.
+      document.getElementById('file-input').addEventListener('change', function() {
+        const imageContainer = document.getElementById('image-container');
+        imageContainer.innerHTML = ''; // Clear previous images
+        if (this.files) {
+          for (let file of this.files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.className = 'uploaded-image';
+              img.style.width = '92px'
+              imageContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      });
+
+    script( src='../../../../script/admin/productValidation.js')
+    script(defer src='../../../../script/admin/addProductG.js')

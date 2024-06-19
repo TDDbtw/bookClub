@@ -1,0 +1,48 @@
+/*.container{ 
+    font-family: sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+*/ 
+body{
+
+    background-color: #081c15;
+  } 
+.container {
+    max-width: 50vw;
+    margin: 0 auto;
+    margin-top:10vh;
+    background-color: #f2f2f2;
+    padding: 30px;
+    border-radius: 5px;
+    //padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    //margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+
+}
+
+h1 {
+    color: gold;
+}
+
+#order-number {
+    font-weight: bold;
+}
+
+#order-summary {
+    list-style: none;
+    padding: 0;
+}
+
+.track-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+}

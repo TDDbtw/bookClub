@@ -1,0 +1,96 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    // Bootstrap CSS
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+    link(rel="stylesheet", href="../stylesheet/product.css")
+  body
+    .twoItems
+      .one
+        .container#sidebarContainer
+          #sidebarAccordion.sidebar(style=" background-color: #000; color: #fff;")
+            .card
+              .card-header#categoriesHeading
+                h2.mb-0
+                  button.btn.btn-link(type="button", data-toggle="collapse", data-target="#categoriesCollapse", aria-expanded="true", aria-controls="categoriesCollapse")
+                    | CATEGORIES
+
+              #categoriesCollapse.collapse.show(aria-labelledby="categoriesHeading", data-parent="#sidebarAccordion")
+                .card-body
+                  ul.list-unstyled
+                    li All Products
+                    li SFX Power Supplies (PSUs)
+                    li ATX Power Supplies (PSUs)
+
+            .card
+              .card-header#modularHeading
+                h2.mb-0
+                  button.btn.btn-link(type="button", data-toggle="collapse", data-target="#modularCollapse", aria-expanded="false", aria-controls="modularCollapse")
+                    | MODULAR
+
+              #modularCollapse.collapse(aria-labelledby="modularHeading", data-parent="#sidebarAccordion")
+                .card-body
+                  ul.list-unstyled
+                    li Fully (37)
+                    li No (16)
+                    li Semi (10)
+                    li Fully Modular (4)
+                    li Yes ②
+
+            .card
+              .card-header#efficiencyHeading
+                h2.mb-0
+                  button.btn.btn-link(type="button", data-toggle="collapse", data-target="#efficiencyCollapse", aria-expanded="false", aria-controls="efficiencyCollapse")
+                    | 80 PLUS EFFICIENCY
+
+              #efficiencyCollapse.collapse(aria-labelledby="efficiencyHeading", data-parent="#sidebarAccordion")
+                .card-body
+                  ul.list-unstyled
+                    li Gold (40)
+                    li Bronze (18)
+                    li Platinum (13)
+                    li White ③
+
+            .card
+              .card-header#powerHeading
+                h2.mb-0
+                  button.btn.btn-link(type="button", data-toggle="collapse", data-target="#powerCollapse", aria-expanded="false", aria-controls="powerCollapse")
+                    | CONTINUOUS POWER W
+
+              #powerCollapse.collapse(aria-labelledby="powerHeading", data-parent="#sidebarAccordion")
+                .card-body
+                  ul.list-unstyled
+                    li 750 Watts (16)
+                    li 850 Watts (15)
+                    li 650 Watts (12)
+                    li 1000 Watts (10)
+                    li 550 Watts (7)
+      .two
+        section.row.mt-4.px-5
+          each product in products
+            .cardCol.col-md-4.col-sm-12.mb-5
+              .card(style="width: 410px; height: 752.094px; border-radius: 30.75px; opacity: 0.71; background: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(155deg, #266958 3.82%, rgba(34, 44, 41, 0.20) 76.99%)")
+                .heart-icon(style="text-align: right; margin-top:26.67px; margin-right:25.3px; ")
+                  svg(xmlns="http://www.w3.org/2000/svg", width="34", height="34", viewBox="0 0 34 34", fill="none")
+                    g(clip-path="url(#clip0_25_1073)")
+                      path(d="M27.4152 17.4609L16.9985 27.7776L6.58185 17.4609C5.89478 16.7924 5.35358 15.9887 4.99234 15.1007C4.63109 14.2127 4.45763 13.2595 4.48288 12.3011C4.50812 11.3428 4.73152 10.4 5.13902 9.53225C5.54651 8.66447 6.12926 7.89047 6.85058 7.25898C7.5719 6.62748 8.41617 6.15218 9.3302 5.86301C10.2442 5.57383 11.2082 5.47704 12.1615 5.57873C13.1148 5.68042 14.0367 5.97839 14.8692 6.45388C15.7016 6.92936 16.4266 7.57206 16.9985 8.3415C17.5729 7.57765 18.2987 6.94056 19.1306 6.47012C19.9625 5.99968 20.8825 5.70602 21.8331 5.60751C22.7838 5.50899 23.7445 5.60775 24.6551 5.89761C25.5658 6.18746 26.4069 6.66216 27.1257 7.29201C27.8445 7.92186 28.4255 8.69329 28.8324 9.55802C29.2394 10.4228 29.4634 11.3622 29.4906 12.3175C29.5178 13.2728 29.3475 14.2234 28.9904 15.1099C28.6333 15.9964 28.097 16.7996 27.4152 17.4693", stroke="white", stroke-opacity="0.75", stroke-width="2.08333", stroke-linecap="round", stroke-linejoin="round")
+                    defs
+                      clipPath(id="clip0_25_1073")
+                        rect(width="33.3333", height="33.3333", fill="white", transform="translate(0.332031)")
+                img.card-image(src=product.image[0] || 'default-image.jpg', alt='Product Image', href=`/products/${product._id}`,style='width: 333.125px; height: 272.906px; margin-top: 84.56px; margin-left: auto; margin-right: auto; display: block;')
+                h6.display-5.mx-4 #{product.name}
+                p.card-price.mx-4 #{product.price}
+
+                ul
+                  each spec in product.specifications
+                    li= `${spec.name}: ${spec.value}`
+
+                button.card-button(type='button',style='margin-left:auto;margin-right:auto;background: linear-gradient(110deg, rgba(0, 128, 255, 0.99) 21.02%, rgba(0, 64, 128, 0.90) 73.51%); width: 371.562px; height: 49.969px; border-radius: 34.59px;') Buy Now
+                a(href=`/products/${product._id}`) Click
+
+      // Bootstrap JS and jQuery (required for Bootstrap functionality)
+      script(src="//https://code.jquery.com/jquery-3.5.1.slim.min.js")
+      script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js")
+      script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")

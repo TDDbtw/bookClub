@@ -1,0 +1,37 @@
+include ../../partials/navbar
+block rest
+  .mainC.d-flex
+    .imgDiv
+      img(src="../imgs/pic.png", alt="", srcset="")
+    .signup-form-container.text-white
+      h2.signUp-Head Sign Up
+      form#signUpForm.signUpForm.px-5(action="/auth/signup", method="POST")
+        label(for="name") Full Name *
+        input#name.form-input(type="text", name="name",oninput='validateName()' ,placeholder="Enter Your Full Name..", required)
+        span#nameError
+        label(for="email") E-mail *
+        input#email.form-input(type="email", name="email",oninput='validateEmail()', placeholder="Enter Your E-mail..", required)
+        span#emailError
+        label(for="password") Password *
+        input#password.form-input(type="password", name="password" oninput='validatePassword()', placeholder="Enter your password ..", required)
+        span#passwordError
+        span#show.ms-3
+          input.d-block(type=`checkbox` onclick=(`showConPwd()`))
+          span Show password
+        label(for="confirm password") Confirm Password *
+        input#confirmPassword.form-input(type="password", name="confirmPassword",oninput='validateConfirmPassword()' placeholder="Enter your password again..", required)
+        span#confirmPasswordError
+        span.text-danger.ms-3#errorMessage
+        button#formButton.transition-3d-hover(type="submit") Create Account
+      p OR
+      //- button#googleButton(type="submit") Login With Google
+      a.signUp-text.text-white.text-decoration-none(href="/auth/login")
+        | Already have an account?
+
+    link(rel="stylesheet", href="../../stylesheet/user/signUpForm.css") 
+    script(src="https://cdn.jsdelivr.net/npm/sweetalert2@10") 
+    script(src="../../script/validation.js") 
+ 
+
+
+

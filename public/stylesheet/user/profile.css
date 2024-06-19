@@ -1,0 +1,253 @@
+@font-face {
+  font-family: "PlutoCondBlack";
+  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff2")
+      format("woff2"),
+    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff")
+      format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #081c15 !important;
+}
+
+.my-account {
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  height: 80vh;
+}
+
+.my-account-title {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.my-account-menu {
+  float: left;
+  width: 20%;
+  margin-right: 20px;
+}
+
+.my-account-menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.my-account-menu li {
+  margin-bottom: 10px;
+}
+
+.my-account-menu a {
+  align-self: center;
+  /* background: red; */
+  /* margin-left: 2rem; */
+  display: block;
+  padding: 5px;
+  text-decoration: none;
+  color: #000;
+  transition: border-color 0.3s ease-in-out; /* Smooth transition for border color */
+}
+
+.my-account-menu a:hover {
+  background-color: #0e4935a3;
+  /* border-right: 4px solid #003366; */
+  /* background: linear-gradient(to right, #5c3a0c, #c99a5f); */
+  /* background: linear-gradient(to right, #6e6962, #d7cfcc); */
+  /* background: linear-gradient(to right, #2c2c54, #6a0572); */
+  background: linear-gradient(to right, #b71540, #e55039);
+  background: linear-gradient(to right, #b715406b, #e5503962);
+
+  /* background: linear-gradient(to right, #5d0a3a, #9a031e); */
+}
+
+.my-account-content {
+  float: left;
+  width: 80%;
+  background: #000;
+}
+
+/* Custom styling */
+
+.my-account-menu {
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+
+  color: #fff;
+  padding: 10px;
+}
+
+.my-account-menu a {
+  font-size: 22px;
+  color: #fff;
+}
+
+body {
+  font-family: "Helvetica", "Arial", sans-serif;
+}
+#accContainer {
+  /* width: 100%; */
+  height: 100vh;
+  /* max-width: 1170px; */
+  /* padding: 20px; */
+}
+.account-information {
+  /* background-color: #f9f9f9; */
+  /* background-color: #0e4935a3; */
+  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
+  color: white;
+
+  padding: 20px;
+}
+.account-information-header {
+  border-bottom: 1px solid #538d49;
+  padding-bottom: 20px;
+}
+.account-information-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+h1 {
+  font-family: "PlutoCondBlack";
+  font-weight: 300;
+  line-height: 1.1;
+  font-size: 4rem;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  color: #cac5c5;
+}
+.page-title-wrapper .page-title {
+  display: inline-block;
+}
+
+.page-title-wrapper .page-title {
+  margin-right: 25px;
+}
+.account-information-links {
+  color: #468847;
+  /* display: flex-box; */
+}
+.account-information-link {
+  margin-left: 2px;
+  color: #007d99;
+  padding-bottom: 10px;
+  text-decoration: none;
+}
+
+.account-information-body {
+  padding-top: 20px;
+}
+.account-information-section {
+  border-bottom: 1px solid #538d49;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.account-information-section-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.account-information-section-content {
+  padding-top: 10px;
+}
+.account-information-form {
+  padding-top: 20px;
+}
+.account-information-form-group {
+  margin-bottom: 20px;
+}
+.account-information-form-label {
+  font-size: 14px;
+  font-weight: bold;
+}
+.account-information-form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 3px;
+}
+.account-information-form-button {
+  background-color: #337ab7;
+  color: #fff;
+  padding: 10px 20px;
+  border: 1px solid #337ab7;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.account-information-form-button:hover {
+  background-color: #286090;
+}
+.account-information-message {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 3px;
+}
+.account-information-message-success {
+  color: #468847;
+  background-color: #dff0d8;
+}
+.account-information-message-error {
+  color: #d9534f;
+  background-color: #ffcdd2;
+}
+
+.address-information-links {
+  position: relative;
+  left: 60%;
+  top: -40px;
+}
+#editAddress {
+  color: #007d99;
+}
+#editAddressBtn,
+#manageAddressBtn {
+  /* background: linear-gradient(to right, #081c15, #0d291f, #16372a); */
+  color: #fff; /* Set text color to white or another contrasting color */
+  padding: 10px 20px; /* Adjust padding as needed */
+  border: none; /* Remove border or customize as needed */
+  border-radius: 5px; /* Add border-radius for rounded corners if desired */
+  cursor: pointer; /* Add a pointer cursor for better user experience */
+
+  /* Define color styles for the button */
+  background-color: #007d99;
+  background-color: #5c3b6f;
+  background-color: #134433;
+  &.color1 {
+  }
+  &.color2 {
+  }
+  &.color3 {
+  }
+  &.color4 {
+  }
+  &.color5 {
+  }
+  &.color6 {
+  }
+  &.color7 {
+  }
+  &.color8 {
+  }
+  &.color9 {
+  }
+  &.color10 {
+  }
+}
+#profile-photo-preview{
+width:6vw;
+
+}
+#avatar{
+border-radius: 50%; 
+height:6rem;
+
+}
+.page-title-wrapper{
+display:flex;
+justify-content:space-between;
+}
