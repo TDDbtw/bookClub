@@ -18,94 +18,93 @@ let userVar = ""
 
 
 const loadEditProduct = asyncHandler(async (req, res, next) => {
-    const product = await Products.findById(req.params.id)
-      .populate("category", "name") // Populate category name
-      .populate("subcategories", "name") // Populate subcategory names
-      .exec();
+  const product = await Products.findById(req.params.id)
+    .populate("category", "name") // Populate category name
+    .populate("subcategories", "name") // Populate subcategory names
+    .exec();
+  const categories = await Categories.find();
 
-    const categories = await Categories.find();
+  const subcategories = await Subcategories.find()
+    .populate("category", "name")
+    .exec();
 
-    const subcategories = await Subcategories.find()
-      .populate("category", "name")
-      .exec();
+  req.productId = req.params.id;
 
-    req.productId = req.params.id;
-
-    res.render("./admin/productEditG", {
-      product,
-      categories,
-      subcategories,
-      name: "Edit Product",
-    });
+  res.render("./admin/productEditG", {
+    product,
+    categories,
+    subcategories,
+    name: "Edit Product",
+  });
 
 
 })
 
 const addProduct = asyncHandler(async (req, res, next) => {
 
-upload.fields([{ name: "image", maxCount: 10 }])(req, res, async (err) => {
+  upload.fields([{ name: "image", maxCount: 10 }])(req, res, async (err) => {
     if (err) {
       return res.status(500).json({ error: err });
     }
 
     const imagePaths = getImagePathsFromRequest(req);
-console.log(`image path is${imagePaths}`)
-      const newProduct = await Products.create({
-        name: "Product", 
-        description: "this and that",
-        price: 22,
-        stockCount: 22,
-        image: imagePaths, 
-        // ... other fields you want to set by default ...
-      });
+    console.log(`image path is${imagePaths}`)
+    const newProduct = await Products.create({
+      name: "Product", 
+      description: "this and that",
+      price: 22,
+      stockCount: 22,
+      image: imagePaths, 
+      // ... other fields you want to set by default ...
+    });
 
-      console.log("New product created:", newProduct); 
-      res.redirect("/admin/products");
+    console.log("New product created:", newProduct); 
+    res.redirect("/admin/products");
 
   })
 })
 
 const loadProductList = asyncHandler(async (req, res, next) => {
-    const products = await Products.find()
-      .populate("category", "name") 
-      .populate("subcategories", "name") 
-      .exec();
+  const products = await Products.find()
+    .populate("category", "name") 
+    .populate("subcategories", "name") 
+    .exec();
 
-    const totalCount = await Products.countDocuments();
-    const active = await Products.countDocuments({ status: true });
+  const totalCount = await Products.countDocuments();
+  const active = await Products.countDocuments({ status: true });
 
-    res.render("./admin/productList", {
-      totalCount,
-      active,
-      products,
-      name: "Product List",
-    });
+  res.render("./admin/productList", {
+    totalCount,
+    active,
+    products,
+    name: "Product List",
+  });
 })
 const loadCreateProduct = asyncHandler(async (req, res, next) => {
 
-    const categories = await Categories.find();
-    const subcategories = await Subcategories.find()
-      .populate("category", "name")
-      .exec();
+  const categories = await Categories.find();
+  const subcategories = await Subcategories.find()
+    .populate("category", "name")
+    .exec();
 
-    res.render("./admin/createProductG", {
-      categories,
-      subcategories,
-      name: "Create Product",
-    });
+  res.render("./admin/createProductG", {
+    categories,
+    subcategories,
+    name: "Create Product",
+  });
 
 
 
 })
 const createProduct = asyncHandler(async (req, res, next) => {
 
-    const existingProduct = await Products.findOne({ name: req.body.name });
+  const existingProduct = await Products.findOne({ name: req.body.name });
 
-    if (existingProduct) {
-      return next(
-        new ErrorResponse(`Product with the same name already exists`, 403)
-      );
-    }
+  if (existingProduct) {
+    return next(
+      new ErrorResponse(`Product with the same name already exists`, 403)
+    );
+  }
 
 
   // file
@@ -163,22 +162,22 @@ const getProducts = asyncHandler(async (req, res, next) => {
 
   // Sending JSON response
   // res.status(200).json({
-  //   success: true,
-  //   count: products.length,
-  //   data: products,
-  // })
+    //   success: true,
+    //   count: products.length,
+    //   data: products,
+    // })
   res.redirect("/admin/products")
 })
 
 ///////////////
-// const createProducts = asyncHandler(async (req, res, next) => {
-//   console.log(req.body)
-//   const products = await Products.create(req.body)
-//   res.status(201).json({
-//     success: true,
-//     data: products,
-//   })
-// })
+  // const createProducts = asyncHandler(async (req, res, next) => {
+    //   console.log(req.body)
+    //   const products = await Products.create(req.body)
+    //   res.status(201).json({
+      //     success: true,
+      //     data: products,
+      //   })
+    // })
 
 //  @desc     Update product
 //  @routes PUT  /products/:id/edit
@@ -186,7 +185,7 @@ const getProducts = asyncHandler(async (req, res, next) => {
 //////////////////////////////////////////////////////////////////////////////
   //
 
-const updateProducts = asyncHandler(async (req, res, next) => {
+  const updateProducts = asyncHandler(async (req, res, next) => {
 
     const productId = req.params.id;
     const existingProduct = await Products.findById(productId);
@@ -194,9 +193,19 @@ const updateProducts = asyncHandler(async (req, res, next) => {
     if (!existingProduct) {
       return res.status(404).json({ error: "Product not found" });
     }
-    const updatedProductData = { ...req.body }; // Create a copy of req.body
+   console.log(`${req.body}`) 
+    const updatedProductData = {
+      name: req.body.name,
+      price: req.body.price,
+      description: req.body.description,
+      author:req.body.author,
+      stockCount:req.body.stockCount,
+      category:req.body.category,
 
-console.log(req.formData)
+    }; // Create a copy of req.body
+
+
+    console.log(updatedProductData)
     // Handle status toggle
     if (req.body.status) {
       updatedProductData.status =
@@ -213,30 +222,30 @@ console.log(req.formData)
 
     res.json({ success: true });
 
-})
+  })
 
 
 const updateImage = asyncHandler(async (req, res, next) => {
-    const imageName = req.params.imageIndex;
+  const imageName = req.params.imageIndex;
   // const imagePath = path.join(__dirname, 'public/uploads', imageName);
-const item=await Products.findById(req.productId)
+  const item=await Products.findById(req.productId)
   // fs.unlink(imagePath, (err) => {
-  //   if (err) {
-  //     console.error('Error deleting image:', err);
-  //     return res.status(500).json({ error: 'Error deleting image' });
-  //   }
-  //   res.status(200).json({ message: 'Image deleted successfully' });
-  // });
+    //   if (err) {
+      //     console.error('Error deleting image:', err);
+      //     return res.status(500).json({ error: 'Error deleting image' });
+      //   }
+    //   res.status(200).json({ message: 'Image deleted successfully' });
+    // });
 
-console.log(`${item}`)
-  
+  console.log(`${item}`)
+
 })
 //////////////////////////////////////////////////////////////////////////////
 
-//  @desc     Delete one product
+  //  @desc     Delete one product
 
 //  @routes delete /products/:id/delete
-//  @access private
+  //  @access private
 
 const deleteProducts = asyncHandler(async (req, res, next) => {
   try {
@@ -259,7 +268,7 @@ const deleteProducts = asyncHandler(async (req, res, next) => {
 const getSearchProducts = asyncHandler(async (req, res, next) => {
   let query = {}
   // if (req.query.search) {
-  // }
+    // }
   const products = await Products.find({
     name: { $regex: req.query.search, $options: "i" },
   })

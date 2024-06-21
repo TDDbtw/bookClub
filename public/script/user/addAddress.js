@@ -238,8 +238,9 @@ validateZip()
           async function removeAddress() {
               const addressIdElement = document.getElementById("addressInput");
               const userId = document.getElementById("userInput").value;
+            let addressId=undefined
             if(addressIdElement.getAttribute('value')){
-              const addressId = addressIdElement.getAttribute('value');
+               addressId = addressIdElement.getAttribute('value');
           }
               console.log(`user is ${userId}`);
 

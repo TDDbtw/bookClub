@@ -115,6 +115,7 @@ router
   .post(protect, admin,catImg.single("image"), createCategory)
 
   router.route("/category/:id/edit").patch(protect, admin,catImg.single("image"), updateCategoryById)
+  router.route("/category/:id/delete").delete(protect,admin, updateCategoryById)
 // Oreder route
 // Get All Orders
 router.route("/orders").get(protect, admin, getAdminOrderList)

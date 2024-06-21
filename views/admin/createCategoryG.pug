@@ -30,7 +30,7 @@ link(rel="stylesheet", href="../../../stylesheet/admin/category.css")
           textarea#dName(type='text' name='description' placeholder='Enter description' required)
           span#descriptionError(style='color: red;')  
     .subcategories
-      h4 Subcategories (Optional)
+      h4 Subcategories 
       .subcategory-list
         .subcategory-item
           input(type='text' name='subcategories[]' placeholder='Enter subcategory name')
@@ -38,6 +38,6 @@ link(rel="stylesheet", href="../../../stylesheet/admin/category.css")
     .buttons
       button.cancel(type='button') Cancel
       button.add-category(type='submit') Add Category
-
+    .span#error
 script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
 script(defer src="../../../script/admin/createCategory.js")

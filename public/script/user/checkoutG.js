@@ -26,12 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (paymentMethod === 'paypal') {
       paypalDetails.style.display = 'block';
     }
+  });
+
   if(paymentMethodSelect.value!= "Select a payment method"){
   document.getElementById("placeOrderBtn").disabled = false ;
+  document.getElementById("paymentError").style.color = "red";
   document.getElementById("paymentError").innerHTML = "";
 
   }
-  });
 
   const checkoutForm = document.querySelector('.checkoutForm');
 

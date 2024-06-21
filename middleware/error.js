@@ -5,14 +5,7 @@ const errorHandler = (err, req, res, next) => {
   error.message = err.message
 
   // log to console
-
-  console
-    .log
-
-    // err
-    // `${err}`.red
-    ()
-
+console.log(`${err}`)
   // mongoose bad Object id
 
   if (err.name === `CastError`) {
@@ -25,11 +18,25 @@ const errorHandler = (err, req, res, next) => {
   }
   // Mongoos duplicate key
 
-  if (err.code === 11000 || err.name === "E11000") {
-    const message = `The entered Email-id already exists`
-    error = new ErrorResponse(message, 400)
-  }
+if (err.code === 11000 || err.name === "E11000") {
+    const errorMessage = err.message;
+    const regex = /dup key: { (.+?) }/;
+    const match = errorMessage.match(regex);
 
+    let duplicateKeyMessage = 'A duplicate key error occurred';
+    if (match && match[1]) {
+        const duplicateKey = match[1];
+        const keyValue = duplicateKey.split(': ');
+        if (keyValue.length === 2) {
+            const key = keyValue[0].trim();
+            const value = keyValue[1].replace(/"/g, '').trim();
+            duplicateKeyMessage = `The ${key}: " ${value} " already exists`;
+        }
+    }
+
+    const message = `Error: ${duplicateKeyMessage}`;
+    error = new ErrorResponse(message, 400);
+}
   //Mongoose validation error
 
   if (err.name === `ValidationError`) {

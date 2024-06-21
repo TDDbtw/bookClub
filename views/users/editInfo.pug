@@ -49,9 +49,10 @@ script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
         .form-group
           label(for='email') Email:
           input#email(type='email', name='email',value=`${user.email}` )
-        .form-group
+        .form-group.d-flex
           input#editPwd(type="radio")
           | edit password
+          span.ms-4.mt-4.fa.fa-window-close#closePwd(style="display:none;")
         .form-group.pwdGroup
           label(for='password') Password:
           input#password(type='password', name='password')

@@ -120,15 +120,17 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       })
       .then((response) => {
+        alert("Category added successfully:", response.data);
         console.log("Category added successfully:", response.data);
         // Reset form and image container
-        
-        imageContainer.innerHTML = "";
-
         window.location = "/admin/category"; // Redirect after success
       })
       .catch((error) => {
-        console.error("Error adding category:", error);
+document.getElementById('error').innerHTML=""
+document.getElementById('error').style.color="red"
+        alert(`Error adding category: ${error.response.data.error}` );
+        console.log(error);
+document.getElementById('error').innerHTML=error.response.data.error
         // Handle errors appropriately (e.g., display error message to the user)
       });
     }

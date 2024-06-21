@@ -38,13 +38,17 @@ const getCategoryEdit = asyncHandler(async (req, res, next) => {
 const getCategoryList = asyncHandler(async (req, res, next) => {
   try {
     const categories = await Category.find();
+  const totalCount = await Category.countDocuments();
     const subcategories = await Subcategories.find()
+    const subCount = await Subcategories.countDocuments()
       .populate("category", "name")
       .exec();
 
     res.render(`./admin/categoryListG`, {
       categories,
       subcategories,
+      totalCount,
+      subCount, 
       name: `Categories`,
     });
   } catch (error) {
@@ -87,12 +91,29 @@ const createSubCategory = asyncHandler(async (req, res, next) => {
 const createCategory = asyncHandler(async (req, res, next) => {
   const { name, description, subcategories } = req.body;
 
+  // Parse subcategories if they are in string format
+  let subCat;
+  try {
+    subCat = JSON.parse(subcategories);
+  } catch (error) {
+    return next(new ErrorResponse("Invalid subcategories format", 400));
+  }
+
   // Check if category with the same name already exists
   const existingCategory = await Category.findOne({ name });
   if (existingCategory) {
     return next(new ErrorResponse("Category with this name already exists", 400));
   }
 
+  // Check if subcategories exist and are valid
+  const existingSubCategoryNames = await Subcategories.distinct("name");
+
+  if (!existingSubCategoryNames) {
+    return next(new ErrorResponse("Subcategory with this name already exists", 400));
+  }
+  const existingSubCategorySet = new Set(existingSubCategoryNames);
+
+  // Handle file upload (if any)
   let imagePath = "";
   if (req.file) {
     // Adjust imagePath based on your file upload configuration
@@ -108,16 +129,13 @@ const createCategory = asyncHandler(async (req, res, next) => {
 
   // Save new category to database
   const savedCategory = await newCategory.save();
-  let subCat=JSON.parse(req.body.subcategories)
-  console.log("Subcategories received:", req.body.subcategories);
-  console.log("Is subcategories an array?", Array.isArray(subCat));
+
   // If subcategories are provided and it's an array, create them and associate with the new category
-  if (Array.isArray(subCat) && subcategories.length > 0) {
+  if (Array.isArray(subCat) && subCat.length > 0) {
     const subcategoriesToCreate = subCat.map((subcategoryName) => ({
       name: subcategoryName,
       category: savedCategory._id, // Associate with the new category
     }));
-    console.log(`${subcategoriesToCreate}`)
 
     try {
       // Use `insertMany` for efficiency in batch insert
@@ -163,7 +181,7 @@ const getCategoryById = asyncHandler(async (req, res, next) => {
 const updateCategoryById = asyncHandler(async (req, res, next) => {
   try {
 
-const updates = { ...req.body };
+    const updates = { ...req.body };
 
     if (req.file) {
       // Ensure consistent handling of file paths
@@ -171,11 +189,11 @@ const updates = { ...req.body };
       updates.image = imagePath;
     }
 
-if (req.body.subcategories) {
+    if (req.body.subcategories) {
       let subCat = JSON.parse(req.body.subcategories);
       console.log("Subcategories received:", req.body.subcategories);
       console.log("Is subcategories an array?", Array.isArray(subCat));
-}
+    }
 
     const updatedCategory = await Category.findByIdAndUpdate(
       req.params.id,
@@ -236,7 +254,6 @@ const deleteCategoryById = asyncHandler(async (req, res, next) => {
 
     // Delete associated subcategories
     await Subcategories.deleteMany({ category: req.params.id });
-
     res.status(200).json({ success: true });
   } catch (error) {
     return next(new ErrorResponse("Error deleting category", 500));

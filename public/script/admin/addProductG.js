@@ -120,3 +120,4 @@ console.log(`${subcategories}`)
     }
   });
 });
+console.log('running')

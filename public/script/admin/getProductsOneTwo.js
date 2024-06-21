@@ -7,9 +7,9 @@ const filterValue = urlParams.get('filter')
 console.log(`search-- ${searchValue}  sort--${sortValue} filter--- ${filterValue} `)
 
 if(searchValue==null&&sortValue==null&&filterValue==null){
-console.log(`is null`)
+  console.log(`is null`)
 
-document.getElementById('clearBtn').style.display='none'
+  document.getElementById('clearBtn').style.display='none'
   axios.get('/products/list')
     .then(response => {
       const item = response.data.products;
@@ -41,7 +41,7 @@ document.getElementById('navSearch').addEventListener('input', searchSortFilter)
 
 function searchSortFilter() {
 
-document.getElementById('clearBtn').style.display='block'
+  document.getElementById('clearBtn').style.display='block'
 
   event.preventDefault()
   console.log(`${document.getElementById('navSearch').value}`) 
@@ -68,12 +68,6 @@ document.getElementById('clearBtn').style.display='block'
       const page = response.data.page;
       renderCards(products)
 
-      document.getElementById('products').innerHTML = `
-        <p>Total Products: ${total}</p>
-        <p>Page: ${page}</p>
-        <p>Limit: ${limit}</p>
-        ${productsHtml}
-      `;
     })
     .catch(error => {
       console.error('There was an error fetching the products!', error);
@@ -283,6 +277,9 @@ function renderCards(products){
     cardCol.appendChild(productCard)
     container.appendChild(cardCol)
 
+
+
   });
 } 
+
 

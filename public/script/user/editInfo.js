@@ -1,7 +1,5 @@
-
 const editPwd = document.querySelector('#editPwd');
-const pwdGroup = document.querySelectorAll('.pwdGroup');
-
+const pwdGroup = document.querySelectorAll('.pwdGroup'); 
 pwdGroup.forEach((item)=>{
 item.style.display='none'
 })
@@ -79,10 +77,15 @@ if(editPwd.checked){
 pwdGroup.forEach((item)=>{
 item.style.display='block'
 })
+document.getElementById('closePwd').style.display="block"
 }
-else if(!editPwd.checked){
+})
+
+ document.getElementById('closePwd').addEventListener('click', function(event) {
 pwdGroup.forEach((item)=>{
 item.style.display='none'
+editPwd.checked=false
 })
-}
-})
+
+document.getElementById('closePwd').style.display="none"
+ })

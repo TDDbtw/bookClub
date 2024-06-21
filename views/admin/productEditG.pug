@@ -68,47 +68,7 @@ html(lang='en')
             button.cancel Cancel
             button#save-product(onclick="sendRequest()") Save Product
             input#ss(type='hidden' value=subcategories)
-            input#productVal(type="hidden" value=product._id)
+            input#productVal(type="hidden" value=product)
 
-    script.
-      function sendRequest() {
-          const productId = document.getElementById('productVal').value;
-          const name = document.getElementById('name').value;
-          const author = document.getElementById('author').value;
-          const description = document.getElementById('description').value;
-          const price = document.getElementById('price').value;
-          const stockCount = document.getElementById('stockCount').value;
-          const category = document.getElementById('catSelect').value;
-          //const subcategories = Array.from(document.getElementById('subcategory').selectedOptions).map(option => option.value);
-          const images = Array.from(document.getElementById('file-input').files);
 
-          const formData = new FormData();
-          formData.append('name', name);
-          formData.append('author', author);
-          formData.append('description', description);
-          formData.append('price', price);
-          formData.append('stockCount', stockCount);
-          formData.append('category', category);
-          //subcategories.forEach(subcategory => formData.append('subcategories', subcategory));
-          images.forEach(image => formData.append('image', image));
-
-          // Debugging: Log FormData entries
-          for (let pair of formData.entries()) {
-              console.log(pair[0]+ ', ' + pair[1]);
-          }
-
-          axios.patch(`/admin/products/${productId}/edit`, formData, {
-              headers: {
-                  'Content-Type': 'multipart/form-data'
-              }
-          })
-          .then(response => {
-              console.log('Product updated successfully:', response.data);
-              alert('Product updated successfully!');
-              // Redirect or update the page as needed
-          })
-          .catch(error => {
-              console.error('There was an error updating the product:', error);
-              alert('Error updating product. Please try again.');
-          });
-      }
+    script(defer src='../../../../script/admin/editProductG.js')
