@@ -31,15 +31,15 @@ link(rel='stylesheet' href='../../stylesheet/navbar.css')
           .address-card
             p.address-header Address #{index + 1}
             .address-items
-              p.me-2 Address: #{address.address} 
-              p.me-2 | City: #{address.city}
-              p.me-2 | State: #{address.state}
-              p.me-2 | Zip Code: #{address.zip_code}
-              p.me-2 | Country: #{address.country}
+              p Address: #{address.address}
+              p City: #{address.city}
+              p State: #{address.state}
+              p Zip Code: #{address.zip_code}
+              p Country: #{address.country}
             .address-information-links
               a#editAddress(href=`/user/address/${address._id}/edit`) Edit
               input#addressInput(type="hidden", name="address", value=address._id)
-              a#deleteAddress.text-danger.ms-3(address-id=address.id onclick="removeAddress()")
+              a#deleteAddress.text-danger.ms-3(address-id=address._id onclick="removeAddress()")
                 svg.icon.icon-tabler.icon-tabler-trash(xmlns='http://www.w3.org/2000/svg', width='20', height='20', viewBox='0 0 24 24', stroke-width='1.5', stroke='#ff2825', fill='none', stroke-linecap='round', stroke-linejoin='round')
                   path(stroke='none', d='M0 0h24v24H0z', fill='none')
                   path(d='M4 7l16 0')
@@ -57,15 +57,17 @@ link(rel='stylesheet' href='../../stylesheet/navbar.css')
                   p.me-3.mt-3 set as Billing address
               else
                 //input#billing_address(type="checkbox" name='billing_address' value=`${address._id}`).ms-3
-                input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="confirm" name='billing_address' hx-target="body" value=`${address._id}` onClick="Swal.fire({title: 'Confirm', text:'Do you want to continue?'}).then((result)=>{if(result.isConfirmed){htmx.trigger(this, 'confirmed') } })").ms-3
+                input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
                 label(for='billing_address').ms-1.me-2 Billing Address
               if user.shipping_address 
                 if user.shipping_address._id == address.id
                   p.mt-3.ms-3(style="color: #007d99;") Default Shipping Address
                 else
-                  input.ms-3#shipping_address(type='checkbox',hx-get="/user/set"   hx-trigger="change"  hx-target="body"  name='shipping_address',  value=address._id)
+                  input.ms-3#shipping_address(type='checkbox',hx-get="/user/set"  hx-trigger="change"  hx-target="body"  name='shipping_address',  value=address._id)
                   p.me-3.mt-3.ms-2 set as Shipping address
-
+              else
+                input.ms-3#shipping_address(type='checkbox',hx-get="/user/set"  hx-trigger="change"  hx-target="body"  name='shipping_address',  value=address._id)
+                p.me-3.mt-3.ms-2 set as Shipping address
             form.deleteForm(action=`/user/address/${address._id}/remove` method="delete")
               input#userInput(type="hidden" name="user" value=user.id)
               input#addressInput(type="hidden" name="address" value=address._id)
@@ -127,7 +129,6 @@ link(rel='stylesheet' href='../../stylesheet/navbar.css')
 
   script(src="../../script/user/addAddress.js")
   script(defer src='https://unpkg.com/htmx.org@2.0.0', integrity='sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw', crossorigin='anonymous')
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js', integrity='sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==', crossorigin='anonymous', referrerpolicy='no-referrer')
   script.
     $(document).ready(function() {
       var currentUrl = window.location.pathname;

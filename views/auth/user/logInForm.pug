@@ -15,11 +15,8 @@ block rest
         #feedback.text-warning.ms-3
         .showHide
           #show.ms-2.mt-2.d-flex
-            input.d-block(type=`checkbox` onclick=(`showPwd()`))
-            span Show password
-          #hide.ms-2.mt-2.d-flex(style="display: none;")
-            input.mb-1.d-block(type="checkbox" onclick="hidePwd()" style="display: none;") 
-            span Hide password
+            input.d-block#showInput(type=`checkbox` )
+            span#showSpan Show password
 
         span.text-danger.ms-3#errorMessage
         button#loginButton(type="submit") Login
@@ -74,13 +71,9 @@ block rest
           // Handle or display the error in an appropriate way
         }); 
     });
-    function showPwd() {
-         document.getElementById("password").type = "text";
-         document.getElementById("hide").style.display = "block";
-         document.getElementById("show").style.display = "none";
-      }
-    function hidePwd() {
-         document.getElementById("password").type = "password";
-         document.getElementById("show").style.display = "block";
-         document.getElementById("hide").style.display = "none";
-      }
+
+
+    document.getElementById("showInput").addEventListener("click", function() {
+         document.getElementById("password").type = document.getElementById("password").type == "text"?document.getElementById("password").type = "password":document.getElementById("password").type = "text"
+         document.getElementById("showSpan").style.display = document.getElementById("showSpan").innerHtml =='Show password'?document.getElementById("showSpan").innerHtml =='':document.getElementById("showSpan").innerHtml =='Show password'
+      })
