@@ -43,6 +43,7 @@ const {
   deleteSubCategory,
   createCategory,
   updateCategoryById,
+  getSearchCategory,
 } = require("../controllers/admin/category")
 const {
 getCouponList,
@@ -88,7 +89,7 @@ router
   .route("/products/:id/edit")
   .get(protect, admin, loadEditProduct)
   .put(protect, admin, updateProducts)
-  .patch(protect, admin, updateProducts)
+  .patch(protect, admin,upload.array("image"),updateProducts)
 
 router.route(`/products/search`).get(getSearchProducts)
 
@@ -109,6 +110,7 @@ router
   .delete(protect, admin, deleteCategoryById)
 
 router.route("/category").get(protect, admin, getCategoryList)
+router.route("/category/search").get(protect, admin, getSearchCategory)
 router
   .route("/category/create")
   .get(protect, admin, getCreateCategory)

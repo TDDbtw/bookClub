@@ -21,7 +21,7 @@ link(rel='stylesheet' href='../stylesheet/user/hover.css')
           span(style="color:orange") product is currently unavailable
         else if product.stockCount>10
           span #{product.stockCount} In stock
-        else if product.stockCount<10
+        else if product.stockCount<10&& product.stockCount!=0
           span  only 
             span(style="color:rgba(142, 44, 44, 0.763)") #{product.stockCount}
               span  in stock
@@ -68,6 +68,7 @@ script.
     const item = document.createElement('span');
     item.textContent = !product.status?"":"Product is out of stock,  will be back soon"
     item.style.color = 'orange'; // Display the error span
+    item.class="mt-3"
   const addToCart = document.getElementById('addToCart') ;
    console.log(`${product.status}`) 
   if(!product.status||product.stockCount<1){

@@ -9,11 +9,10 @@ const getCart = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
   console.log(`req.user = ${req.user.id}`)
   console.log(user.id)
-req.user=user
+  req.user=user
   const cart = await Cart.findOne({ user: user.id })
   req.session.cartId = cart.id
   req.session.user = user
-  console.log(cart)
   // console.log(`cart is ${cart}`)
   // console.log(`cart is ${cart}`)
 
@@ -25,14 +24,14 @@ const getCartList = asyncHandler(async (req, res, next) => {
 
   const cart = await Cart.findOne({ user: user.id })
 
-    res.json(cart); 
+  res.json(cart); 
 })
 const getCheckout = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
   req.user=user
   const cart = await Cart.findOne({ user: user.id })
   const paypalId = process.env.PAYPAL_CLIENT_ID
- const products = cart.items
+  const products = cart.items
   let shippingTotal = ""
   if (user.shipping_address && user.shipping_address.country) {
     switch (user.shipping_address.country) {
@@ -50,8 +49,10 @@ const getCheckout = asyncHandler(async (req, res, next) => {
     }
   } else shippingTotal = "please Select the billing and Shipping address"
   console.log(`shipping total is${shippingTotal}`)
-shippingTotal=Number(shippingTotal)
+  const CLIENT_ID=process.env.PAYPAL_CLIENT_ID
+  shippingTotal=Number(shippingTotal)
   res.render(`./users/checkoutG`, {
+    CLIENT_ID,
     user,
     products,
     cart,
@@ -103,111 +104,53 @@ const addItemToCart = asyncHandler(async (req, res, next) => {
   res.redirect("/cart")
   // res.status(201).json(cart)
   // if (error) {
-  //   console.error(error)
-  //   res.status(500).json({ error: "Internal Server Error" })
-  // }
+    //   console.error(error)
+    //   res.status(500).json({ error: "Internal Server Error" })
+    // }
 })
 
-// Update item quantity in cart
-// const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
-//   const productId = req.params.id
-//   console.log(productId)
-
-//   if (req.query.quantity === "add") {
-//     quantityChange = 1
-//   } else if (req.query.quantity == "sub") {
-//     quantityChange = -1
-//   }
-//     console.log(req.query.quantity)
-//   console.log(`quantityChange = ${quantityChange}`)
-
-//   const cart = await Cart.findById(req.session.cartId)
-
-//   const product = await Products.findById(productId)
-
-//   if (!cart || !product) {
-//     return res.status(404).json({
-//       success: false,
-//       message: "Cart or product not found",
-//     })
-//   }
-
-//   const cartItem = cart.items.find(
-//     (item) => item.productId.toString() === productId
-//   )
-//   // console.log(`cartItem = ${cartItem}`)
-
-//   if (!cartItem) {
-//     return res.status(404).json({
-//       success: false,
-//       message: "Cart item not found",
-//     })
-//   }
-//   cartItem.quantity += quantityChange // Update the quantity based on the quantity change
-
-//   cartItem.price = cartItem.quantity * product.price // Recalculate the price
-
-//   cart.billTotal += quantityChange === 1 ? product.price : -product.price // Update the bill total
-
-//   // Handle the case where the quantity becomes 0 or negative
-//   if (cartItem.quantity <= 0) {
-//     cart.items = cart.items.filter(
-//       (item) => item.productId.toString() !== productId
-//     ) // Remove the item from the cart
-//   }
-
-//   await cart.save() // Save the updated cart
-
-//   return res.status(200).json({
-//     success: true,
-//     quantity: {
-//       quantity: cartItem.quantity,
-//     },
-//   })
-//   // res.send("tt")
-// })
 
 
 
- const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
-const { productId } = req.params;
-    const { quantity } = req.body;
-    const userId = req.user._id; // Assuming you have user authentication and `req.user` contains the authenticated user
-   console.log(`${req.user._id}`) 
+const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
+  const { productId } = req.params;
+  const { quantity } = req.body;
+  const userId = req.user._id; // Assuming you have user authentication and `req.user` contains the authenticated user
+  console.log(`${req.user._id}`) 
 
-    if (quantity <= 0) {
-      return res.status(400).json({ message: 'Quantity must be greater than zero' });
-    }
+  if (quantity <= 0) {
+    return res.status(400).json({ message: 'Quantity must be greater than zero' });
+  }
 
-    // Find the user's cart
-    let cart = await Cart.findOne({ user:userId });
-console.log(`${cart}`)
-   // const cart = await Cart.findById(req.session.cartId)
-   console.log(`${cart}`)
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
-    }
+  // Find the user's cart
+  let cart = await Cart.findOne({ user:userId });
+  console.log(`${cart}`)
+  // const cart = await Cart.findById(req.session.cartId)
+  console.log(`${cart}`)
+  if (!cart) {
+    return res.status(404).json({ message: 'Cart not found' });
+  }
 
-    // Find the product in the cart
-    const cartItemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
-    if (cartItemIndex === -1) {
-      return res.status(404).json({ message: 'Product not found in cart' });
-    }
+  // Find the product in the cart
+  const cartItemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+  if (cartItemIndex === -1) {
+    return res.status(404).json({ message: 'Product not found in cart' });
+  }
 
-    // Update the quantity
-    cart.items[cartItemIndex].quantity = quantity;
+  // Update the quantity
+  cart.items[cartItemIndex].quantity = quantity;
 
-    // Save the updated cart
-    cart = await cart.save();
+  // Save the updated cart
+  cart = await cart.save();
 
-    // Recalculate the total
-    const billTotal = cart.items.reduce((sum, item) => sum + (item.productPrice * item.quantity), 0);
-    cart.billTotal = billTotal;
-    await cart.save();
+  // Recalculate the total
+  const billTotal = cart.items.reduce((sum, item) => sum + (item.productPrice * item.quantity), 0);
+  cart.billTotal = billTotal;
+  await cart.save();
 
-    res.status(200).json(cart);
+  res.status(200).json(cart);
 
- })
+})
 
 
 
@@ -220,16 +163,16 @@ const removeItemFromCart = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findById(req.session.cartId)
   console.log(`delete from ${cart}`)
   cart.items = cart.items.filter((item) => item.productId == productId)
- console.log(`${cart.items}`) 
+  console.log(`${cart.items}`) 
   await cart.save()
 
   // Redirect the user to the cart page
   // res.redirect("/cart")
   res.json({ success: true })
   // if (error) {
-  //   console.error(error)
-  //   res.status(500).json({ error: "Internal Server Error" })
-  // }
+    //   console.error(error)
+    //   res.status(500).json({ error: "Internal Server Error" })
+    // }
 })
 
 // Get cart details

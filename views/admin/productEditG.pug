@@ -66,9 +66,27 @@ html(lang='en')
               #subCategoryError
           .buttons
             button.cancel Cancel
-            button#save-product(onclick="sendRequest()") Save Product
+            button#save-product() Save Product
             input#ss(type='hidden' value=subcategories)
             input#productVal(type="hidden" value=product)
 
 
     script(defer src='../../../../script/admin/editProductG.js')
+    script.
+      document.getElementById('file-input').addEventListener('change', function() {
+        const imageContainer = document.getElementById('image-container');
+        imageContainer.innerHTML = ''; // Clear previous images
+        if (this.files) {
+          for (let file of this.files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.className = 'uploaded-image';
+              img.style.width = '92px'
+              imageContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      });

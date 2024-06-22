@@ -1,17 +1,8 @@
 // Get the input field for the category name
 console.log(`Sub is running`)
 
-const buttons = document.querySelectorAll("a[data-id]")
-
-buttons.forEach((button) => {
-  button.addEventListener("click", (e) => {
-    console.log(e.target.dataset.id)
-
-    removeSubcategory(e.target.dataset.id)
-  })
-})
-
 async function removeSubcategory(subCatId) {
+alert('do you want to delete this category')  
   try {
     const response = await fetch(
       `/admin/categories/delete?subCatId=${subCatId}`,

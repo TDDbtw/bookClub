@@ -13,20 +13,25 @@ document.addEventListener('DOMContentLoaded', function () {
   const productValInput = document.querySelector('#productVal');
 
   function getFormData() {
-    const formData = new FormData();
-    formData.append('name', nameInput.value);
-    formData.append('author', authorInput.value);
-    formData.append('description', descriptionInput.value);
-    formData.append('price', priceInput.value);
-    formData.append('stockCount', stockCountInput.value);
-    formData.append('category', categorySelect.value);
-    formData.append('subcategory', subCategorySelect.value);
+    const formData = {};
+    formData.name= nameInput.value? nameInput.value: nameInput.placeholder;
+    formData.author= authorInput.value? authorInput.value: authorInput.placeholder;
+    formData.description= descriptionInput.value? descriptionInput.value: descriptionInput.placeholder;
+    formData.price= priceInput.value? priceInput.value: priceInput.placeholder;
+    formData.stockCount= stockCountInput.value? stockCountInput.value: stockCountInput.placeholder;
+    formData.category= categorySelect.value? categorySelect.value: categorySelect.placeholder;
+    formData.subcategory= subCategorySelect.value? subCategorySelect.value: subCategorySelect.placeholder;
 
     // Add images if any
-    for (let i = 0; i < fileInput.files.length; i++) {
-      formData.append('images', fileInput.files[i]);
-    }
-
+    
+const imageFiles = document.getElementById('file-input').files;
+    let list = []
+if (imageFiles.length > 0) {
+  for (let i = 0; i < imageFiles.length; i++) {
+    list.push(imageFiles[i])
+  }
+}
+formData.image=list
     return formData;
   }
 
@@ -35,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const url =`/admin/products/${productId}/edit`
 
     try {
-      const formData = getFormData();
-      const response = await axios.patch(url, formData, {
+      const body = getFormData();
+      const response = await axios.patch(url, body, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

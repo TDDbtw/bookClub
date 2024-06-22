@@ -1,5 +1,20 @@
 let erroList = []
 
+if(document.getElementById("checkoutAddress")){
+
+    document.getElementById("checkoutAddress").addEventListener('change', () => {
+validateAddress()
+validateCountry()
+validateState()
+validateCity()
+validateZip()
+
+
+
+    });
+
+}
+
 function validateAddress() {
   var address = document.getElementById("address").value
   address = address.trim()
@@ -293,8 +308,6 @@ validateZip()
                   }
               });
           }
-
-
 
     countrySelect.addEventListener('change', () => {
       validateCountry

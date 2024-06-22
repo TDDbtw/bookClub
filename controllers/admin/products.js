@@ -193,7 +193,7 @@ const getProducts = asyncHandler(async (req, res, next) => {
     if (!existingProduct) {
       return res.status(404).json({ error: "Product not found" });
     }
-   console.log(`${req.body}`) 
+   console.log(`${JSON.parse(req.body)}`) 
     const updatedProductData = {
       name: req.body.name,
       price: req.body.price,
@@ -211,7 +211,7 @@ const getProducts = asyncHandler(async (req, res, next) => {
       updatedProductData.status =
         req.body.status === "change" ? !existingProduct.status : existingProduct.status;
     }
-
+console.log(`${req.body.image}`)
     // Handle image updates (if needed)
     if (req.files && req.files.image) {
       updatedProductData.image = getImagePathsFromRequest(req);

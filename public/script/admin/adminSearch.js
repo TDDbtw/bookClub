@@ -62,7 +62,7 @@ async function getSearchProducts(searchValue) {
     deleteLink.id = "deleteButton"
     deleteLink.className = "btn btn-sm text-danger"
     deleteLink.dataset.id = product._id
-    deleteLink.onclick = removeProduct
+    deleteLink.onclick = "removeProduct()"
     deleteLink.textContent = "Delete"
 
     const hiddenInput = document.createElement("input")
@@ -143,6 +143,96 @@ async function getSearchUsers(searchValue) {
     tr.appendChild(userIdInput)
     tr.appendChild(userStatusInput)
 
+    // Append the row to the table body
+    tableBody.appendChild(tr)
+  })
+}
+
+async function getSearchCategory(searchValue) {
+  const response = await fetch(`/admin/category/search?search=${searchValue}`)
+  const responseData = await response.json()
+  category = responseData.category
+  const tableBody = document.getElementById("contentTbody")
+  tableBody.innerHTML = "" // Clear previous cards
+
+ category.forEach((category) => {
+    const tr = document.createElement("tr")
+    tr.id = "contentTbodyTr"
+
+    // Add category name
+    const nameTd = document.createElement("td")
+    nameTd.textContent = category.name
+    tr.appendChild(nameTd)
+
+    const imageTd = document.createElement("td")
+    const img = document.createElement("img")
+    img.src = category.image
+    img.alt = "category image"
+    img.className = "img-thumbnail"
+    img.width = "70"
+    imageTd.appendChild(img)
+    tr.appendChild(imageTd)
+
+    // Add category status
+    const statusTd = document.createElement("td")
+    statusTd.id = "status"
+    statusTd.className = "status"
+    statusTd.dataset.status = category.status
+    statusTd.textContent = category.status ? "Active" : "Blocked"
+    tr.appendChild(statusTd)
+
+    // Add checkbox for category status
+    const checkboxTd = document.createElement("td")
+    const checkbox = document.createElement("input")
+    checkbox.type = "checkbox"
+    checkbox.dataset.category = category.id
+    checkbox.dataset.status = category.status
+    checkbox.checked = category.status
+    checkbox.addEventListener("change", function () {
+      updateUserStatus(category.id, !category.status)
+    })
+    checkboxTd.appendChild(checkbox)
+    tr.appendChild(checkboxTd)
+
+    // Add hidden input fields for category ID and status
+    const categoryIdInput = document.createElement("input")
+    categoryIdInput.id = "categoryId"
+    categoryIdInput.type = "hidden"
+    categoryIdInput.value = category.id
+
+    const categoryStatusInput = document.createElement("input")
+    categoryStatusInput.id = "categoryStatus"
+    categoryStatusInput.type = "hidden"
+    categoryStatusInput.value = category.status
+
+    tr.appendChild(categoryIdInput)
+    tr.appendChild(categoryStatusInput)
+
+   
+    const actionsTd = document.createElement("td")
+    const editLink = document.createElement("a")
+    editLink.href=`/admin/categories/${category._id}/edit`
+    editLink.style.with="5 rem"
+    editLink.className = "btn btn-sm text-warning"
+    editLink.textContent = "Edit"
+
+    const deleteButton = document.createElement('a');
+    deleteButton.className = 'btn btn-sm text-danger';
+    deleteButton.style.width = '5rem';
+    deleteButton.textContent = 'Delete';
+    deleteButton.setAttribute('data-id', category.id); // Assuming category is defined in your scope
+    deleteButton.setAttribute('onclick', 'removeCategory()');
+
+    // Create the hidden input
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.id = 'productId';
+    hiddenInput.value = `${category._id}`;
+
+    actionsTd.appendChild(editLink)
+    actionsTd.appendChild(deleteButton)
+    actionsTd.appendChild(hiddenInput)
+    tr.appendChild(actionsTd)
     // Append the row to the table body
     tableBody.appendChild(tr)
   })

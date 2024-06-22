@@ -1,3 +1,10 @@
+
+:root {
+  --primary-color: #483c32;
+  --complementary-color: #0056b3;
+  --accent-color-1: #ffffe0;
+  --accent-color-2: #f5f5dc;
+}
 #sort-by-label {
   font-size: 15px;
   font-weight: bold;

@@ -20,30 +20,55 @@ link(rel="stylesheet", href="../../../stylesheet/admin/category.css")
           input(type='file' id='file-input' name='image')
           #image-container(style='height:90px; display:flex; ')
             .removeImg remove
-            img(src=`${category.image.substring(2)}`)
+            img#catImg(src=`${category.image.substring(2)}`)
 
       .col-md-6
         .general-info
           label Category Name
-          input(type='text' name='name' value=`${category.name}` required)
-          
+          input#cName(type='text' name='name' value=`${category.name}` required)
+          span#nameError
           label Description
-          textarea(type='text' name='description' placeholder=`${category.description}` value=`${category.description}` required)
+          textarea#dName(type='text' name='description' placeholder=`${category.description}` value=`${category.description}` required)
           input#catId(type="hidden" value=category._id)
+          span#descriptionError
 
     .subcategories
       label.text-white Subcategories:
       #subcategory-list
         each subcategory in subcategories
           if subcategory.category.id == category.id
-            .subcategory-item
+            .subcategory-item#subItem
               input(type='text', name='subcategories[]', value=`${subcategory.name}`, required='')
-              button.remove-subcategory(type='button', onclick='removeSubcategory(this)') Remove
+              button.remove-subcategory(type='button', onclick=`removeSubcategory(this.value)` value=subcategory.id) Remove
       button.add-subcategory(type='button', onclick='addSubcategory()') Add Subcategory
+      span#subcategoryError
 
     .buttons
       button.btn.btn-secondary.cancel Cancel
-      button.btn.btn-primary.add-category Add Category
-
+      button.btn.btn-primary.add-category Save Changes
+    #error
 script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
 script(defer src="../../../script/admin/editCategory.js")
+script(defer src="../../../script/admin/editCatVal.js")
+script(defer src="../../../script/admin/subCat.js")
+script.
+  const subcategoryList = document.getElementById("subItem");
+  const addSubcategoryButton = document.querySelector(".add-subcategory");
+
+  addSubcategoryButton.addEventListener("click", () => {
+  const newSubcategoryItem = document.createElement("div");
+  newSubcategoryItem.classList.add("subcategory-item");
+  newSubcategoryItem.innerHTML = `
+    <input type='text' name='subcategories[]' placeholder='Enter subcategory name'>
+    <button type='button' class='remove-subcategory'>Remove</button> 
+  `;
+  subcategoryList.appendChild(newSubcategoryItem);
+
+  // Add event listener to the new "Remove" button
+  newSubcategoryItem
+    .querySelector(".remove-subcategory")
+    .addEventListener("click", () => {
+      subcategoryList.removeChild(newSubcategoryItem);
+    });
+  });
+

@@ -1,4 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
+let currentPage = 1; // Current page (start on page 1)
+let totalPages = 1; // Will be updated from the backend response
 
 let subCat="All"
 const searchValue = urlParams.get('search') 
@@ -12,6 +14,18 @@ if(searchValue==null&&sortValue==null&&filterValue==null){
   document.getElementById('clearBtn').style.display='none'
   axios.get('/products/list')
     .then(response => {
+
+      const products = response.data.products;
+      const total = response.data.total;
+      console.log(`total is ${total}`) 
+
+      const limit = response.data.limit;
+      console.log(`limit is ${limit}`)
+      const page = response.data.page;
+      currentPage =response.data.page ;  // Current page (start on page 1)
+      totalPages = Math.ceil(total/limit) // Will be updated from the backend response
+      console.log(`total pages are  ${totalPages}`) 
+      renderPagination()
       const item = response.data.products;
       renderCards(item)
     })
@@ -47,7 +61,7 @@ function searchSortFilter() {
   console.log(`${document.getElementById('navSearch').value}`) 
   document.getElementById("cardSection").innerHTML=""
   let url = new URL(window.location.href);
-  const page = 1; // example page number
+  const page =  currentPage// example page number
   const limit = 6; // example limit
   const search =document.getElementById('navSearch').value; // example search term
   const sort =  document.getElementById('sortBy').value// example sort order
@@ -66,8 +80,10 @@ function searchSortFilter() {
       const total = response.data.total;
       const limit = response.data.limit;
       const page = response.data.page;
+      currentPage =response.data.page ;  // Current page (start on page 1)
+      totalPages = Math.ceil(total/limit) // Will be updated from the backend response
+      renderPagination()
       renderCards(products)
-
     })
     .catch(error => {
       console.error('There was an error fetching the products!', error);
@@ -282,4 +298,50 @@ function renderCards(products){
   });
 } 
 
+
+function renderPagination() {
+  const paginationContainer = document.getElementById('pagination'); // Create a <div id="pagination"> in your Pug template
+  paginationContainer.innerHTML = ''; // Clear previous links
+  console.log('running pagi'+ totalPages)
+
+  if (totalPages > 1) {
+    // Add "Previous" button
+    if (currentPage > 1) {
+      const prevLink = document.createElement('a'); 
+      prevLink.href = '#';
+      prevLink.textContent = 'Previous';
+      prevLink.addEventListener('click', () => {
+        currentPage--;
+        searchSortFilter()
+      });
+      paginationContainer.appendChild(prevLink);
+    }
+
+    // Add page number links
+    for (let i = 1; i <= totalPages; i++) {
+      const pageLink = document.createElement('a');
+      pageLink.href = '#';
+      pageLink.textContent = i; 
+      pageLink.classList.toggle('active', i === currentPage); // Add "active" class to the current page link
+      pageLink.addEventListener('click', () => {
+        currentPage = i;
+        searchSortFilter()
+      });
+      paginationContainer.appendChild(pageLink);
+    }
+    console.log('running ')
+    // Add "Next" button
+    if (currentPage < totalPages) {
+      const nextLink = document.createElement('a');
+      nextLink.href = '#';
+      nextLink.textContent = 'Next';
+      nextLink.addEventListener('click', () => {
+        currentPage++;
+        searchSortFilter()
+
+      });
+      paginationContainer.appendChild(nextLink); 
+    }
+  }
+}
 

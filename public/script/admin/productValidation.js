@@ -242,7 +242,7 @@ function validateImage() {
   }
 
   if (errors.length > 0) {
-    fileInput.style.border = "2px solid red"
+    document.getElementById('imgC').style.border="2px solid red"
     errors.forEach((error) => {
       const errorSpan = document.createElement("span")
       errorSpan.innerText = error
@@ -252,7 +252,7 @@ function validateImage() {
     imageError.style.color = "red"
     return false
   } else {
-    fileInput.style.border = "2px solid #39ff14"
+    document.getElementById('imgC').style.border="2px solid #39ff14"
     return true
   }
 }

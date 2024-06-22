@@ -15,9 +15,6 @@ block rest
         label(for="password") Password *
         input#password.form-input(type="password", name="password" oninput='validatePassword()', placeholder="Enter your password ..", required)
         span#passwordError
-        span#show.ms-3
-          input.d-block(type=`checkbox` onclick=(`showConPwd()`))
-          span Show password
         label(for="confirm password") Confirm Password *
         input#confirmPassword.form-input(type="password", name="confirmPassword",oninput='validateConfirmPassword()' placeholder="Enter your password again..", required)
         span#confirmPasswordError

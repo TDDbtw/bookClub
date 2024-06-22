@@ -7,7 +7,8 @@ const Cart = require("../../models/cart");
 const Order = require("../../models/order");
 const Category = require("../../models/category");
 const Subcategories = require("../../models/subcategory");
-
+const fs = require('fs');
+const path = require('path');
 // Get category for editing
 const getCategoryEdit = asyncHandler(async (req, res, next) => {
   try {
@@ -178,46 +179,61 @@ const getCategoryById = asyncHandler(async (req, res, next) => {
 });
 
 // Update category by ID
-const updateCategoryById = asyncHandler(async (req, res, next) => {
+
+
+
+
+const updateCategoryById = async (req, res) => {
   try {
+    const { name, description, subcategories } = req.body;
+    const  catId  = req.params.id
+    const subcategoriesArray = JSON.parse(subcategories);
 
-    const updates = { ...req.body };
+    // Find the category by ID
+    const category = await Category.findById(catId);
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
 
+    // Update category details
+    category.name = name || category.name;
+    category.description = description || category.description;
+
+    // Handle image file if provided
     if (req.file) {
-      // Ensure consistent handling of file paths
-      const imagePath = req.file.path.replace(/^public/, "..");
-      updates.image = imagePath;
+      // Delete the old image file if it exists
+      if (category.image) {
+        fs.unlinkSync(path.join(__dirname, '..', category.image));
+      }
+      category.image = `/uploads/${req.file.filename}`;
     }
 
-    if (req.body.subcategories) {
-      let subCat = JSON.parse(req.body.subcategories);
-      console.log("Subcategories received:", req.body.subcategories);
-      console.log("Is subcategories an array?", Array.isArray(subCat));
-    }
+    // Save updated category
+    await category.save();
 
-    const updatedCategory = await Category.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedCategory) {
-      return next(
-        new ErrorResponse(`Category not found with id ${req.params.id}`, 404)
-      );
-    }
-
-    res.status(200).json({
-      success: true,
-      data: updatedCategory
+    // Update subcategories
+    await Subcategories.deleteMany({ category: catId }); // Remove existing subcategories
+    const subcategoryPromises = subcategoriesArray.map(subcategoryName => {
+      const subcategory = new Subcategories({
+        name: subcategoryName,
+        category: catId
+      });
+      return subcategory.save();
     });
+    await Promise.all(subcategoryPromises);
 
-
-
+    res.status(200).json({ message: 'Category updated successfully', category });
   } catch (error) {
-    return next(new ErrorResponse("Error updating category", 500));
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
   }
-});
+};
+
+
+
+
+
+
 
 // Delete SubCategory by ID
 const deleteSubCategory = asyncHandler(async (req, res, next) => {
@@ -260,6 +276,18 @@ const deleteCategoryById = asyncHandler(async (req, res, next) => {
   }
 });
 
+const getSearchCategory = asyncHandler(async (req, res, next) => {
+  let query = {}
+  // if (req.query.search) {
+    // }
+  const category = await Category.find({
+    name: { $regex: req.query.search, $options: "i" },
+  })
+  const responseData = {
+    category: category,
+  }
+  res.json(responseData)
+})
 module.exports = {
   createSubCategory,
   deleteSubCategory,
@@ -271,4 +299,5 @@ module.exports = {
   getCategoryEdit,
   getCategoryList,
   getCreateCategory,
+getSearchCategory
 };
