@@ -1,24 +1,27 @@
+console.log(`coupon result is ${couponResult.discountAmount}`);
+const ID = document.getElementById('ID').value;
 const paymentMethodSelect = document.getElementById('payment_method');
-
-if(paymentMethodSelect.value= "Select a payment method"){
-  document.getElementById("placeOrderBtn").disabled = true;
+const cart = document.querySelector('[name=cart]').value;
+const totalAmount = document.querySelector('[name=total_amount]').value;
+let user = document.getElementById('userInput').value;
+let paymentMethod = paymentMethodSelect.value;
+if (document.getElementById('payment_method').value == "") {
+  document.getElementById('placeOrderBtn').disabled = true;
   document.getElementById("paymentError").innerHTML = "Please select a Payment option";
 }
+
 document.addEventListener('DOMContentLoaded', () => {
   const codDetails = document.getElementById('cod_details');
   const razorpayDetails = document.getElementById('razorpay_details');
   const paypalDetails = document.getElementById('paypal_details');
 
-  // Initialize payment method select
   paymentMethodSelect.addEventListener('change', () => {
     const paymentMethod = paymentMethodSelect.value;
 
-    // Hide all payment details sections
     codDetails.style.display = 'none';
     razorpayDetails.style.display = 'none';
     paypalDetails.style.display = 'none';
 
-    // Display the selected payment details section
     if (paymentMethod === 'cod') {
       codDetails.style.display = 'block';
     } else if (paymentMethod === 'razorpay') {
@@ -26,26 +29,34 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (paymentMethod === 'paypal') {
       paypalDetails.style.display = 'block';
     }
+
+    if (document.getElementById('payment_method').value != "") {
+      document.getElementById('placeOrderBtn').disabled = false;
+      document.getElementById("paymentError").innerHTML = '';
+    }
   });
 
-  if(paymentMethodSelect.value!= "Select a payment method"){
-  document.getElementById("placeOrderBtn").disabled = false ;
-  document.getElementById("paymentError").style.color = "red";
-  document.getElementById("paymentError").innerHTML = "";
-
-  }
-
-  const checkoutForm = document.querySelector('.checkoutForm');
 
   document.getElementById('placeOrderBtn').addEventListener('click', async (event) => {
     event.preventDefault();
+    paymentMethod = paymentMethodSelect.value
+    console.log(`mthode is ${paymentMethod}`.yellow)
+    placeOrder()
 
-    const paymentMethod = paymentMethodSelect.value;
-    const user = document.querySelector('[name=user]').value;
-    const cart = document.querySelector('[name=cart]').value;
-    const totalAmount = document.querySelector('[name=total_amount]').value;
+  });
+});
+function placeOrder(){
+  const orderDetails={
+    payment_method: paymentMethod,
+    user: user,
+    cart: cart,
+    total_amount: totalAmount,
+    coupon: couponResult
 
-    // Display confirmation dialog using SweetAlert
+  }
+  if(paymentMethod=='cod'){
+
+    // COD payment
     Swal.fire({
       title: 'Confirm Order',
       text: 'Are you sure you want to place the order?',
@@ -56,12 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.post('/order/', {
-            payment_method: paymentMethod,
-            user: user,
-            cart: cart,
-            total_amount: totalAmount
-          });
+          const response = await axios.post('/order', orderDetails);
 
           if (response.data.success) {
             Swal.fire({
@@ -91,44 +97,79 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
-  });
-});
 
-// Check if there are shipping addresses
-const user =document.getElementById('userInput')
-if (user.addresses && user.addresses.length > 0) {
-  const addressSelection = document.querySelector('.address-selection');
-  // Add event listeners to each radio button
-  user.addresses.forEach((address, index) => {
-    const radioButton = document.createElement('input');
-    radioButton.type = 'radio';
-    radioButton.name = 'shipping_address';
-    radioButton.id = `address-${index}`;
-    radioButton.value = address._id;
-    // Check if this address is the default shipping address
-    if (user.shipping_address && user.shipping_address._id === address._id) {
-      radioButton.checked = true; // Mark as selected
-    }
-    radioButton.addEventListener('change', () => {
-      // Send a POST request to set the shipping address
-      axios.post('/user/set-shipping-address', { addressId: address._id })
-        .then(response => {
-          console.log(response.data.message);
-        })
-        .catch(error => {
-          console.error('Error:', error.message);
-        });
-    });
+  }
+  if(paymentMethod=='razorpay'){
 
-    const label = document.createElement('label');
-    label.htmlFor = `address-${index}`;
-    label.textContent = `${address.address}, ${address.city}, ${address.state}, ${address.zip_code}, ${address.country}`;
+    // Razor payment
 
-    const addressItem = document.createElement('div');
-    addressItem.classList.add('address-item');
-    addressItem.appendChild(radioButton);
-    addressItem.appendChild(label);
+    axios.post('/order/razorpayOrder', orderDetails, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        const data = response.data;
 
-    addressSelection.appendChild(addressItem);
-  });
+        if (data.success) {
+          const options = {
+            key: ID,
+            amount: data.order.amount,
+            currency: "USD",
+            name: "bookClub",
+            description: "Payment for Your Order",
+            order_id: data.order.id,
+            handler: async function (response) {
+              // Handle successful payment response here
+              if (response.razorpay_payment_id) {
+                try {
+                  const createOrderResponse = await axios.post("/order", 
+                    { ...orderDetails, amount: (options.amount) / 100 }, 
+                    {
+                      headers: {
+                        "Content-Type": "application/json",
+                      }
+                    }
+                  );
+
+                  const orderData = createOrderResponse.data;
+
+                  if (orderData.success) {
+                    // Redirect to order confirmation page or any other desired action
+                    window.location.href = "/user/order";
+                  } else {
+                    // Handle error in order creation
+                    console.error("Error in order creation:", orderData.error);
+                  }
+                } catch (error) {
+                  console.error("Error in order creation:", error);
+                }
+              }
+            },
+            prefill: {
+              name: "bookClub",
+              email: "bookClub.com",
+              contact: "9744266925 "
+            },
+            notes: {
+              address: "Razorpay Corporate Office"
+            },
+            theme: {
+              color: "#081c15"
+            }
+          };
+
+          const razer = new Razorpay(options);
+          razer.open();
+        } else {
+          // Handle error in Razorpay order creation
+          console.error("Error in Razorpay order creation:", data.error);
+        }
+      })
+      .catch(error => {
+        console.error("Error in making the request:", error);
+      });
+
+
+  }
 }

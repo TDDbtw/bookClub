@@ -1,85 +1,83 @@
-body {
-    background-color: #081c15;
-    color: #fff;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden; /* Prevent horizontal scrollbar */
-}
 
-.container {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #183028;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+function errorToast(error) {
+    Toastify({
+        text: error.response.data.error,
+        duration: 3000, 
+      gravity: 'bottom', 
+      backgroundColor: '#ff3333', 
+    }).showToast();
 }
-
-.page-title {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 2.5em;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+function successToast(message) {
+    Toastify({
+        text: message,
+        duration: 3000, 
+      gravity: 'bottom', 
+      backgroundColor: '#33cc33', 
+    }).showToast();
 }
+const dateis = document.getElementById('expiry')
+dateis.addEventListener('click',()=>  {
+  dateis.type='date'
+})
+const form = document.getElementById('couponForm');
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  try {
+    const response = await fetch('/admin/coupons/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    if (response.ok) {
+      successToast('Coupon created successfully!')
+      window.location.href='/admin/coupons'
+    } else {
+      console.error('Error creating coupon:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+});
+ const urlPath = window.location.pathname; 
+const segments = urlPath.split('/');
+  const couponId = segments[3]
+if (couponId!='create'){
+document.getElementById('couponForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-.table-container {
-    overflow-x: auto; /* Allow horizontal scrolling if needed */
-}
+  const url = `/admin/coupons/${couponId}/edit`;
 
-.coupon-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: #284840;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+  const couponData = {
+    code: document.getElementById('code').value,
+    discount: document.getElementById('discount').value,
+    limit: document.getElementById('limit').value,
+    expiry: document.getElementById('expiry').value,
+    minAmt: document.getElementById('minAmt').value,
+    maxAmt: document.getElementById('maxAmt').value
+  };
 
-.coupon-table th, .coupon-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #335046;
-}
+  try {
+    const response = await axios.patch(url, couponData);
+    if (response.status === 200) {
+      successToast('Coupon updated successfully!');
 
-.coupon-table th {
-    background-color: #335046;
-    font-weight: bold;
-}
+      window.location.href='/admin/coupons'
+    } else {
+      alert('Failed to update the coupon. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error updating coupon:', error);
+    errorToast(error)
+  }
+});
 
-.edit-btn, .delete-btn, .add-coupon-btn {
-    background-color: #335046;
-    color: #fff;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-right: 5px;
-    font-weight: bold;
-}
 
-.edit-btn:hover {
-    background-color: #284840;
-}
 
-.delete-btn {
-    background-color: #d9534f;
-    transition: background-color 0.3s;
-}
 
-.delete-btn:hover {
-    background-color: #c9302c;
-}
 
-.add-coupon-btn {
-    display: block;
-    width: fit-content;
-    margin: 0 auto;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
 
-.add-coupon-btn:hover {
-    background-color: #284840;
 }

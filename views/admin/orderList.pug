@@ -1,10 +1,11 @@
 include ../partials/sidemenu
 #content-wrapper
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
-  //- link(rel="stylesheet", href="../../stylesheet/admin/table.css")
+  link(rel="stylesheet", href="../../stylesheet/user/sortTable.css")
   script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
   script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous")
   //- script(defer src="../../script/admin/panel.js") 
+  script(defer src="../../script/user/sortTable.js") 
   .container-fluid#containerFluid
     style.
        .pagination {
@@ -226,7 +227,7 @@ include ../partials/sidemenu
             i.fas.fa-book(aria-hidden="true") 
             .metric-data
               h2#totalProductsCount
-              h3  totalProducts 
+              h3  #{ote}  
               p Total Products
                
           .metric-card
@@ -247,7 +248,7 @@ include ../partials/sidemenu
               h3  newUsers 
               p New Users This Month
     h1.text-center.text-light.my-5 #{name}
-    table#my-table
+    table#my-table.table-sortable
       thead#contentThead
         tr#contentTheadTr
           th Order ID
@@ -263,8 +264,8 @@ include ../partials/sidemenu
             td #{order._id}
             td #{order.user.name}
             td #{order.totalAmount}
-            td #{order.created_at}
-            td #{order.deliveryDate}
+            td= formatDate(order.created_at)
+            td= formatDate(order.deliveryDate)
             td
               if order.status === 'pending'
                 span.status.pending Pending
@@ -272,13 +273,22 @@ include ../partials/sidemenu
                 span.status.processing Processing
               else if order.status === 'shipped'
                 span.status.shipped Shipped
-              else if order.status === 'delivered'
+              else if order.status === 'delivered' && order.returnRequest.status==null 
                 span.status.delivered Delivered
+              else if order.status === 'delivered' && order.returnRequest.status=='pending' 
+                span.status.returned Return requested
+              else if order.returnRequest.status== 'accepted'
+                span.status.return-approved Return approved
               else if order.status === 'cancelled'
                 span.status.cancelled Cancelled
             td
-              a(href=`/admin/orders/${order._id}`) Edit
-              a(href='/orders/#{order._id}/delete') Delete
+              if order.status === 'cancelled'
+                .editD.text-center.border.border-info
+                  a(href=`/admin/orders/${order._id}`) view
+              else
+                .editD.border.border-info
+                  a(href=`/admin/orders/${order._id}`) update
+              //a(href='/orders/#{order._id}/delete') Delete
 
     style.
       body {
@@ -335,7 +345,16 @@ include ../partials/sidemenu
           background-color: #f44336;
           color: #ffffff;
       }
-      
+
+      .status.returned {
+      background-color: #d1c4e9; 
+      color: #673ab7; 
+      }
+
+      .status.return-approved {
+      background-color: #ffcc80; 
+      color: #e65100; 
+      }
       a {
           text-decoration: none;
           color: #3f51b5;
@@ -344,3 +363,37 @@ include ../partials/sidemenu
       a:hover {
           color: #2d387a;
       }
+        .editD.text-center.border.border-info {
+            background-color: #f8d7da; 
+            border-color: #f5c6cb; 
+            color: #721c24; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            display: inline-block; 
+            text-align: center; 
+            }
+
+        .editD.text-center.border.border-info:hover {
+            background-color: #f1b0b7; 
+            border-color: #ee9c9f; 
+            color: #491217; 
+            text-decoration: none; 
+            }
+
+        .editD.border.border-info {
+            background-color: #d1ecf1; 
+            border-color: #17a2b8; 
+            color: #0c5460; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            display: inline-block; 
+            }
+
+        .editD.border.border-info:hover {
+            background-color: #bee5eb; 
+            border-color: #138496; 
+            color: #0b3c4b; 
+            text-decoration: none; 
+            }

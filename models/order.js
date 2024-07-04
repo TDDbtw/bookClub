@@ -1,7 +1,10 @@
 const mongoose = require("mongoose")
 const ObjectID = mongoose.Schema.Types.ObjectId
-
+const moment = require("moment")
 const orderSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+  },
   user: {
     type: ObjectID,
     ref: "User",
@@ -30,6 +33,18 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      request: {
+        type: {
+          type: String,
+          enum: ['cancel', 'return'],
+        },
+        status: {
+          type: String,
+          enum: ['pending', 'accepted', 'rejected'],
+          default: 'pending',
+        },
+        reason: String,
+             } ,
     },
   ],
   totalAmount: {
@@ -46,7 +61,7 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+    enum: ["pending", "processing", "shipped", "delivered", "cancelled","returned"],
     default: "pending",
   },
   created_at: {
@@ -62,21 +77,56 @@ const orderSchema = new mongoose.Schema({
   deliveryDate: {
     type: Date,
   },
+ returnRequest: {
+    status: { 
+      type: String,
+      enum: ['pending', 'accepted'], 
+      default: null 
+    },
+    reason: String, 
+   requestDate: {
+      type: Date,
+    }
+  }
 })
-orderSchema.pre("save", function (next) {
-  const currentDate = new Date()
+function generateShortOrderId() {
+  const characters = "0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
 
+orderSchema.pre("save", function (next) {
   if (!this.created_at) {
-    this.created_at = currentDate
+    this.created_at = moment().toDate();
   }
 
-  const deliveryDate = new Date(currentDate)
-  deliveryDate.setDate(deliveryDate.getDate() + 5)
+  if (!this._id) {
+    this._id = generateShortOrderId();
+  }
 
-  // Set the deliveryDate field
-  this.deliveryDate = deliveryDate
+  const deliveryDate = moment(this.created_at).add(5, 'days').toDate();
+  this.deliveryDate = deliveryDate;
 
-  next()
-})
+  next();
+});
+
+// orderSchema.pre("save", function (next) {
+  //   const currentDate = new Date()
+
+  //   if (!this.created_at) {
+    //     this.created_at = currentDate
+    //   }
+
+  //   const deliveryDate = new Date(currentDate)
+  //   deliveryDate.setDate(deliveryDate.getDate() + 5)
+
+  //   // Set the deliveryDate field
+  //   this.deliveryDate = deliveryDate
+
+  //   next()
+  // })
 
 module.exports = mongoose.model("Order", orderSchema)

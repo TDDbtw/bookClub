@@ -1,0 +1,151 @@
+/* style.css */
+body {
+    background-color: #081c15;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    padding:5px; 
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+.wishlist-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    padding:2rem;
+}
+
+.wishlist-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start; 
+    width: 100%;
+    gap: 2rem;
+    /* background-color:red; */ 
+}
+
+.wishlist-table {
+    width: 100%;
+    max-width: 70%; 
+    border-collapse: collapse;
+}
+
+.wishlist-table th, .wishlist-table td {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid #3d4a43;
+}
+
+.wishlist-table th {
+    background-color: #1a322a;
+}
+
+.wishlist-table img {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: cover;
+    margin-right: 1rem;
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-controls button {
+    background-color: transparent;
+    border: 1px solid #3d4a43;
+    color: #fff;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+}
+
+.quantity-controls input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #3d4a43;
+    color: #fff;
+    margin: 0 0.3rem;
+    background-color: #081c15;
+}
+
+.remove-btn {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Summary Styles */
+.summary {
+    background-color: #142821;
+    padding: 1.5rem;
+    border-radius: 10px;
+    width: 100%; 
+    max-width: 30%; 
+}
+
+.summary h2 {
+    margin-top: 0;
+}
+
+.summary ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.summary li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.total-price {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.checkout-btn {
+    background-color: #2ecc71;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    width: 100%;
+}
+
+/* Responsive Design: Adjust layout for smaller screens */
+@media (max-width: 900px) {
+    .wishlist-content {
+        flex-direction: column; 
+        align-items: center;
+    }
+
+    .wishlist-table {
+        max-width: 100%; 
+    }
+
+    .summary {
+        max-width: 100%; 
+        margin-top: 2rem;
+    }
+}

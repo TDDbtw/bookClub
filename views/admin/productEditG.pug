@@ -4,7 +4,10 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title Edit Product
     link(rel="stylesheet", href="../../../stylesheet/admin/createProduct.css")
+    link(href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css" rel="stylesheet")
     script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js")
   body
     .container
       .main-content#mainContent
@@ -29,8 +32,8 @@ html(lang='en')
               .image-placeholder
                 .image-preview
                   each image in product.image
-                    .imgC(style="height=10px;")
-                      .removeImg remove
+                    .imgC(id=`image-${image}` style="height=10px;")
+                      .removeImg.remove-btn(data-name=image) remove
                       img(src=`${image.substring(2)}`)
                 input(type='file' id='file-input' name='image' multiple)
             #image-container(style='width:50px; display:flex;')
@@ -59,12 +62,14 @@ html(lang='en')
                   option(value=category._id)= category.name
               #categoryError
           .status
-            h2  Subcategory
+            h2  Subcategory 
             label(for=`subcategory`)
               | 
-              select.subcatSelect.category(id=`category`, name="subcategories")
+              select.subcatSelect.category(id=`category`, name="subcategories" value=product.subcategories[0].name )
+                option(selected="selected" textContent=product.subcategories[0].name value=product.subcategories[0]._id)= product.subcategories[0].name 
               #subCategoryError
           .buttons
+            p(style="color:red;") 
             button.cancel Cancel
             button#save-product() Save Product
             input#ss(type='hidden' value=subcategories)
@@ -73,6 +78,8 @@ html(lang='en')
 
     script(defer src='../../../../script/admin/editProductG.js')
     script.
+      let id =document.getElementById('productVal').value
+      id =JSON.parse(id)._id
       document.getElementById('file-input').addEventListener('change', function() {
         const imageContainer = document.getElementById('image-container');
         imageContainer.innerHTML = ''; // Clear previous images
@@ -89,4 +96,33 @@ html(lang='en')
             reader.readAsDataURL(file);
           }
         }
+      });
+
+
+
+      $(document).ready(function() {
+        $('.remove-btn').click(function() {
+          const imageName = $(this).data('name');
+          $.ajax({
+            url: `/admin/products/${id}/remove-image`,
+            type: 'POST',
+            data: { name: imageName },
+            success: function(response) {
+              if (response.success) {
+             Toastify({
+            text: "Image removed",
+            duration: 3000,
+            gravity: "bottom", // `top` or `bottom`
+            position: "right",
+            }).showToast();
+              $(`#image-${imageName}`).remove();
+              } else {
+                alert('Failed to remove image.');
+              }
+            },
+            error: function() {
+              alert('Error removing image.');
+            }
+          });
+        });
       });

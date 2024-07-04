@@ -1,11 +1,33 @@
 const urlParams = new URLSearchParams(window.location.search);
+console.log(`url params are${urlParams}`)
 let currentPage = 1; // Current page (start on page 1)
 let totalPages = 1; // Will be updated from the backend response
-
+const user =document.getElementById('userDetails').value
+const noProduct = document.createElement("div")
+if (user!=undefined){
+  // user=JSON.stringify(user)
+  console.log(`user id is ${user}`)
+}
 let subCat="All"
-const searchValue = urlParams.get('search') 
-const sortValue = urlParams.get('sort')  // Default value can be adjusted
-const filterValue = urlParams.get('filter') 
+// window.navigation.addEventListener("navigate", (event) => {
+
+// if(searchValue!=null||sortValue!=null||filterValue!=null){
+//   console.log(`is NOTnull`)
+// if(searchValue!=null){
+//   document.getElementById('clearSearch').style.display = 'block';
+// }
+// if(sortValue!=null){
+//   document.getElementById('clearSort').style.display = 'block';
+// }
+// if(filterValue!=null){
+//   document.getElementById('clearFilter').style.display = 'block';
+// }
+
+// }
+// })
+let searchValue = urlParams.get('search') 
+let sortValue = urlParams.get('sort')  // Default value can be adjusted
+let filterValue = urlParams.get('filter') 
 console.log(`search-- ${searchValue}  sort--${sortValue} filter--- ${filterValue} `)
 
 if(searchValue==null&&sortValue==null&&filterValue==null){
@@ -35,6 +57,21 @@ if(searchValue==null&&sortValue==null&&filterValue==null){
 }
 
 
+
+
+
+// if(searchValue==null||sortValue==null||filterValue==null){
+//   console.log(`is NOTnull`)
+// if(searchValue==null){
+//   document.getElementById('clearSearch').style.display = 'none';
+// }
+// if(sortValue==null){
+//   document.getElementById('clearSort').style.display = 'none';
+// }
+// if(filterValue==null){
+//   document.getElementById('clearFilter').style.display = 'none';
+// }
+// }
 const items = document.querySelectorAll('li[data-sub-cat]');
 
 
@@ -89,18 +126,32 @@ function searchSortFilter() {
       console.error('There was an error fetching the products!', error);
     });
 }
-
+function clearQueryParam(param) {
+  console.log('heloq')
+        }
 
 
 document.getElementById('clearBtn').addEventListener('click', clear);
+document.getElementById('clearSearch').addEventListener('click',clearQueryParam('sort') );
+document.getElementById('clearSort').addEventListener('click', clearQueryParam('sort') );
+document.getElementById('clearFilter').addEventListener('click', clearQueryParam('sort'));
+
+
 function clear() {
   console.log(`clicked`) 
   window.location.href = `/products`;
 }
 
 function renderCards(products){    
-  products.forEach((product) => {
+  if(products.length==0){
+    noProduct.style = "margin-left:2%; margin-top:5%; color:gold;"
+    noProduct.className = "text-warning text-center "
+    noProduct.innerHTML = "No products available in this category"
+    cardSection.appendChild(noProduct)
 
+  }else{
+  products.forEach((product) => {
+    console.log(`product id is${product._id}`)
     // Assuming you have a container element with id 'productContainer'
     const container = document.getElementById("cardSection")
 
@@ -110,18 +161,19 @@ function renderCards(products){
 
     const productCard = document.createElement("div")
     productCard.id = "productCard"
-    productCard.className = "card text-white"
-    productCard.setAttribute("onclick", "PDP()")
+    productCard.className = "card text-white productCard"
+    productCard.setAttribute('data-product-id', product._id)
+    const productLink = document.createElement("div")
 
-    const productLink = document.createElement("a")
-    productLink.href = `/products/${product._id}`
 
     const heartIcon = document.createElement("div")
     heartIcon.className = "heart-icon"
     heartIcon.style =
       "text-align: right; margin-top:26.67px;margin-right:25.3px;"
-    heartIcon.setAttribute("href", `/products/${product._id}`)
-
+    heartIcon.className = 'add-to-wishlist-btn';
+    heartIcon.setAttribute('data-product-id', product._id);
+    heartIcon.setAttribute('data-user-id', user);
+    heartIcon.style.cursor = 'pointer';
     const svgHeartIcon = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "svg"
@@ -179,12 +231,13 @@ function renderCards(products){
 
     const productName = document.createElement("h5")
     productName.className = "mx-5 mt-3"
+    productName.style.color = "lightblue";
     productName.textContent = product.name
 
     const productId = document.createElement("p")
     productId.id = "productId"
     productId.setAttribute("type", "hidden")
-    productId.setAttribute("value", product.id)
+    productId.setAttribute("value", product._id)
 
 
     const productAuthor = document.createElement("p")
@@ -194,29 +247,38 @@ function renderCards(products){
 
     const productPrice = document.createElement("p")
     productPrice.className = "card-price mx-5"
-    productPrice.textContent = `$${product.price}`
+
+    productPrice.style.color='gold' /* Gold text color */
+      productPrice.style.fontSize='18px' /* Adjust font size as needed */
+      productPrice.style.fontWeight='bold' /* Make the text bold for emphasis */
+      productPrice.textContent = `$${product.price}`
 
 
     const addToCartForm = document.createElement("form")
     addToCartForm.action = "/cart/add"
     addToCartForm.method = "POST"
 
+
     const hiddenInputs = [
-      "productId",
-      "author",
-      "image",
-      "name",
-      "productPrice",
-      "description",
-      "category",
-    ]
-    hiddenInputs.forEach((inputName) => {
-      const input = document.createElement("input")
-      input.type = "hidden"
-      input.name = inputName
-      input.value = product[inputName]
-      addToCartForm.appendChild(input)
-    })
+      { name: "productId", value: product._id },
+      { name: "author", value: product.author },
+      { name: "image", value: product.image[0] },
+      { name: "name", value: product.name },
+      { name: "productPrice", value: product.price },
+      { name: "description", value: product.description },
+      { name: "category", value: product.category },
+      { name: "user", value: user }
+    ];
+
+    hiddenInputs.forEach(({ name, value }) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      input.user = user;
+      addToCartForm.appendChild(input);
+    });
+
 
     const quantityInput = document.createElement("input")
     quantityInput.type = "hidden"
@@ -224,11 +286,14 @@ function renderCards(products){
     quantityInput.value = 1
     addToCartForm.appendChild(quantityInput)
 
-    const userInput = document.createElement("input")
-    userInput.type = "hidden"
-    userInput.name = "user"
-    // userInput.value = `${user.id}`
-    addToCartForm.appendChild(userInput)
+
+    if (user) {
+      const userInput = document.createElement("input");
+      userInput.type = "hidden";
+      userInput.name = "user";
+      userInput.value = user;
+      addToCartForm.appendChild(userInput);
+    }
 
     const addToCartButton = document.createElement("button")
     addToCartButton.className = "card-button ms-3"
@@ -293,10 +358,13 @@ function renderCards(products){
     cardCol.appendChild(productCard)
     container.appendChild(cardCol)
 
+  function PDP() {
+  window.location.href = `/products/${product._id}`;
+  }
 
 
   });
-} 
+}} 
 
 
 function renderPagination() {

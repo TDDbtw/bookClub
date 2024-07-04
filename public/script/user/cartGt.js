@@ -66,6 +66,7 @@ console.log(`${JSON.stringify(cart.items)}`)
   subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
   taxElement.textContent = `$${tax.toFixed(2)}`;
   grandTotalElement.textContent = `$${grandTotal.toFixed(2)}`;
+
 }
 
 // Function to add event listeners to cart buttons
@@ -96,11 +97,29 @@ function addEventListenersToCartButtons() {
 async function handleRemoveItem(event) {
   const productId = event.target.dataset.productId;
 
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  });
+
+  if (result.isConfirmed) {
   try {
     const response = await axios.delete(`/cart/remove/${productId}`); // Adjust route if needed
+    
+    console.log(`${response.data}`)  
     if (response.status === 200) {
-      // Remove item from the table and update cart total
       event.target.closest('tr').remove();
+
+        Swal.fire(
+          'Deleted!',
+          'Your category has been deleted.',
+          'success'
+        );
       updateCartTotal(response.data); // Assuming the response includes the updated cart
     } else {
       console.error('Failed to remove item:', response.status);
@@ -108,9 +127,9 @@ async function handleRemoveItem(event) {
     }
   } catch (error) {
     console.error('Error removing item:', error);
-    alert('An error occurred while removing the item.');
+    location.reload();
   }
-}
+}}
 
 // Function to handle quantity updates
 async function handleUpdateQuantity(event) {

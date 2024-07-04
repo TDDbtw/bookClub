@@ -7,8 +7,6 @@ const Cart = require("../../models/cart")
 
 const getCart = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
-  console.log(`req.user = ${req.user.id}`)
-  console.log(user.id)
   req.user=user
   const cart = await Cart.findOne({ user: user.id })
   req.session.cartId = cart.id
@@ -30,6 +28,8 @@ const getCheckout = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
   req.user=user
   const cart = await Cart.findOne({ user: user.id })
+
+console.log(`razor pay is${process.env.RAZORPAY_ID}`.red)
   const paypalId = process.env.PAYPAL_CLIENT_ID
   const products = cart.items
   let shippingTotal = ""
@@ -39,17 +39,19 @@ const getCheckout = asyncHandler(async (req, res, next) => {
         shippingTotal = 0
         break
       case "Canada":
-        shippingTotal = 25
+        shippingTotal = 0
         break
       case "Mexico":
-        shippingTotal = 40
+        shippingTotal = 5
+        break
+      case "India":
+        shippingTotal = 5
         break
       default:
         break
     }
   } else shippingTotal = "please Select the billing and Shipping address"
-  console.log(`shipping total is${shippingTotal}`)
-  const CLIENT_ID=process.env.PAYPAL_CLIENT_ID
+  const CLIENT_ID=process.env.RAZORPAY_ID
   shippingTotal=Number(shippingTotal)
   res.render(`./users/checkoutG`, {
     CLIENT_ID,
@@ -57,7 +59,6 @@ const getCheckout = asyncHandler(async (req, res, next) => {
     products,
     cart,
     shippingTotal,
-    paypalId,
   })
 
 })
@@ -68,45 +69,27 @@ const getCheckout = asyncHandler(async (req, res, next) => {
 const addItemToCart = asyncHandler(async (req, res, next) => {
   let { user, productId, image, name, productPrice, quantity } = req.body
   quantity = Number(quantity)
-  console.log(`image =  ${image}`)
-  // image = image[0]
-  console.log(`from post --> ${user}`)
-  console.log(
-    `image ${image},\n product ${productId},\nquantity ${quantity},\n name ${name},\n productPrice ${productPrice}`
-  )
-  // Check if the cart already exists for the user
   let cart = await Cart.findOne({ user })
 
-  // If cart doesn't exist, create a new one
   if (!cart) {
     cart = new Cart({ user, items: [] })
   }
 
-  // Check if the item is already in the cart
   const existingItem = cart.items.find(
     (item) => item.productId.toString() === productId
   )
 
   if (existingItem) {
-    // If item already exists, update the quantity
     existingItem.quantity += quantity
   } else {
-    // If item is not in the cart, add it
     cart.items.push({ productId, image, name, productPrice, quantity })
   }
 
-  // Update the billTotal
   cart.billTotal = calculateBillTotal(cart.items)
 
-  // Save the updated cart
   await cart.save()
 
   res.redirect("/cart")
-  // res.status(201).json(cart)
-  // if (error) {
-    //   console.error(error)
-    //   res.status(500).json({ error: "Internal Server Error" })
-    // }
 })
 
 
@@ -116,7 +99,6 @@ const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
   const { quantity } = req.body;
   const userId = req.user._id; // Assuming you have user authentication and `req.user` contains the authenticated user
-  console.log(`${req.user._id}`) 
 
   if (quantity <= 0) {
     return res.status(400).json({ message: 'Quantity must be greater than zero' });
@@ -158,21 +140,13 @@ const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
 
 // Remove item from cart
 const removeItemFromCart = asyncHandler(async (req, res, next) => {
-  const productId = req.params.id
-  console.log(`productId = ${productId}`)
+  const productId = req.params.productId
+ console.log(`${productId}`.red) 
   const cart = await Cart.findById(req.session.cartId)
-  console.log(`delete from ${cart}`)
-  cart.items = cart.items.filter((item) => item.productId == productId)
-  console.log(`${cart.items}`) 
+  cart.items = cart.items.filter((item) => item.productId.toString()!== productId)
   await cart.save()
 
-  // Redirect the user to the cart page
-  // res.redirect("/cart")
-  res.json({ success: true })
-  // if (error) {
-    //   console.error(error)
-    //   res.status(500).json({ error: "Internal Server Error" })
-    // }
+  res.status(200).json({ success: true ,data:cart})
 })
 
 // Get cart details

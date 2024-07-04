@@ -11,26 +11,19 @@
 include ../partials/navbar
 link(rel="stylesheet", href="../stylesheet/user/wishlist.css")
 link(rel="stylesheet", href="../stylesheet/user/cartG.css")
-  main
-    .container-fluid.wishlist-container
-      h1 Your Wishlist
-      .wishlist-content
-        table.wishlist-table
-          thead
-            tr
-              th Product
-              th Price
-              th Actions
-          tbody
-            each item in wishlist.items
-              tr
-                td
-                  .product-info
-                    img(src=item.image, alt=item.name)
-                    span= item.name
-                td $#{item.productPrice.toFixed(2)}
-                td
-                  button.add-to-cart-btn Add to Cart
-                  button.remove-btn Remove
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js')
-  script(src='../script/user/wishlist.js')
+.container-fluid.wishlist-container
+  h1 Your Wishlist
+  .wishlist-content
+    table.wishlist-table
+      thead
+        tr
+          th Product
+          th Price
+          th Actions
+      tbody
+        // This will be populated by JavaScript
+  .empty-wishlist-message
+  input#userInput(type="hidden", name="user" value=`${user.id}`)
+script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js')
+script(src='../script/user/wishlist.js')
+

@@ -1,76 +1,86 @@
 include ../partials/navbar
-  title Order Detail
-  style.
-    body {
+title Order Detail
+style.
+  body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    //- background-color: #f5f5f5;
     background-color: #081c15;
-    color:#fff;
-    }
-    .container {
+    color: #fff;
+  }
+  .container {
     margin: 20px auto;
-    //- background-color: #ffffff;
     background: linear-gradient(to right, #081c15, #0f332a, #122e25);
-
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    //- width: 100vw;
-    }
-    .header {
+    padding-bottom: 3rem;
+  }
+  .header {
     text-align: left;
     border-bottom: 1px solid #eee;
     margin-bottom: 20px;
     padding-bottom: 20px;
-    }
-    h1, h2 {
-    //- color: #333;
-    color:#cac5c5;
-
+  }
+  h1, h2 {
+    color: #cac5c5;
     margin: 0;
-    }
-    .date {
-    color: #666;
+  }
+  .date {
+    color: #cac5c5;
     margin-top: 10px;
-    color:#cac5c5;
-
-    }
-    .download button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    }
-    .download button:hover {
-    background-color: #0056b3;
-    }
-    .info-section {
+  }
+  .info-section {
     padding: 20px;
-    background-color: #f5f5f5;
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     border: 1px solid #eee;
     margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
-    }
-    .info-section h2 {
-    color:#cac5c5;
+  }
+  .info-section h2 {
+    color: #cac5c5;
     margin-top: 0;
-    margin-bottom:3px;
+    margin-bottom: 3px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  .total-price {
+    text-align: right;
+  }
+  .status {
+    padding: 5px 10px;
+    border-radius: 3px;
+  }
+  .status.pending {
+    color: #d9534f;
+  }
+  .status.processing {
+    color: #f0ad4e;
+  }
+  .status.shipped {
+    color: #4caf50;
+  }
+  .status.delivered {
+    color: #2e7d32;
+  }
+  .status.cancelled {
+    color: #ffffff;
+  }
+  .cancelled{
+    color:red; 
     }
-    .info-section p {
-    //- color: #666;
-    //- color: #fff;
-
-    margin-bottom: 10px;
-    }
-    .info-section button {
-    background-color: #28a745;
+  .action-button {
+    margin-top: 10px;
+  }
+  .action-button button {
+    background-color: #d9534f;
     color: #fff;
     border: none;
     padding: 8px 16px;
@@ -78,136 +88,112 @@ include ../partials/navbar
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease;
-    }
-    .info-section button:hover {
-    background-color: #218838;
-    }
-    table {
-    width: 100%;
-    border-collapse: collapse;
-    }
-    th, td {
-    padding: 12px 8px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    }
-    th {
-    background-color: #f8f9fa;
-    color: #333;
-    }
-    .total-price {
-    text-align: right;
-    }
-    .status {
-          padding: 5px 10px;
-          border-radius: 3px;
-      }
-      
-      .status.pending {
-          //- background-color: #ffc0cb;
-          color: #d9534f;
-      }
-      
-      .status.processing {
-          //- background-color: #ffecb3;
-          color: #f0ad4e;
-      }
-      
-      .status.shipped {
-          //- background-color: #b2dfdb;
-          color: #4caf50;
-      }
-      
-      .status.delivered {
-          //- background-color: #c8e6c9;
-          color: #2e7d32;
-      }
-      
-      .status.cancelled {
-          //- background-color: #f44336;
-          color: #ffffff;
-      }
+  }
+  .action-button button:hover {
+    background-color: #c9302c;
+  }
+  .action-button.return button {
+    background-color: #f0ad4e;
+  }
+  .action-button.return button:hover {
+    background-color: #ec971f;
+  }
 
-  link(rel="stylesheet", href="../../stylesheet/user/navbar.css")
-  body
-    .container.fluid.row
-      .header
-        h1 Order Detail
-        p Details for Order ID: #{order._id}
-        .date
-          p#createdDate(data-orderdate= order.created_at) Oreder placed on
-          | #{createdDate}
-        //- .download
-          button Download
-      .customer-info.col-4
+link(rel="stylesheet", href="../../stylesheet/user/navbar.css")
+
+body
+  .container
+    .header
+      h1 Order Detail
+      p Details for Order ID: #{order._id}
+      .date
+        p#createdDate(data-orderdate=order.created_at) Order placed on #{createdDate}
+    .row
+      .col-4
         .info-section
           h2 Customer
           p= order.user.name
           p= order.user.email
-          //- button View Profile
-      .product-info.col-4
+      .col-4
         .info-section
           h2 Order Info
           p Pay method: #{order.payment_method}
           p Status:
-            if order.status === 'pending'
-              span.status.pending Pending
+            if allCancelled ==true
+              span.status.text-warning cancelled all items
+            else if  allReturned
+              span.status.pending  All item return requested
+            else if order.status === 'pending'
+              span.status.pending Order Placed
             else if order.status === 'processing'
-              span.status.processing Processing
+              span.status.processing Order Processing
             else if order.status === 'shipped'
-              span.status.shipped Shipped
-            else if order.status === 'delivered'
-              span.status.delivered Delivered
+              span.status.shipped Order Shipped
+            else if order.status === 'delivered' && order.returnRequest.status==null
+              span.status.delivered Order Delivered
             else if order.status === 'cancelled'
-              span.status.cancelled Cancelled
-          //- button Download info
-          p#deliveryDate(data-date=order.deliveryDate) delivery expected by #{order.deliveryDate}
-      .product-info.col-4
+              span.status.cancelled Order Cancelled
+            else if order.returnRequest.status!=null 
+              span.status.text-warning Order return requested
+          if order.returnRequest.status==null
+            p#deliveryDate(data-date=order.deliveryDate)
+            small Expected delivery on #{deliveryDate}
+          .action-button
+            if order.status !== 'cancelled' && order.status !== 'delivered' && order.returnRequest.status==null && !allCancelled
+              button(onclick=`handleCancelOrder( ${order._id} )`) Cancel Order
+          .action-button.return
+            if order.status === 'delivered' && order.returnRequest.status==null && !allReturned
+              button(onclick=`handleReturnOrder(${order._id})`) Return Order
+      .col-4
         .info-section
           h2 Delivery Info
-          p Shipping: 
-            -address=order.user.billing_address
-                p  Address : #{address.address} | City: #{address.city} | State: #{address.state} | Zip Code: #{address.zip_code} | Country: #{address.country} 
-          //- button View Profile
-      .product-info
-        .info-section
-          h2 Product Info
-          table
-            thead
-              tr
-                th Product
-                th Unit Price
-                th Quantity
-                th Total
-            tbody
-              each product in order.items
-                tr
-                  td #{product.name}
-                  td #{product.price}
-                  td #{product.quantity}
-                  td $#{(product.quantity* product.price).toFixed(2)}
-          .total-price
-            p Subtotal: $#{order.totalAmount}
-script.
-  const element =document.getElementById("deliveryDate")
-  const  createdDateElement = document.getElementById("createdDate")
-  const createdDate=createdDateElement.dataset.orderdate
-  console.log(createdDate)
-  let deliveryDate = document.getElementById("deliveryDate").dataset.date
-  const date = new Date(deliveryDate);
+          p Shipping:
+            - var address = order.user.billing_address
+            p Address: #{address.address}, City: #{address.city}, State: #{address.state}, Zip Code: #{address.zip_code}, Country: #{address.country}
+    .info-section
+      h2 Product Info
+      table
+        thead
+          tr
+            th Product
+            th Unit Price
+            th Quantity
+            th Total
+            th Actions
+        tbody
+          each product, index in order.items
+            - const hasPendingRequest =product.request.type!=null  
+            tr
+              td #{product.name}
+              td #{product.price}
+              td #{product.quantity}
+              td $#{(product.quantity * product.price).toFixed(2)}
+              td
+                if order.status=="cancelled"
+                  span.status.cancelled Order Cancelled
+                else if order.returnRequest.status!=null
+                  span.status.return  order returned 
+                else if order.returnRequest.status=='pending'
+                  span.status.returned order return requested
+                else
+                  if !hasPendingRequest
+                    if order.status!='delivered' 
+                      .action-button
+                        button(onclick=`handleCancelProduct('${order._id}', '${product.productId}')`) Cancel
+                    else if order.status=='delivered' 
+                      .action-button.return
+                        button(onclick=`handleReturnProduct('${order._id}', '${product.productId}')`) Return
+                  else
+                    if product.request.type=='cancel'
+                      span.status.cancelled Cancelled
+                    else if product.request.type=='return'
+                      if product.request.status=='pending'
+                        span requested return
+                      if product.request.status=='accepted'
+                        span return accepted
 
-    // Extract date components
-    let year = date.getFullYear();
-    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based, so we add 1
-    let day = date.getDate().toString().padStart(2, '0');
-    let hours = date.getHours().toString().padStart(2, '0');
-    let minutes = date.getMinutes().toString().padStart(2, '0');
-    let seconds = date.getSeconds().toString().padStart(2, '0');
-    let milliseconds = date.getMilliseconds().toString().padStart(3, '0');
 
-    // Construct the formatted date and time
-    const formattedDateTime = `${year}-${month}-${day}`;
+      .total-price
+        p Subtotal: $#{order.totalAmount}
 
-    element.innerHTML= `Expected delivery on or before ${formattedDateTime}`
-    element.style.color="#E4DEE4 !important;"
-  
+script(src="../../script/user/userOrderUpdate.js") 

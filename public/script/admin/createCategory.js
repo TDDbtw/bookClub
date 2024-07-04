@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Clear previous error messages
     document.getElementById('nameError').innerText = '';
     document.getElementById('descriptionError').innerText = '';
+    document.getElementById('thumbnailError').innerText = '';
+    document.getElementById('subCategoryError').innerText = '';
 
     // Validate category name
     if (name.length === 0) {
@@ -71,14 +73,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Validate image upload
     if (!image) {
-      alert('Please upload an image.');
+      document.getElementById('thumbnailError').innerText = 'Please upload an image.';
+      
       isValid = false;
     }
 
     // Validate subcategory inputs (optional)
     sub.forEach(input => {
       if (input.value.trim().length === 0) {
-        alert('Please enter a subcategory name.');
+      document.getElementById('subCategoryError').innerText = 'add a subcategory .';
         isValid = false;
       }
     });
@@ -128,7 +131,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => {
 document.getElementById('error').innerHTML=""
 document.getElementById('error').style.color="red"
-        alert(`Error adding category: ${error.response.data.error}` );
         console.log(error);
 document.getElementById('error').innerHTML=error.response.data.error
         // Handle errors appropriately (e.g., display error message to the user)

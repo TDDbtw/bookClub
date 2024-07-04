@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const Users = require("../models/users")
+const Wallet = require("../models/wallet")
 const ErrorResponse = require("../utils/errorResponse")
 const otp = require("../utils/otp")
 const jwt = require("jsonwebtoken")
@@ -156,7 +157,58 @@ const otpVerify = asyncHandler(async (req, res, next) => {
   if (verifyOTP(userOtp)) {
     // Send a success response
     res.json({ success: true, message: "OTP verification successful!" })
-    const users = await Users.create(req.body)
+    const newUserSave = await Users.create(req.body)
+      if(newUserSave){
+        req.session.registrationsuccess=true
+        if (req.session.referralCode) {
+        
+        const walletData = await Wallet.findOne({ user: newUserSave._id });
+        if (walletData) {
+          walletData.walletBalance +=50;
+          walletData.transaction.push({
+            type: "credit",
+            amount:50,
+          });
+        
+          await walletData.save(); 
+        }else{
+          const wallet = new Wallet({
+            user: newUserSave._id,
+            transaction:[{type:"credit",amount:50}],
+            walletBalance:50,
+          });
+        await wallet.save();
+        }
+      
+      
+        const referrer = await Users.findOne({
+          referralCode: req.session.referralCode,
+        });
+        const user = await Users.findOne({ _id: newUserSave._id });
+
+        referrer.userReferred.push(user.email);
+        let gets = await referrer.save();
+        const walletrefer = await Wallet.findOne({ user: referrer._id });
+
+          if (walletrefer) {
+            walletrefer.walletBalance +=100;
+            walletrefer.transaction.push({
+              type: "credit",
+              amount:100,
+            });
+          
+            await walletrefer.save(); 
+          }else{
+            const wallet = new Wallet({
+              user: referrer._id,
+              transaction:[{type:"credit",amount:100}],
+              walletBalance:100,
+          });
+          await wallet.save();
+          }
+          delete req.session.referralCode;
+
+        }
     res.redirect("/auth/login")
   } else {
     // Send a failure response
@@ -164,7 +216,7 @@ const otpVerify = asyncHandler(async (req, res, next) => {
       .status(400)
       .json({ success: false, message: "OTP verification failed." })
   }
-})
+  }} )
 
 const userLogin = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body

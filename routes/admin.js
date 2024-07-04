@@ -31,6 +31,7 @@ const {
   deleteProducts,
   getSearchProducts,
   updateImage,
+  removeImg,
   test,
 } = require("../controllers/admin/products")
 //
@@ -44,19 +45,42 @@ const {
   createCategory,
   updateCategoryById,
   getSearchCategory,
+  getSearchSubCategory,
+  changeStatus,
 } = require("../controllers/admin/category")
+
 const {
-getCouponList,
-  getAddCoupon
-  
+  renderCouponList,
+  renderCouponEdit,
+  getAddCoupon,
+  createCoupon,
+  updateCoupon,
+  getCouponList,
+
 } = require("../controllers/admin/coupons")
 
+const{
+createOffer,
+  getOfferList,
+  updateOffer,
+  renderEditOffer,
+  renderCreateOffer,
+  renderOfferList,
+  
+} = require("../controllers/admin/offer")
 
 
 const {
   getAdminOrderList,
   getOrderById,
   updateOrderById,
+  manageProductReturn,
+  manageOrderReturn,
+  renderSalesReport,
+  getSalesReport,
+  downloadPdf,
+  downloadExcel,
+
 } = require("../controllers/admin/order")
 //
 const { protect, admin } = require("../middleware/authMiddleware")
@@ -100,10 +124,11 @@ router
 router.route("/products/:id/delete").delete(protect, admin, deleteProducts)
 router.route("/products/:id/upload").get(loadupload).post(uploadImages)
 router.route("/products/image/:imageIndex").delete(protect, admin, updateImage)
-
+router.route("/products/:id/upload").get(loadupload).post(uploadImages)
+router.route("/products/:id/remove-image").post(protect, admin,removeImg)
 //
 router.route("/categories/:id/edit").get(protect, admin, getCategoryEdit)
-router.route("/categories/:id/edit").patch(protect, admin, createSubCategory)
+router.route("/categories/:id/edit").patch(protect, admin,catImg.single("image"), createSubCategory)
 router.route("/categories/delete").delete(protect, admin, deleteSubCategory)
 router
   .route("/categories/:id/delete")
@@ -111,6 +136,7 @@ router
 
 router.route("/category").get(protect, admin, getCategoryList)
 router.route("/category/search").get(protect, admin, getSearchCategory)
+router.route("/category/:id/edit/search").get(protect, admin, getSearchSubCategory)
 router
   .route("/category/create")
   .get(protect, admin, getCreateCategory)
@@ -118,6 +144,7 @@ router
 
   router.route("/category/:id/edit").patch(protect, admin,catImg.single("image"), updateCategoryById)
   router.route("/category/:id/delete").delete(protect,admin, updateCategoryById)
+  router.route("/category/:id/status").patch(protect,admin, changeStatus)
 // Oreder route
 // Get All Orders
 router.route("/orders").get(protect, admin, getAdminOrderList)
@@ -125,7 +152,25 @@ router
   .route("/orders/:id")
   .get(protect, admin, getOrderById)
   .put(protect, admin, updateOrderById)
+router.route('/order/:orderId/:productId/return').patch(protect, admin,manageProductReturn);
+router.route('/order/:orderId/return').patch(protect, admin,manageOrderReturn);
 
-router.route("/coupons").get(protect,admin,getCouponList)
 
+router.route("/sales-report").get(protect, admin,renderSalesReport )
+router.route("/sales-report/list").get(protect, admin,getSalesReport )
+router.route("/sales-report/download/excel").get(protect, admin,downloadExcel )
+router.route("/sales-report/download/pdf").get(protect, admin,downloadPdf )
+
+router.route("/coupons").get(protect,admin,renderCouponList)
+router.route("/coupons/create").get(protect,admin,getAddCoupon).post(protect,admin,createCoupon)
+router.route("/coupons/:id/edit").get(protect, admin,renderCouponEdit).patch(protect,admin,updateCoupon)
+router.route("/coupons/list").get(protect,admin,getCouponList)
+
+
+
+
+router.route("/offers").get(protect,admin,renderOfferList)
+router.route("/offers/create").get(protect,admin,renderCreateOffer).post(protect,admin,createOffer)
+router.route("/offers/list").get(protect,admin,getOfferList)
+router.route("/offers/:id/edit").get(protect,admin, renderEditOffer).patch(protect,admin,updateOffer)
 module.exports = router

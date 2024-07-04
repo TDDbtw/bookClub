@@ -2,7 +2,18 @@
 console.log(`Sub is running`)
 
 async function removeSubcategory(subCatId) {
-alert('do you want to delete this category')  
+
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
   try {
     const response = await fetch(
       `/admin/categories/delete?subCatId=${subCatId}`,
@@ -18,13 +29,18 @@ alert('do you want to delete this category')
     const data = await response.json()
     console.log(data)
     if (data.success) {
+        Swal.fire(
+          'Deleted!',
+          'Your category has been deleted.',
+          'success'
+        );
       console.log("Successfully deleted")
       window.location.reload(true)
     }
   } catch (error) {
     console.log("Error:", error)
     // Handle errors as needed
-  }
+  }}
 }
 
 async function addSubcategory() {
@@ -49,4 +65,13 @@ async function addSubcategory() {
     console.log("Error:", error)
     // Handle errors as needed
   }
+}
+
+
+
+async function getSearchSubCategory(searchValue) {
+  const response = await fetch(`/admin/category/:id/edit/search?search=${searchValue}`)
+  const responseData = await response.json()
+  let subCategory = responseData.subcategory
+ console.log(`${subCategory}`) 
 }

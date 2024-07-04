@@ -30,13 +30,8 @@ head
                   span.cat-img
                     img(src="../imgs/categoryImg/2024-06-14T22-36-10.165Z-fiction.png", alt="Fictions" style="width:60px")
                   a(href="/products") Fictions 
-                li.d-flex.align-items-center
-                  span.cat-img
-                    img(src="//www.roccat.com/cdn/shop/files/megamenu-technology_titan-switch-technology_200x.png?v=1671047986", alt="non-fictions" style="width:40px")
-                  a(href="/products") Non-fictions
-              | 
-          li
-            a(href="") About
+             
+
           li
             a(href="") Contact
           //- if authelse 
@@ -54,13 +49,13 @@ head
           
   
   
-          li
+          li#searchBarContainer(style="display: none;")
             form
               input#navSearch(type="search", placeholder="Search...")
               button(type="submit") Search
           .d-flex.iconCont
             li
-              a(href="mlm.com")
+              a(href="/user/wishlist")
                 svg(width="44" height="44" viewBox="0 0 44 44" fill="none")
                   path(d="M15.151 10C11.4697 10 8.48438 12.9547 8.48438 16.6C8.48438 19.5427 9.65104 26.5267 21.135 33.5867C21.3408 33.7118 21.5769 33.778 21.8177 33.778C22.0585 33.778 22.2947 33.7118 22.5004 33.5867C33.9844 26.5267 35.151 19.5427 35.151 16.6C35.151 12.9547 32.1657 10 28.4844 10C24.803 10 21.8177 14 21.8177 14C21.8177 14 18.8324 10 15.151 10Z" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
             li
@@ -80,6 +75,7 @@ head
                   a(href='/user/profile') Profile
                   if user
                     a(href="/auth/logout")#navLogout Logout
+                    a(href="/user/order")#navOrder My Orders
                   if user&& user.role=="admin"
                     a(href="/admin")#navAdmin Dashboard
                   
@@ -104,7 +100,16 @@ head
           getSearchProducts(searchValue)
         });
 
+         document.addEventListener("DOMContentLoaded", function() {
+            const searchBarContainer = document.getElementById("searchBarContainer");
 
+            // Check if the current route is /products
+            if (window.location.pathname === "/products") {
+              searchBarContainer.style.display = "block";
+            } else {
+              searchBarContainer.style.display = "none";
+            }
+          });
           document.cookie = 'connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
           const userIcon = document.querySelector(".user-icon")
           const profileOptions = document.querySelector(".profile-options")

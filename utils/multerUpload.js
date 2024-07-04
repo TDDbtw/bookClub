@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
 
 filename: function (req, file, cb) {
     const randomNumber = Math.floor(Math.random() * 10000); // Adding a random number
-    const sanitizedFilename = JSON.stringify(req.body.name).replace(/\s+/g, '-'); // Replace whitespaces with hyphens
+    const sanitizedFilename = req.body.name.replace(/\s+/g, '-'); // Replace whitespaces with hyphens
     const fileName = `${sanitizedFilename}-${randomNumber}`; // No original filename
     cb(null, fileName);
   }

@@ -8,14 +8,14 @@ const errorHandler = (err, req, res, next) => {
 console.log(`${err}`)
   // mongoose bad Object id
 
-  if (err.name === `CastError`) {
-    const message = `The ${
-      err.model
-      // .modelName
-      // .toLowerCase()
-    } with id of ${err.value} was not found.`
-    error = new ErrorResponse(message, 404)
-  }
+  // if (err.name === `CastError`) {
+  //   const message = `The ${
+  //     err.model
+  //     // .modelName
+  //     // .toLowerCase()
+  //   } with id of ${err.value} was not found.`
+  //   error = new ErrorResponse(message, 404)
+  // }
   // Mongoos duplicate key
 
 if (err.code === 11000 || err.name === "E11000") {

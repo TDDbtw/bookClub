@@ -1,31 +1,344 @@
 include ../partials/sidemenu
 #content-wrapper
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
-  link(rel="stylesheet", href="../../stylesheet/admin/coupons.css")
-  script(src="//https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
+  //- link(rel="stylesheet", href="../../stylesheet/admin/table.css")
+  script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
   script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous")
   //- script(defer src="../../script/admin/panel.js") 
   .container-fluid#containerFluid
-    h1#page-title Coupon Management
-      .table-container#table-container
-        table#coupon-table
-          thead
-            tr
-              th Coupon Code
-              th Discount Type
-              th Discount Value
-              th Validity Period
-              th Status
-              th Actions
-          tbody
-            tr
-              td SUMMER10
-              td Percentage
-              td 10%
-              td 2023-06-01 - 2023-09-30
-              td Active
+    style.
+       .pagination {
+        background-color: #0a1e1615;
+
+      	padding: 1rem;
+      	margin-bottom: 1rem;
+      	text-align: center;
+      	display: flex;
+      	justify-content: center;
+      }
+
+      #numbers {
+      	padding: 0;
+      	margin: 0 2rem;
+      	list-style-type: none;
+      	display: flex;
+      }
+
+      #numbers li a {
+      	color: #fff;
+      	padding: .5rem 1rem;
+      	text-decoration: none;
+      	opacity: .7;
+      }
+
+      #numbers li a:hover {
+      	opacity: 1;
+      }
+
+      #numbers li a.active {
+      	opacity: 1;
+      	background: #fff;
+      	color: #333;
+      }
+      * {
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .row {
+        //- display: table-row;
+      }
+
+      .toggle-button-cover {
+       
+        //- display: table-cell;
+        position: relative;
+        width: 120px;
+        /* height: 140px; */
+        box-sizing: border-box;
+      }
+
+      .button-cover {
+        //- height: 28px;
+        //- margin: 20px;
+        //- background-color: transparent;
+        //- box-shadow: 0 10px 20px -8px #c5d6d6;
+        border-radius: 4px;
+      }
+
+      .button-cover{
+        counter-increment: button-counter;
+        content: counter(button-counter);
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        color: #d7e3e3;
+        font-size: 12px;
+        line-height: 1;
+        padding: 5px;
+      }
+
+      .button-cover,
+      .knobs,
+      .layer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .button {
+        position: relative;
+        top: 50%;
+        width: 74px;
+        height: 36px;
+        margin: -22px auto 0 auto;
+        overflow: hidden;
+      }
+
+      .button.r,
+      .button.r .layer {
+        border-radius: 100px;
+      }
+
+      .button.b2 {
+        border-radius: 2px;
+      }
+
+      .checkbox {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 3;
+      }
+
+      .knobs {
+        z-index: 2;
+
+      }
+
+      .layer {
+        width: 100%;
+        background: rgba(235, 252, 244, 0.2);
+        transition: 0.3s ease all;
+        z-index: 1;
+      }
+
+      /* Button 2 */
+      #button-2 .knobs:before,
+      #button-2 .knobs:after {
+        content: "YES";
+        position: absolute;
+        top: 4px;
+        left: 9px;
+        width: 25px;
+        height: 25px;
+        color: #fff;
+        font-size: 8px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 1;
+        padding: 9px 4px;
+        background-color: #4caf50;
+        border-radius: 50%;
+        transition: 0.3s ease all;
+      }
+
+      #button-2 .knobs:before {
+        content: "YES";
+      }
+
+      #button-2 .knobs:after {
+        content: "NO";
+      }
+
+      #button-2 .knobs:after {
+        right: -28px;
+        left: auto;
+        background-color: #f44336;
+      }
+
+      #button-2 .checkbox:checked + .knobs:before {
+        left: -28px;
+      }
+
+      #button-2 .checkbox:checked + .knobs:after {
+        right: 4px;
+      }
+
+      #button-2 .checkbox:checked ~ .layer {
+        background-color: #ffb9b959;
+      }
+      td{
+        margin-top:20%;
+      }
+
+      #contentTbody th, #contentTbody td {
+      padding: 10px;
+      text-align: left; /* Default to left-align text */
+      border: 1px solid #ddd; 
+      }
+
+      #contentTbody th {
+      background-color: #f0f0f0; /* Light gray background for header */
+      font-weight: bold;
+      }
+
+      #ContentTbody tr:nth-child(even) {
+      background-color: #f9f9f9; /* Alternate row colors */
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+        gap: 20px; 
+      }
+
+      .metric-card {
+        background-color: white; 
+        background-color:#d1e7dd67 ; 
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+        text-align: center;
+      }
+
+      .metric-card i {
+        font-size: 3rem;
+        color: var(--complementary-color);
+        margin-bottom: 10px;
+      }
+
+      .metric-data h3 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+    .container-fluid#containerFluid
+      section.dashboard-overview
+        h2 Overview
+        .metric-grid
+          .metric-card
+            i.fas.fa-book(aria-hidden="true") 
+            .metric-data
+              h2#totalProductsCount
+              h3  #{totalCount} 
+              p    Total Coupons
+               
+          .metric-card
+            i.fas.fa-list-alt(aria-hidden="true")
+            .metric-data
+              h2#totalCategoriesCount
+              h3  #{activeCount} 
+              p  Active Coupons
+
+    h1.text-center.text-light.my-5 #{name}
+    a#createProduct.btn.btn-primary.mb-3(href="/admin/coupons/create") Create Coupons
+    table#my-table
+      thead#contentThead
+        tr#contentTheadTr
+          th Coupon Code
+          th Discount Value
+          th Validity Period
+          th Status
+          th Actions
+      tbody#contentTbody
+        if coupons
+          each coupon in coupons
+            tr#contentTbodyTr
+              td= coupon.code
+              td= coupon.discount
+              td= coupon.expiry
+              td= coupon.status
+              td= coupon.maxAmt
+              td#status.status #{coupon.status ? 'Active' : 'Unlisted'}
               td
-                button#edit-btn Edit
-                button#delete-btn Delete
-            // Add more coupon rows here
-      button.add-coupon-btn Add New Coupon
+                .toggle-button-cover
+                  .button-cover
+                    #button-2.button.r
+                      input#checkbox.checkbox(type="checkbox" data-status=coupon.status data-id=coupon.id)
+                      .knobs
+                      .layer
+              td#ed
+                a.btn.btn-sm.text-warning(href=`/admin/coupons/${coupon._id}/edit` style="width:5rem;") Edit
+                | &nbsp;
+                input#productId(type='hidden' value=`${coupon._id}`)
+      //.pagination
+      //ol#numbers
+ 
+
+  script(src="../../script/admin/pagination.js")
+  script(src="../../script/admin/categoryList.js")
+  script(src="../../script/admin/adminSearch.js")
+
+  script.
+      function errorToast(error) {
+        Toastify({
+          text: `${error}`,
+          duration: 3000,
+          gravity: 'bottom',
+          backgroundColor: '#ff3333',
+        }).showToast();
+      }
+
+      function successToast(message) {
+        Toastify({
+          text: `${message}`,
+          duration: 3000,
+          gravity: 'bottom',
+          backgroundColor: '#33cc33',
+        }).showToast();
+      }
+       var navSearchInput = document.getElementById("adminSearch");
+    // Add an event listener to the input element for the input event
+    navSearchInput.addEventListener("input", function() {
+      // Log the value of the input to the console
+      let searchValue=navSearchInput.value;
+      //- console.log("Input value:", searchValue);
+      getSearchCategory(searchValue)
+    });
+    
+    const items = document.querySelectorAll('input[data-id]');
+    
+     items.forEach(item => {
+      item.addEventListener('change', (e) => {
+        //- console.log(e.target.dataset.status);
+        let id =e.target.dataset.id;
+        console.log(id)
+        couponStatus(id)
+      });
+    });
+    
+
+    async function couponStatus(id) {
+      try {
+        const response = await axios.patch(`/admin/coupons/${id}/edit?change=true`, {});
+
+        if (response.data.success) {
+          await successToast('Coupon status changed');
+          window.location.reload(false)
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        errorToast(error);
+        // Handle errors as needed
+      }
+    }
+
+
+    const switchInputs = document.querySelectorAll('.checkbox');
+    const statuses = document.querySelectorAll('.status');
+      switchInputs.forEach((switchInput, index) => {
+    statuses[index].innerText === 'Unlisted'?statuses[index].style.color="#912727":statuses[index].style.color="green"
+
+    // Check the checkbox based on the initial value of the 'status' element
+    switchInput.checked =(statuses[index].innerText === 'Unlisted')?true:false
+       
+        
+      })
+
+

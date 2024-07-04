@@ -23,6 +23,7 @@ const {
 } = require("../controllers/user/address")
 const {getWallet} = require("../controllers/user/wallet")
 const { getCheckout } = require("../controllers/user/cart")
+const { getWishlist,getUserWishlist,addToWishlist,removeFromWishlist  } = require("../controllers/user/wishlist")
 const { getUserOrder, createOrder } = require("../controllers/user/order")
 const { protect, admin } = require("../middleware/authMiddleware")
 
@@ -51,6 +52,13 @@ router.route("/address/:id/remove").delete(protect, deleteAddress)
 router.route("/checkout").get(protect, getCheckout).post(protect, createOrder)
 router.route("/").post(total)
 router.route("/set").get(test)
+// wishlist 
+
+router.route("/wishlist").get(protect, getWishlist)
+router.route("/wishlist/list").get(protect, getUserWishlist)
+router.route("/wishlist/remove/:productId").delete(protect,removeFromWishlist )
+router.route("/wishlist/add/:productId").post(protect, addToWishlist)
+
 
 /// Order
 

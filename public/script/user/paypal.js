@@ -1,95 +1,119 @@
-window.paypal
-  .Buttons({
+
+// Helper function to fetch data from checkout form
+function getCheckoutFormData() {
+  const items = []; // Replace with logic to get items from your checkout form
+  const totalAmount = document.querySelector('[name=total_amount]').value; // Adjust based on your form structure
+  // Example: Assuming you have a list of items in your form
+  const itemElements = document.getElementById('CART').value;
+  itemElements.forEach(item => {
+    const id = item.productId;
+    const quantity = item.quantity;
+    const name= item.name
+    items.push({ id, quantity });
+  });
+
+  return { items, totalAmount };
+}
+
+// PayPal SDK URL and client ID
+const paypalSdkUrl = "https://www.paypal.com/sdk/js";
+const clientId = document.getElementById('ID').value; // Replace with your actual client ID
+const currency = "USD";
+const intent = "capture";
+const alerts = document.getElementById("alerts");
+
+// Function to dynamically load PayPal SDK
+function loadPayPalSDK() {
+  return new Promise(function(resolve, reject) {
+    const script = document.createElement('script');
+    script.src = `${paypalSdkUrl}?client-id=${clientId}&currency=${currency}&intent=${intent}`;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+// Wait for PayPal SDK to load
+loadPayPalSDK().then(() => {
+  // PayPal Buttons configuration
+  const paypalButtons = paypal.Buttons({
     style: {
-      shape: "rect",
-      layout: "vertical",
-      color: "gold",
-      label: "paypal",
-    } ,
-    async createOrder() {
-      try {
-        const response = await fetch("/api/orders", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // use the "body" param to optionally pass additional order information
-          // like product ids and quantities
-          body: JSON.stringify({
-            cart: [
-              {
-                id: "YOUR_PRODUCT_ID",
-                quantity: "YOUR_PRODUCT_QUANTITY",
-              },
-            ],
-          }),
-        });
+      shape: 'rect',
+      color: 'gold',
+      layout: 'vertical',
+      label: 'paypal'
+    },
 
-        const orderData = await response.json();
+    // Function to create PayPal order
+    createOrder: function(data, actions) {
+      const { items, totalAmount } = getCheckoutFormData();
 
-        if (orderData.id) {
-          return orderData.id;
+      return fetch("/order/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          items,
+          totalAmount,
+          intent
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to create PayPal order');
         }
-        const errorDetail = orderData?.details?.[0];
-        const errorMessage = errorDetail
-          ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-          : JSON.stringify(orderData);
+        return response.json();
+      })
+      .then(order => order.id)
+      .catch(error => {
+        console.error('Error creating PayPal order:', error);
+        alerts.innerHTML = `<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>An Error Occurred!</p></div>`;
+      });
+    },
 
-        throw new Error(errorMessage);
-      } catch (error) {
-        console.error(error);
-        // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-      }
-    } ,
-    async onApprove(data, actions) {
-      try {
-        const response = await fetch(`/api/orders/${data.orderID}/capture`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+    // Function executed when payment is approved
+    onApprove: function(data, actions) {
+      const order_id = data.orderID;
 
-        const orderData = await response.json();
-        // Three cases to handle:
-        //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-        //   (2) Other non-recoverable errors -> Show a failure message
-        //   (3) Successful transaction -> Show confirmation or thank you message
-
-        const errorDetail = orderData?.details?.[0];
-
-        if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-          // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-          // recoverable state, per
-          // https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-          return actions.restart();
-        } else if (errorDetail) {
-          // (2) Other non-recoverable errors -> Show a failure message
-          throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
-        } else if (!orderData.purchase_units) {
-          throw new Error(JSON.stringify(orderData));
-        } else {
-          // (3) Successful transaction -> Show confirmation or thank you message
-          // Or go to another URL:  actions.redirect('thank_you.html');
-          const transaction =
-            orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
-            orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
-          resultMessage(
-            `Transaction ${transaction.status}: ${transaction.id}<br>
-          <br>See console for all available details`
-          );
-          console.log(
-            "Capture result",
-            orderData,
-            JSON.stringify(orderData, null, 2)
-          );
+      return fetch("/order/capture-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          intent,
+          order_id
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to capture payment');
         }
-      } catch (error) {
-        console.error(error);
-        resultMessage(
-          `Sorry, your transaction could not be processed...<br><br>${error}`
-        );
-      }
-    } ,
-  })
-  .render("#paypal-button-container"); 
+        return response.json();
+      })
+      .then(order_details => {
+        // Display success message or handle successful payment
+        alerts.innerHTML = `<div class=\'ms-alert ms-action\'>Thank you ${order_details.payer.name.given_name} ${order_details.payer.name.surname} for your payment of ${order_details.purchase_units[0].payments.captures[0].amount.value} ${order_details.purchase_units[0].payments.captures[0].amount.currency_code}!</div>`;
+      })
+      .catch(error => {
+        console.error('Error capturing payment:', error);
+        alerts.innerHTML = `<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>An Error Occurred!</p></div>`;
+      });
+    },
+
+    // Function executed when payment is cancelled
+    onCancel: function(data) {
+      alerts.innerHTML = `<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>Order cancelled!</p></div>`;
+    },
+
+    // Function executed on error
+    onError: function(err) {
+      console.error('PayPal Error:', err);
+      alerts.innerHTML = `<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>An Error Occurred!</p></div>`;
+    }
+  });
+
+  // Render PayPal buttons
+  paypalButtons.render('#paypal-button-container');
+})
+.catch(error => {
+  console.error('Failed to load PayPal SDK:', error);
+  alerts.innerHTML = `<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>An Error Occurred!</p></div>`;
+});

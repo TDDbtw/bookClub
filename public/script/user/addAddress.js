@@ -185,7 +185,7 @@ function validateCountry() {
     countryInput.style.border = "2px solid #39ff14"
   }
 }
-
+if( document.getElementById("userInput").value.addresses &&  document.getElementById("userInput").value.addresses.length > 0){
 // Add a click event listener to the submit button
 document.getElementById("saveAddress").addEventListener("click", (event) => {
   // Prevent the form from submitting
@@ -250,6 +250,15 @@ validateZip()
   }
 })
 
+    countrySelect.addEventListener('change', () => {
+      validateCountry
+    });
+    stateSelect.addEventListener('change', () => {
+      validateCountry
+    });
+
+
+}
           async function removeAddress() {
               const addressIdElement = document.getElementById("addressInput");
               const userId = document.getElementById("userInput").value;
@@ -309,9 +318,3 @@ validateZip()
               });
           }
 
-    countrySelect.addEventListener('change', () => {
-      validateCountry
-    });
-    stateSelect.addEventListener('change', () => {
-      validateCountry
-    });

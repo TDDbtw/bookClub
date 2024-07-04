@@ -262,13 +262,12 @@ include ../partials/sidemenu
               .toggle-button-cover
                 .button-cover
                   #button-2.button.r
-                    input#checkbox.checkbox(type="checkbox" data-status=category.status data-id=category.id)
+                    input#checkbox.checkbox(type="checkbox" data-status=category.status data-id=category._id)
                     .knobs
                     .layer
             td#ed
               a.btn.btn-sm.text-warning(href=`/admin/categories/${category._id}/edit` style="width:5rem;") Edit
               | &nbsp;
-              a#deleteButton.btn.btn-sm.text-danger( data-id=category.id onclick="removeProduct()" style="width:5rem;") Delete 
               input#productId(type='hidden' value=`${category._id}`)
     .pagination
       ol#numbers
@@ -279,6 +278,24 @@ include ../partials/sidemenu
   script(src="../../script/admin/adminSearch.js")
 
   script.
+      function errorToast(error) {
+        Toastify({
+          text: `${error}`,
+          duration: 3000,
+          gravity: 'bottom',
+          backgroundColor: '#ff3333',
+        }).showToast();
+      }
+
+      function successToast(message) {
+        Toastify({
+          text: `${message}`,
+          duration: 3000,
+          gravity: 'bottom',
+          backgroundColor: '#33cc33',
+        }).showToast();
+      }
+
        var navSearchInput = document.getElementById("adminSearch");
     // Add an event listener to the input element for the input event
     navSearchInput.addEventListener("input", function() {
@@ -288,3 +305,39 @@ include ../partials/sidemenu
       getSearchCategory(searchValue)
     });
     
+    const items = document.querySelectorAll('input[data-id]');
+    
+     items.forEach(item => {
+      item.addEventListener('change', (e) => {
+        //- console.log(e.target.dataset.status);
+        let id =e.target.dataset.id;
+        console.log(`category id${id}`)
+        categoryStatus(id)
+      });
+    });
+
+    async function categoryStatus(id) {
+      try {
+        const response = await axios.patch(`/admin/category/${id}/status?change=true`, {});
+
+        if (response.data.success) {
+          await successToast('Coupon status changed');
+          window.location.reload(false)
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        errorToast(error);
+        // Handle errors as needed
+      }
+      }
+
+    const switchInputs = document.querySelectorAll('.checkbox');
+    const statuses = document.querySelectorAll('.status');
+      switchInputs.forEach((switchInput, index) => {
+    statuses[index].innerText === 'Unlisted'?statuses[index].style.color="#912727":statuses[index].style.color="green"
+
+    // Check the checkbox based on the initial value of the 'status' element
+    switchInput.checked =(statuses[index].innerText === 'Unlisted')?true:false
+       
+        
+      })

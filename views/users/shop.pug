@@ -16,6 +16,9 @@ link(rel='stylesheet', href='../stylesheet/user/sort.css')
                 li(data-sub-cat=subcategory.id)= subcategory.name 
   .filter-icon.text-decoration-none
     label.text-white.me-3#clearBtn() clear all
+    label.text-white.me-3#clearSearch search
+    span.btn.text-white.me-3#clearSort sort
+    label.text-white.me-3#clearFilter Filter
     label#sort-by-label(for='sortBy') Sort By:
     select#sortBy
       option(value='lowToHigh') Price: Low to High
@@ -27,9 +30,12 @@ link(rel='stylesheet', href='../stylesheet/user/sort.css')
       path(d='M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0')
       path(d='M21 21l-6 -6') 
   .two
+    if user
+      input#userDetails(type="hidden", name="userDetails" value=`${user._id}`)
     section#cardSection.row(style="width:100%;  margin-left:10%;")
-      //each product in products
-        include ../partials/card 
+      if !user
+        each product in products
+          include ../partials/card 
 
     nav 
       ul#pagination.pagination
@@ -44,8 +50,42 @@ link(rel='stylesheet', href='../stylesheet/user/sort.css')
         item.classList.toggle('open');
       });
     });
-    Toastify({
-    text: "This is a toast",
-    duration: 3000
+    
+      const addToWishlistButtons = document.querySelectorAll('add-to-wishlist-btn');
+      console.log(`wishlist buttons -- ${addToWishlistButtons.length}`)
+      addToWishlistButtons.forEach(button => {
+      console.log(`button ${button} clicke`)
+        button.addEventListener('click', handleAddToWishlist);
+      });
 
-    }).showToast();
+       function handleAddToWishlist(event) {
+      console.log(`wishlist clicked`)
+        const productId = event.target.dataset.productId;
+
+        try {
+          const response =  axios.post(`user/wishlist/add/${productId}`); // Adjust route if needed
+          if (response.status === 200) {
+             
+          Toastify({
+          text: "Item added to wishlist",
+          duration: 3000
+          }).showToast();
+          } else {
+            console.error('Failed to add item to cart:', response.status);
+            alert('Failed to add item to cart.');
+          }
+        } catch (error) {
+          console.error('Error adding item to cart:', error);
+          alert('An error occurred while adding the item to the cart.');
+        }
+      }
+
+      const pdpItems = document.querySelectorAll('.productCard');
+
+      pdpItems.forEach(button => {
+        button.addEventListener('click', PDP);
+      });
+      async  function PDP(event) {
+        const productId = event.target.dataset.productId;
+        window.location.href = `/products/${productId}`;
+        }

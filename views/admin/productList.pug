@@ -1,7 +1,7 @@
 include ../partials/sidemenu
 #content-wrapper
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
-  //- link(rel="stylesheet", href="../../stylesheet/admin/table.css")
+  link(rel="stylesheet", href="../../stylesheet/user/sortTable.css")
   script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
   script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous")
   //- script(defer src="../../script/admin/panel.js") 
@@ -238,7 +238,7 @@ include ../partials/sidemenu
 
     h1.text-center.text-light.my-5 #{name}
     a#createProduct.btn.btn-primary.mb-3(href="/admin/products/create") Create Product
-    table#my-table
+    table#my-table.table-sortable
       thead#contentThead
         tr#contentTheadTr
           //- th(scope="col") #
@@ -280,6 +280,7 @@ include ../partials/sidemenu
 
   script(src="../../script/admin/pagination.js")
   script(src="../../script/admin/adminSearch.js")
+  script(src="../../script/user/sortTable.js")
 
   script.
        var navSearchInput = document.getElementById("adminSearch");
@@ -301,6 +302,18 @@ include ../partials/sidemenu
       });
     });
     async function removeProduct(productId) {
+
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
     try {
       const response = await fetch(`/admin/products/${productId}/delete`, {
         method: "DELETE",
@@ -313,12 +326,17 @@ include ../partials/sidemenu
       const data = await response.json();
   
       if (data.success) {
+        Swal.fire(
+          'Deleted!',
+          'Your category has been deleted.',
+          'success'
+        );
         window.location.href = "/admin/products";
       }
     } catch (error) {
       console.error("Error:", error);
       // Handle errors as needed
-    }
+    }}
     }
     const items = document.querySelectorAll('input[data-id]');
     

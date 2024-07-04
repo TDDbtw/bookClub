@@ -352,7 +352,7 @@ const onetwo = asyncHandler(async (req, res, next) => {
   try {
     // Pagination parameters
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 5;
+    const limit = parseInt(req.query.limit) || 3;
 
     // Search and sorting parameters
     const search = req.query.search || "";

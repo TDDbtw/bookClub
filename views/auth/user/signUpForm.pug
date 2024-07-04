@@ -18,6 +18,10 @@ block rest
         label(for="confirm password") Confirm Password *
         input#confirmPassword.form-input(type="password", name="confirmPassword",oninput='validateConfirmPassword()' placeholder="Enter your password again..", required)
         span#confirmPasswordError
+        label(for="") Refferral Code
+        input#referralCode.form-input(type="text"  name="referralCode"  placeholder="Enter the referral code" )
+        span#refError
+        span#confirmPasswordError
         span.text-danger.ms-3#errorMessage
         button#formButton.transition-3d-hover(type="submit") Create Account
       p OR

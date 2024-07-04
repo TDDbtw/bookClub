@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    title Sales Report
+    link(rel='stylesheet', href='/stylesheets/sales-report.css')
+    link(rel="stylesheet", href="../../stylesheet/admin/salesReport.css")
+  body
+    .container-fluid
+      h1 Sales Report
+      .filter-form
+        form(action='#', method='get', id='filterForm')
+          .form-group
+            label(for='filterType') Filter By
+            select(id='filterType', name='filterType')
+              option(value='daily') Daily
+              option(value='weekly') Weekly
+              option(value='yearly') Yearly
+              option(value='custom') Custom Date Range
+          .form-group#date-range-group.hidden
+            label(for='startDate') Start Date
+            input(type='date', id='startDate', name='startDate')
+            label(for='endDate') End Date
+            input(type='date', id='endDate', name='endDate')
+          .form-group
+            button(type='submit') Generate Report
+      .report-container
+        p No sales data available for the selected period.
+      .download-buttons
+        button(type='button', id='downloadPdf') Download PDF
+        button(type='button', id='downloadExcel') Download Excel
+  script(src="../../script/admin/sales-report.js")

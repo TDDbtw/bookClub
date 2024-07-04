@@ -20,6 +20,7 @@ link(rel="stylesheet", href="../../../stylesheet/admin/category.css")
             span Drag and drop image here, or click add image
         input(type='file' id='file-input' name='image' accept='image/*' required)
         #image-container(style='height:90px; display:flex; ')
+        span#thumbnailError(style='color: red;')
       .general-info
         label
           | Category Name
@@ -35,6 +36,7 @@ link(rel="stylesheet", href="../../../stylesheet/admin/category.css")
         .subcategory-item
           input(type='text' name='subcategories[]' placeholder='Enter subcategory name')
           button.add-subcategory(type='button') Add More
+      #subCategoryError(style='color: red;')
     .buttons
       button.cancel(type='button') Cancel
       button.add-category(type='submit') Add Category

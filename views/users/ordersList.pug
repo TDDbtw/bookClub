@@ -1,12 +1,13 @@
 include ../partials/navbar
 link(rel='stylesheet' href='../../stylesheet/user/addAddress.css')
 link(rel='stylesheet' href='../../stylesheet/navbar.css')
-//- script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+link(rel='stylesheet' href='../../stylesheet/user/sortTable.css')
 style.
   body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      color:#fbfbfb;
   }
 
   header {
@@ -16,62 +17,56 @@ style.
       padding: 10px 0;
   }
 
-  .order-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
-      gap: 20px;
-      padding: 20px;
+  .order-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
   }
 
-  .order-item {
+  .order-table th,
+  .order-table td {
       border: 1px solid #ccc;
       padding: 10px;
-      border-radius: 5px;
+      text-align: left;
   }
 
-  .order-item h2 {
-      margin-top: 0;
-  }
-
-  .order-item p {
-      margin: 5px 0;
-  }
-
-  .order-details {
-      //- display: none;
-      margin-top: 10px;
-      padding: 10px;
-      //- background-color: #f9f9f9;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+  .order-table th {
+      background-color: #f2f2f2;
+      background-color: #10382a;
   }
 
   .order-details-btn {
-      background-color: #333;
-      color: #fff;
-      border: none;
+      background-color: #68899a;
+      color: white;
       padding: 5px 10px;
       border-radius: 5px;
       cursor: pointer;
+      text-decoration: none;
   }
 
   .order-details-btn:hover {
-      background-color: #555;
+      background-color: #4d6c7b;
+      text-decoration: none;
   }
-  .order-empty{
-    display:flex;
-    justify-content:center;
-    flex-direction:column;
-    align-items:center;
-    font-size: 19px; 
-    }
-    .shop-button{
-    height:4rem;  
-    font-size: 19px; 
-    }
-    .no-order{
-    font-size:23px;  
-    }
+
+  .order-empty {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      font-size: 19px;
+  }
+
+  .shop-button {
+      height: 4rem;
+      font-size: 19px;
+  }
+
+  .no-order {
+      font-size: 23px;
+  }
+
+
 .container-fluid#mainAdd
   .my-account
     .col-sm-3.my-account-menu
@@ -93,28 +88,54 @@ style.
       h1.page-title
         span.base(data-ui-id='page-title-wrapper')
           | My Orders
-    section.order-list
-      each order in orders
-        .order-item
-          h2 Order #{order._id}
-          p Product: 
-            if products.length > 2
-                |  #{products[0].name} | #{products[1].name} | and #{products.length-2} more item #{order.name}
-            else
-              each item in products
-                  |  #{item.name}|
-          p Price: $#{order.totalAmount}
-          p Status: #{order.status}
-          a.order-details-btn(href=`/user/order/${order._id}`) View Details
-          //- .order-details
-            p Order Date: MM/DD/YYYY
-            p Shipping Address: Address Line 1, City, Country
-            p Tracking Number: XXXXXXXX
-    if orders.length==0    
-        .order-empty
-            p.no-order.text-warning you havent ordered any items yet! 
-            a.shop-button.btn.btn-outline-info(href="/products") Shop Now
+    if orders.length > 0
+      table.order-table.table-sortable
+        thead
+          tr
+            th Order ID
+            th Order Placed on 
+            th Product(s)
+            th Price
+            th Payment Method
+            th Status
+            th Actions
+        tbody
+          each order in orders
+            tr
+              td Order #{order._id}
+              -let date=moment(order.created_at).format('MM/DD/YYYY')
+              td#createdDate(data-orderdate= order.created_at) #{date}
+              td
+                if order.items.length < 2
+                  each product in order.items
+                    | #{product.name}
+                else
+                  |#{order.items[0].name},
+                  |#{order.items[1].name} 
+                  -let len = order.items.length - 2
+                  | and #{len} more..
+
+              td $#{order.totalAmount}
+              td $#{order.payment_method}
+              if order.returnRequest.status==null
+                td  #{order.status}
+              else
+                td return #{order.returnRequest.status}  
+              td 
+                a.order-details-btn.text-white(href=`/user/order/${order._id}`) View Details
+      .pagination
+        if page > 1
+          a(href=`/user/orders?page=${page - 1}&limit=${limit}`) Previous
+        each p in [...Array(totalPages).keys()]
+          a(href=`/user/orders?page=${p + 1}&limit=${limit}`) #{p + 1}
+        if page < totalPages
+          a(href=`/user/orders?page=${page + 1}&limit=${limit}`) Next
+    else
+      .order-empty
+        p.no-order.text-warning You haven't ordered any items yet!
+        a.shop-button.btn.btn-outline-info(href="/products") Shop Now
   script(src="../../script/user/validateAddress.js") 
+  script(src="../../script/user/sortTable.js") 
   script.
     $(document).ready(function() {
         // Get the current URL
@@ -128,34 +149,28 @@ style.
           if (currentUrl === href) {
             // Apply the background color to the parent li
             $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
-
           }
         });
       });
-      const countrySelect = document.getElementById('country');
-      const stateSelect = document.getElementById('state');
-      const countryData = countrySelect.getAttribute('data-country');
 
-        // Parse the JSON string to get the countries data
-        const countries = JSON.parse(countryData);
-      
+      const  createdDateElement = document.querySelectorAll(".createdDate")
+      const element= createdDateElement
+      const createdDate=createdDateElement.dataset.orderdate
+      console.log(createdDate)
 
-      // Populate state select based on country selection
-      countrySelect.addEventListener('change', () => {
-        stateSelect.innerHTML = ''; // Clear existing options
+      const date = new Date(createdDate);
 
-        // Get the selected country
-        const selectedCountry = countrySelect.value;
+        // Extract date components
+        let year = date.getFullYear();
+        let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based, so we add 1
+        let day = date.getDate().toString().padStart(2, '0');
+        let hours = date.getHours().toString().padStart(2, '0');
+        let minutes = date.getMinutes().toString().padStart(2, '0');
+        let seconds = date.getSeconds().toString().padStart(2, '0');
+        let milliseconds = date.getMilliseconds().toString().padStart(3, '0');
 
-        // Get the states for the selected country
-        const states = countries.find(country => country.name === selectedCountry).states;
-        console.log(states)
+        // Construct the formatted date and time
+        const formattedDateTime = `${year}-${month}-${day}`;
 
-        // Add the states as options to the state select
-        states.forEach(state => {
-          const option = document.createElement('option');
-          option.value = state;
-          option.textContent = state;
-          stateSelect.appendChild(option);
-        });
-      });
+        element.innerHTML= `${formattedDateTime}`
+        element.style.color="#E4DEE4 !important;"

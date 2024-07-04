@@ -7,7 +7,8 @@ const ErrorResponse = require(`../../utils/errorResponse`)
 const asyncHandler = require("../../middleware/async")
 const jwt = require("jsonwebtoken")
 // const colors = require("colors")
-const multer = require("multer")
+const fs = require("fs")
+const path = require("path")
 const sharp = require("sharp")
 
 let userVar = ""
@@ -193,7 +194,20 @@ const getProducts = asyncHandler(async (req, res, next) => {
     if (!existingProduct) {
       return res.status(404).json({ error: "Product not found" });
     }
-   console.log(`${JSON.parse(req.body)}`) 
+
+
+    let fileData = {}
+    if (req.files) {
+      // fileData = req.files[0]
+      console.log("file Is".yellow.inverse)
+      console.log(req.files[0])
+      images = req.files.map((item, index) => {
+        return item.path.replace("public", "..")
+      })
+      console.log(images)
+    }
+
+console.log(`existing product ${existingProduct.image}`)
     const updatedProductData = {
       name: req.body.name,
       price: req.body.price,
@@ -201,9 +215,19 @@ const getProducts = asyncHandler(async (req, res, next) => {
       author:req.body.author,
       stockCount:req.body.stockCount,
       category:req.body.category,
+      subcategories:req.body.subcategory
 
     }; // Create a copy of req.body
-
+    if(req.files){ 
+      if(images.length==0){
+        updatedProductData.image= existingProduct.image
+      }
+      else{
+console.log(`${Array.isArray(images)}`.bgBlue)
+console.log(`existing product image -- > ${Array.isArray(existingProduct.image)}`.bgCyan)
+        updatedProductData.image=(existingProduct.image).concat(images)
+      }
+    }
 
     console.log(updatedProductData)
     // Handle status toggle
@@ -211,11 +235,9 @@ const getProducts = asyncHandler(async (req, res, next) => {
       updatedProductData.status =
         req.body.status === "change" ? !existingProduct.status : existingProduct.status;
     }
-console.log(`${req.body.image}`)
+
+    console.log(`${req.body.image}`)
     // Handle image updates (if needed)
-    if (req.files && req.files.image) {
-      updatedProductData.image = getImagePathsFromRequest(req);
-    }
 
     // Update the product
     await Products.updateOne({ _id: productId }, { $set: updatedProductData });
@@ -301,6 +323,55 @@ const test = asyncHandler(async (req, res, next) => {
   res.json({ products })
 })
 
+const removeImg = asyncHandler(async (req, res, next) => {
+let imageName = req.body.name;
+const  item=req.body.name
+const parts = imageName.split('/');
+imageName = parts[parts.length - 1];
+  if (removeImage(req.params.id,imageName,item)) {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+
+})
+
+const imagesDirectory = path.join(__dirname, '../../public/imgs/productImgs/');
+
+const removeImage = async (productId, imageName,item) => {
+  const imagePath = path.join(imagesDirectory, imageName);
+  console.log(`Attempting to remove image: ${imagePath}`.bgYellow);
+
+  if (fs.existsSync(imagePath)) {
+    console.log('File exists.'.bgRed);
+    try {
+      fs.unlinkSync(imagePath);
+      console.log('File successfully deleted.'.bgGreen);
+
+      // Update the MongoDB document
+      const product = await Products.findById(productId);
+      if (product) {
+       const ind = product.image.indexOf(item) 
+        product.image.splice(ind,1)
+        await product.save();
+        console.log('Image path successfully removed from database.'.bgCyan);
+        return true;
+      } else {
+        console.error('Product not found.'.yellow);
+        return false;
+      }
+    } catch (error) {
+      console.error(`Error removing image: ${error.message}`);
+      return false;
+    }
+  } else {
+    console.log('File does not exist.'.bgRed);
+    return false;
+  }
+};
+
+
+module.exports = removeImage;
 module.exports = {
   getProducts,
   updateProducts,
@@ -314,5 +385,7 @@ module.exports = {
   createProduct,
   addProduct,
   getSearchProducts,
+  removeImg,
   test,
+
 }

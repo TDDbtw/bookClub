@@ -1,5 +1,6 @@
 const User = require("../../models/users")
 const Products = require("../../models/products")
+const Wallet = require("../../models/wallet")
 const Cart = require("../../models/cart")
 const ErrorResponse = require(`../../utils/errorResponse`)
 const asyncHandler = require("../../middleware/async")

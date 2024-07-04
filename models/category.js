@@ -15,6 +15,12 @@ const CategorySchema = new mongoose.Schema({
     type: String,
     // required: true,
   },
+  status: {
+    type: Boolean,
+    default: true,
+    required: false,
+  },
+
 })
 
 module.exports = mongoose.model("Category", CategorySchema)

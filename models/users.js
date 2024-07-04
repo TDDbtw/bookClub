@@ -76,14 +76,25 @@ const UserSchema = new mongoose.Schema({
     default: true,
     required: false,
   },
-  resetpasswordtoken: String,
-  resetpasswordexpires: Date,
+  referralCode: {
+    type: String,
+    default: generateRefCode,
+    unique: true, 
+},
+userReferred: [{
+    type: String,
+
+}],
   createdAt: {
     type: Date,
     default: Date.now,
   },
 })
 UserSchema.pre("save", async function (next) {
+if (!this.isModified("password")) {
+    return next();
+  }
+console.log(`hashed`.red)
   const salt = await bcrypt.genSalt(10)
   this.password = await bcrypt.hash(this.password, salt)
 })
@@ -92,6 +103,14 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
 
+function generateRefCode() {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
 // JwT
 
 const User = mongoose.model("User", UserSchema)

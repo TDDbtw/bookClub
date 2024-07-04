@@ -201,3 +201,20 @@ async function getSearchProducts(searchValue) {
     container.appendChild(cardCol)
   })
 }
+
+function errorToast(error) {
+    Toastify({
+        text: error.response.data.error,
+        duration: 3000, 
+      gravity: 'bottom', 
+      backgroundColor: '#ff3333', 
+    }).showToast();
+}
+function successToast(message) {
+    Toastify({
+        text: message,
+        duration: 3000, 
+      gravity: 'bottom', 
+      backgroundColor: '#33cc33', 
+    }).showToast();
+}

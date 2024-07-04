@@ -2,6 +2,14 @@ include ../partials/navbar
 link(rel='stylesheet' href='../../../stylesheet/user/addAddress.css')
 link(rel='stylesheet' href='../../../stylesheet/navbar.css')
 script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+style.
+  .fieldset{
+    width:862px;
+    }
+  .form-address{
+    width:66vw;
+    }
+
 .container-fluid#mainAdd
   .my-account
     .col-sm-3.my-account-menu
@@ -20,38 +28,7 @@ script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
     .page-title-wrapper
       h1.page-title
         span.base(data-ui-id='page-title-wrapper')
-          | Edit Address
-    input(name='form_key' type='hidden' value='viRUoafbYsKQ7xXw')
-    #authenticationPopup.style-loXXT(data-bind="scope:'authenticationPopup', style: {display: 'none'}")
-      if user.addresses && user.addresses.length > 0
-        each address, index in user.addresses
-          p Address #{index+1} | Address: #{address.address} | City: #{address.city} | State: #{address.state} | Zip Code: #{address.zip_code} | Country: #{address.country} 
-          .address-information-links.ms-5.text-decoration-none
-            a#editAddress.mb-4.address-information-link.text-decoration-none(href=`/user/address/${address._id}/edit`) Edit
-              span.ms-3 |
-            a#deleteAddress.text-danger.ms-3.address-information-link.text-decoration-none(value=address.id onclick="removeAddress()") 
-              svg.icon.icon-tabler.icon-tabler-trash(xmlns='http://www.w3.org/2000/svg', width='20', height='20', viewBox='0 0 24 24', stroke-width='1.5', stroke='#ff2825', fill='none', stroke-linecap='round', stroke-linejoin='round')
-                path(stroke='none', d='M0 0h24v24H0z', fill='none')
-                path(d='M4 7l16 0')
-                path(d='M10 11l0 6')
-                path(d='M14 11l0 6')
-                path(d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12')
-                path(d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3')
-            if user.billing_address && user.billing_address._id == address.id
-              p.mt-3(style="color: #007d99;") Default Billing Address
-            else
-              input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
-              label(for='billing_address').ms-1.me-2 Billing Address
-            if user.shipping_address && user.shipping_address._id == address.id
-              p.mt-3(style="color: #007d99;") Default Shipping Address
-            else
-              input#shipping_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='shipping_address' hx-target="body" value=`${address._id}`).ms-3
-              label(for='shipping_address').ms-1  Shipping Address
-            form.deleteForm(action=`/user/address/${address._id}/remove` method="delete")
-              input#userInput(type="hidden", name="user", value=user.id)
-              input#addressInput(type="hidden", name="address", value=address._id)
-      else
-        p You have not added any addresses yet.          
+          | Edit Addressss
     form.form-address-edit(action=`/user/address/${address._id}/edit`,method='put')
       //- Address
       fieldset.fieldset.me-5
@@ -127,7 +104,7 @@ script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
             span
               | Go back
         #errorMessage
-  script(src="/script/user/validateEditAddress.js") 
+  script(src="../../script/user/validateEditAddress.js")
   script.
     $(document).ready(function() {
         // Get the current URL

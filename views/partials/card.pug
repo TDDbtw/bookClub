@@ -3,8 +3,8 @@
     if product.stockCount<0 || !product.status
       .card-img-overlay(style='background-color: rgba(0, 0, 0, 0.733); border-radius: 30.75px;')
         .out-of-stock-overlay Sorry, this product is out of stock.
-    a(href=`/products/${product._id}`)
-      .heart-icon(style="text-align: right; margin-top:26.67px;margin-right:25.3px;", href=`/products/${product._id}`)
+    a.add-to-wishlist-btn(href=`` data-product-id=`${product._id}`)
+      .heart-icon(style="text-align: right; margin-top:26.67px;margin-right:25.3px;", href=`/user/wishlist`)
         svg(xmlns="http://www.w3.org/2000/svg", width="34", height="34", viewBox="0 0 34 34", fill="none")
           a(href=`/products/${product._id}`)
           g(clip-path="url(#clip0_25_1073)")
@@ -31,6 +31,7 @@
       input(type="hidden", name="quantity", value=1)
       if user
         input(type="hidden", name="user" value=`${user.id}`)
+        input(type="hidden", name="userDetails" value=`${user}`)
       //- button#addToCart.ms-3(type="submit")
       button.card-button.ms-3(type='submit' style="color:#b4ffff;" ) Add to Cart
        svg.icon.icon-tabler.icon-tabler-arrow-narrow-right(xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' stroke-width='1' stroke='#b4ffff' fill='none' stroke-linecap='round' stroke-linejoin='round')

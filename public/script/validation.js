@@ -175,6 +175,7 @@ document.getElementById("formButton").addEventListener("click", (event) => {
   const emailError = document.getElementById("emailError")
   const passwordError = document.getElementById("passwordError")
   const confirmPasswordError = document.getElementById("confirmPasswordError")
+  const refError=document.getElementById("refError")
 
   if (
     nameError.innerText.length > 0 ||

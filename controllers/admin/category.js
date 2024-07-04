@@ -101,7 +101,7 @@ const createCategory = asyncHandler(async (req, res, next) => {
   }
 
   // Check if category with the same name already exists
-  const existingCategory = await Category.findOne({ name });
+  const existingCategory = await Category.findOne({ name: { $regex: new RegExp(name, 'i') } });
   if (existingCategory) {
     return next(new ErrorResponse("Category with this name already exists", 400));
   }
@@ -183,8 +183,46 @@ const getCategoryById = asyncHandler(async (req, res, next) => {
 
 
 
+const changeStatus = asyncHandler(async (req, res, next) => {
+
+console.log(`req change is${req.query.change}`.red)
+ const changeStatus = await Category.findById(req.params.id);
+  if(req.query.change){
+    if (changeStatus.status==true){
+        await Category.updateOne(
+          { _id: req.params.id },
+          {
+            $set: {
+              status: false
+            },
+          }
+        );
+    }
+    else{
+        await Category.updateOne(
+          { _id: req.params.id },
+          {
+            $set: {
+              status: true
+            },
+          }
+        );
+
+    }
+
+
+
+   res.status(200).json({success:true ,message: 'Category status updated ' });
+  }
+
+
+});
+
+
+
 const updateCategoryById = async (req, res) => {
   try {
+
     const { name, description, subcategories } = req.body;
     const  catId  = req.params.id
     const subcategoriesArray = JSON.parse(subcategories);
@@ -194,7 +232,7 @@ const updateCategoryById = async (req, res) => {
     if (!category) {
       return res.status(404).json({ error: 'Category not found' });
     }
-
+    
     // Update category details
     category.name = name || category.name;
     category.description = description || category.description;
@@ -202,12 +240,22 @@ const updateCategoryById = async (req, res) => {
     // Handle image file if provided
     if (req.file) {
       // Delete the old image file if it exists
-      if (category.image) {
-        fs.unlinkSync(path.join(__dirname, '..', category.image));
-      }
-      category.image = `/uploads/${req.file.filename}`;
+     let image=req.file.path.replace("public", "..")
     }
 
+    if(req.files){ 
+      if(image.length==0){
+        category.image= category.image
+      }
+      else{
+        category.image=image
+      }
+    }
+
+    if (req.body.status) {
+      category.status =
+        req.body.status === "change" ? !category.status : category.status;
+    }
     // Save updated category
     await category.save();
 
@@ -288,6 +336,23 @@ const getSearchCategory = asyncHandler(async (req, res, next) => {
   }
   res.json(responseData)
 })
+
+
+const getSearchSubCategory = asyncHandler(async (req, res, next) => {
+  let query = {}
+  const categoryId= req.param.id
+  // if (req.query.search) {
+    // }
+ const subcategories = await Subcategories.find({
+      name: { $regex: query.search, $options: 'i' },
+      category: categoryId
+    });
+  const responseData = {
+    subcategory:subcategories
+  }
+console.log(`${responseData}`)
+  res.json(responseData)
+})
 module.exports = {
   createSubCategory,
   deleteSubCategory,
@@ -299,5 +364,7 @@ module.exports = {
   getCategoryEdit,
   getCategoryList,
   getCreateCategory,
-getSearchCategory
+getSearchCategory,
+getSearchSubCategory,
+  changeStatus,
 };

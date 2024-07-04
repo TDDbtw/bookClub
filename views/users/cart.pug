@@ -26,9 +26,9 @@ include ../partials/navbar
             each item in cart.items
               tr
                 td
-                  .product-info
-                    img(src=item.image , alt= item.name )
-                    span= item.name
+                  a(href="google.com").product-info
+                    img(src=item.image , alt= item.name  )
+                    span(onclick='clicK()')= item.name
                 td $#{item.productPrice.toFixed(2)}
                 td
                   .quantity-controls
@@ -56,3 +56,7 @@ include ../partials/navbar
           a.btn.checkout-btn(href="/user/checkout") Checkout
   script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js')
   script(src='../script/user/cartGt.js')
+  script.
+    function clicK(){
+      console.log('clicked')
+      }

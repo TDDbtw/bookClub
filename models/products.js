@@ -70,6 +70,7 @@ const ProductSchema = new mongoose.Schema(
         ref: "Subcategory",
       },
     ],
+
   },
   { timestamps: true } // Automatically manages createdAt and updatedAt timestamps
 );

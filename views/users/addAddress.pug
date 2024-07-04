@@ -31,12 +31,18 @@ link(rel='stylesheet' href='../../stylesheet/navbar.css')
           .address-card
             p.address-header Address #{index + 1}
             .address-items
-              p Address: #{address.address}
-              p City: #{address.city}
-              p State: #{address.state}
-              p Zip Code: #{address.zip_code}
-              p Country: #{address.country}
-            .address-information-links
+              p Address:
+              span.ms-1.me-1 #{address.address}
+              p City:
+              span.ms-1.me-1 #{address.city}
+              p State:
+              span.ms-1.me-1 #{address.state}
+              p Zip Code:
+              span.ms-1.me-1 #{address.zip_code}
+              p Country:
+              span.ms-1.me-1 #{address.country}
+
+              .address-information-links
               a#editAddress(href=`/user/address/${address._id}/edit`) Edit
               input#addressInput(type="hidden", name="address", value=address._id)
               a#deleteAddress.text-danger.ms-3(address-id=address._id onclick="removeAddress()")

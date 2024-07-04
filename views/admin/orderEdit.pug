@@ -14,7 +14,6 @@ include ../partials/sidemenu
       width:289px;
       font-size:14px;
       font-weight:400;
-      
     }
     .container-fluid{
       display:flex;
@@ -31,7 +30,6 @@ include ../partials/sidemenu
     body{
       color:#CAC5C5;
     }
-   
     .orderStatus {
       border: 1px solid #ccc;
       padding: 20px;
@@ -49,10 +47,7 @@ include ../partials/sidemenu
       margin-bottom: 10px;
     }
     .save {
-      //- margin-top: 20px;
       margin-left:1rem;
-     
-
     }
     .container-fluide#containerFluid .container-fluid.row.mt-4 {
       margin-bottom: 4rem;
@@ -83,32 +78,37 @@ include ../partials/sidemenu
     .product-info{
       display:flex;
       justify-content:space-evenly;
-
     }
     .status.pending {
-          //- background-color: #ffc0cb;
           color: #d9534f;
-      }
-      
-      .status.processing {
-          //- background-color: #ffecb3;
+    }
+    .status.processing {
           color: #f0ad4e;
-      }
-      
-      .status.shipped {
-          //- background-color: #b2dfdb;
+    }
+    .status.shipped {
           color: #4caf50;
-      }
-      
-      .status.delivered {
-          //- background-color: #c8e6c9;
+    }
+    .status.delivered {
           color: #2e7d32;
-      }
-      
-      .status.cancelled {
-          //- background-color: #f44336;
+    }
+    .status.cancelled {
           color: #ffffff;
-      }
+    }
+    .status.return {
+          color: #ff9800;
+    }
+    .return-button {
+      background-color: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .return-button:hover {
+      background-color: #e68900;
+    }
   .container-fluid#containerFluid.row.mt-4(style="margin-bottom:4rem;")
     .order.topColumns.col-4
       h5.ms-2.mt-2 Order created at
@@ -126,7 +126,6 @@ include ../partials/sidemenu
     .delivery-address.col-4(style="background:rgba(12, 37, 28, 0.1);")
       .address-title
         h2 Delivery Address
-        //- button Edit
       .address-details
         span Address:
         span #{order.shipping_address.address}
@@ -145,7 +144,6 @@ include ../partials/sidemenu
     .billing-address.col-4(style="background:rgba(12, 37, 28, 0.1);")
       .address-title
         h2 Billing Address
-        //- button Edit
       .address-details
         span Address:
         span #{order.billing_address.address}
@@ -161,7 +159,6 @@ include ../partials/sidemenu
       .address-details
         span Country:
         span #{order.billing_address.country}
-    
 #thirdRow.mb-5
   .product-info.row
     .info-section.col-6
@@ -174,70 +171,62 @@ include ../partials/sidemenu
             th Quantity
             th Total
             th Status
+            th Actions
         tbody
           each product in order.items
+            - const hasPendingRequest =product.request.type!=null  
             tr
               td #{product.name}
               td #{product.price}
               td #{product.quantity}
               td $#{product.quantity * product.price}
-              td 
-                if order.status === 'pending'
-                  span.status.pending Pending
-                else if order.status === 'processing'
-                  span.status.processing Processing
-                else if order.status === 'shipped'
-                  span.status.shipped Shipped
-                else if order.status === 'delivered'
-                  span.status.delivered Delivered
-                else if order.status === 'cancelled'
-                  span.status.cancelled Cancelled
+              td
+                if order.status=="cancelled"
+                  span.status.cancelled Order Cancelled
+                if order.returnRequest.status=='pending'
+                  span.status.return Order return requested
+                if order.returnRequest.status=='accepted'
+                  span.status.return Order return approved
+                else if product.request.type=='return'
+                  if product.request.status=='pending'
+                     small.status.return Return requested 
+                  if product.request.status=='accepted'
+                     small.status.return Return Accepted 
+                if order.status!='cancelled' && product.request.type=="cancel"
+                  span.status.cancelled.text-danger Cancelled
+                else
+                  if order.status === 'pending'
+                    span.status.pending  pending 
+                  else if order.status === 'processing'
+                    span.status.processing Processing
+                  else if order.status === 'shipped'
+                    span.status.shipped Shipped
+                  else if order.status === 'delivered' && order.returnRequest.status==null && product.request.type!='return'
+                    span.status.delivered Delivered #{order.returnRequest.status}
+              td
+                if product.request.type=='return' && product.request.status=='pending'
+                  button.return-button(data-id=product.productId  ) Accept Return
+                  button#productReturn(type='hidden' value=order._id)
     .orderStatus.col-4(style="margin-top:3rem;")
       h3 Order Status
       .details(style="background:rgba(255, 255, 255, 0.1);")
         .orderId.ms-1 Order ID
         p.ms-1= order._id
         .status.ms-1 Order Status
-          select#statusSelect(name="status" style='width: 50%; margin-left:2rem;'  data-id=order._id)
-            option(value="pending" selected=order.status=='pending') pending
-            option(value="processing" selected=order.status=='processing') processing
-            option(value="shipped" selected=order.status=='shipped') shipped
-            option(value="delivered" selected=order.status=='delivered') delivered
-          a.btn.text-primary.border-primary#statusSave(href='#' style=" margin-bottom:5px; margin-left:2rem;") Save  
-
-  script.
-    document.addEventListener('DOMContentLoaded', function () {
-      const saveButton = document.getElementById('statusSave');
-
-      saveButton.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent default behavior of the anchor tag
-
-        // Get the selected status from the dropdown
-        const statusSelect = document.getElementById('statusSelect');
-        const orderId = statusSelect.dataset.id
-        const selectedStatus = statusSelect.value;
-        console.log(selectedStatus)
-
-        // Fetch PUT request
-        fetch(`/admin/orders/${orderId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ status: selectedStatus }),
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          // Handle successful response
-          window.location.href = "/admin/orders";
-        })
-        .catch(error => {
-          // Handle error
-          console.error('There was a problem with the fetch operation:', error);
-        });
-      });
-    });
-
-
+          if order.status=='cancelled'
+            p customer cancelled the order
+          else if order.returnRequest.status === 'pending'
+            p customer requested for return
+            .btn#orderReturnBtn(data-id=order._id) Issue order return
+          else if order.status === 'delivered' &&  order.returnRequest.status == null
+            span  order is deliverd to the customer
+          else if order.returnRequest.status === 'accepted'
+            span order returned 
+          else
+            select#statusSelect(name="status" style='width: 50%; margin-left:2rem;' data-id=order._id)
+              option(value="pending" selected=order.status === 'pending') pending
+              option(value="processing" selected=order.status === 'processing') processing
+              option(value="shipped" selected=order.status === 'shipped') shipped
+              option(value="delivered" selected=order.status === 'delivered') delivered
+            a.btn.text-primary.border-primary#statusSave(href='#' style="margin-bottom:5px; margin-left:2rem;") Save
+  script(src="../../script/admin/updateOrder.js")
