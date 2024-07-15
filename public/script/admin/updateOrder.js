@@ -34,40 +34,45 @@ console.log(`admin order update running`)
         }
       const returnButtons = document.querySelectorAll('.return-button');
       returnButtons.forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click',async function () {
           const productId = this.dataset.id;
           const orderId = document.getElementById('productReturn').value;
           console.log(`Accepting return for product ID: ${productId}`);
           console.log(`Accepting return for order ID: ${orderId}`);
-
+  const result = await window.confirmationModal.show('Accept the return request', 'Are you sure you want to accept this request?');
+          if(result.isConfirmed){
           axios.patch(`/admin/order/${orderId}/${productId}/return`)
             .then(response => {
-             successToast('product return approved') 
+             window.toast.success('product return approved') 
               window.location.href = `/admin/orders/${orderId}`;
             })
             .catch(error => {
               // Handle error
-            errorToast(error)
+            window.toast.error(error)
               console.error('There was a problem with the Axios operation:', error);
             });
+        }
         });
       });
     });
 
 
+if(document.getElementById('orderReturnBtn')){
+  document.getElementById('orderReturnBtn').addEventListener('click', function () {
+    const orderId = document.getElementById('orderReturnBtn').getAttribute('data-id')
+    console.log(`Accepting return for order ID: ${orderId}`);
 
-        document.getElementById('orderReturnBtn').addEventListener('click', function () {
-          const orderId = document.getElementById('orderReturnBtn').getAttribute('data-id')
-          console.log(`Accepting return for order ID: ${orderId}`);
+    axios.patch(`/admin/order/${orderId}/return`)
+      .then(response => {
+        successToast('product return approved') 
+        window.location.href = `/admin/orders/${orderId}`;
+      })
+      .catch(error => {
+        // Handle error
+        errorToast(error)
+        console.error('There was a problem with the Axios operation:', error);
+      });
+  });
+}
 
-          axios.patch(`/admin/order/${orderId}/return`)
-            .then(response => {
-             successToast('product return approved') 
-              window.location.href = `/admin/orders/${orderId}`;
-            })
-            .catch(error => {
-              // Handle error
-            errorToast(error)
-              console.error('There was a problem with the Axios operation:', error);
-            });
-        });
+    window.toast.success('Order Return Requested')

@@ -1,53 +1,61 @@
 include ../partials/navbar
+
 title My Wallet
-link(rel='stylesheet' href='../stylesheet/wallet.css')
-link(rel='stylesheet' href='../stylesheet/user/profile.css')
-.my-account
-  .col-sm-3.my-account-menu
-    ul
-      li
-        a(href='/user/profile') My Account
-      li
-        a(href='/user/profile') My Wishlist
-      li
-        a(href='/user/profile/edit') Account Information
-      li
-        a(href='/user/address/new') Address Book
-      li
-        a(href='/user/order') My Orders
-      li
-        a(href='/user/wallet') My Wallet 
- 
-  header
-    h1.page-title My Wallet
-    br
-  main.container
-    section.balance-section
-      .balance-card
-        .bala
-          h2.balance-title Available Balance
-          span.balance-amount $500.00
-        button.add-funds-btn Add Funds
-    section.transaction-history
-      h2 Transaction History
-      .table-container
-        table.transaction-table
-          thead
-            tr
-              th Date
-              th Description
-              th Amount
-              th Status
-          tbody
-            // Example Transaction Data - Replace with actual data from your database
-            tr
-              td 2023-10-27
-              td Order #12345
-              td -$159.94
-              td Completed
-            tr
-              td 2023-10-25
-              td Added Funds
-              td +$200.00
-              td Completed
-            // Add more transaction items here
+link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap')
+link(rel='stylesheet', href='../stylesheet/navbar.css')
+link(rel='stylesheet', href='../stylesheet/user/wallet.css')
+script(src=`https://www.paypal.com/sdk/js?client-id=${ID}`)
+script(src="../../script/user/wallet.js" defer)
+
+.container
+  h1.page-title My Wallet
+
+  .account-layout
+    .account-menu
+      ul
+        li: a(href='/user/profile') My Account
+        li: a(href='/user/profile') My Wishlist
+        li: a(href='/user/address/new') Address Book
+        li: a(href='/user/order') My Orders
+        li: a(href='/user/wallet', class='active') My Wallet
+
+    .main-content
+      .wallet-balance
+        h2 Current Balance
+        p.balance $#{wallet.balance.toFixed(2)}
+
+      .wallet-actions
+        h2 Add Funds
+        .add-funds-form
+          input#amount(type="text" name="amount" placeholder="Enter amount" required)
+          #paypal-button-container.btn
+        span#amountError
+      .transaction-history
+        h2 Transaction History
+        if wallet.transactions.length > 0
+          table
+            thead
+              tr
+                th Type
+                th Amount
+                th Description
+                th Date
+            tbody
+              each transaction in wallet.transactions
+                tr(class=transaction.type)
+                  td(data-label="Type")= transaction.type
+                  if transaction.type == 'debit'
+                    td(data-label="Amount") - $th#{transaction.amount.toFixed(2)}
+                  else
+                    td(data-label="Amount") $#{transaction.amount.toFixed(2)}
+                  td(data-label="Description")= transaction.description
+                  td(data-label="Date")= new Date(transaction.date).toLocaleDateString()
+          
+          .pagination
+            if currentPage > 1
+              a.pagination-link(href=`/user/wallet?page=${currentPage - 1}`) Previous
+            span Page #{currentPage} of #{totalPages}
+            if currentPage < totalPages
+              a.pagination-link(href=`/user/wallet?page=${currentPage + 1}`) Next
+        else
+          p No transactions yet.

@@ -4,6 +4,8 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title Edit Product
     link(rel="stylesheet", href="../../../stylesheet/admin/createProduct.css")
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css')
+    script(src='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js')
   body
     .container
       .main-content#mainContent
@@ -86,4 +88,5 @@ html(lang='en')
       });
 
     script( src='../../../../script/admin/productValidation.js')
+    script( src='../../../script/toast.js')
     script(defer src='../../../../script/admin/addProductG.js')

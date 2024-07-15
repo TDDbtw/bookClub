@@ -1,0 +1,115 @@
+    .topColumns{
+      height: 74.5625px;
+      width:289px;
+      font-size:14px;
+      font-weight:400;
+    }
+    .container-fluid{
+      display:flex;
+      justify-content:space-evenly;
+    }
+    #containerFluid{
+      display:flex;
+      align-items:center;
+    }
+    #secRow{
+      display:flex;
+      justify-content:space-evenly;
+    }
+    body{
+      color:#CAC5C5;
+    }
+    .orderStatus {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+      height:30%;
+      align-self:right;
+    }
+    .orderStatus h3 {
+      margin-top: 0;
+    }
+    .details {
+      margin-top: 20px;
+    }
+    .details > div {
+      margin-bottom: 10px;
+    }
+    .save {
+      margin-left:1rem;
+    }
+    .container-fluide#containerFluid .container-fluid.row.mt-4 {
+      margin-bottom: 4rem;
+    }
+    .order.topColumns.col-4 {
+      background-color: #d1e7dd67;
+      color: rgb(10, 54, 34);
+    }
+    .order.topColumns.col-4:nth-child(2) {
+      background-color: #f8d7da84;
+      color: rgb(88, 21, 28);
+    }
+    .order.topColumns.col-4:nth-child(3) {
+      background-color: #fff3cd84;
+      color: rgb(102, 77, 3);
+    }
+    .order.topColumns.col-4:nth-child(4) {
+      background-color: #cff4fc56;
+      color: rgb(5, 81, 96);
+    }
+
+    .product-info.row {
+      margin-left: 1rem;
+    }
+    .orderStatus.col-4 {
+      margin-left: 1rem;
+    }
+    .product-info{
+      display:flex;
+      justify-content:space-evenly;
+    }
+    .status.pending {
+          color: #d9534f;
+    }
+    .status.processing {
+          color: #f0ad4e;
+    }
+    .status.shipped {
+          color: #4caf50;
+    }
+    .status.delivered {
+          color: #2e7d32;
+    }
+    .status.cancelled {
+          color: #ffffff;
+    }
+    .status.return {
+          color: #ff9800;
+    }
+    .return-button {
+      background-color: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .return-button:hover {
+      background-color: #e68900;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .status-pending { background-color: #ffc107; }
+    .status-processing { background-color: #17a2b8; }
+    .status-shipped { background-color: #007bff; }
+    .status-delivered { background-color: #28a745; }
+    .status-cancelled { background-color: #dc3545; }
+    .status-returned { background-color: #6c757d; }
+

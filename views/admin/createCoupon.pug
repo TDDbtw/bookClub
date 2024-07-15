@@ -8,9 +8,6 @@ html
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css')
     link(rel='stylesheet', href='../../stylesheet/admin/sidemenu.css')
     link(rel='stylesheet', href='../../stylesheet/admin/couponsAdd.css')
-    script(defer, src='../../script/admin/sidemenu.js')
-    script(defer, src='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js')
-    script(defer, src='../script/admin/confirmLogout.js')
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css')
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css')
@@ -27,6 +24,8 @@ html
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js', integrity='sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL', crossorigin='anonymous')
     script(src='https://unpkg.com/htmx.org@1.9.10', integrity='sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC', crossorigin='anonymous')
     script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css')
+    script(src='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js')
   body
     header#header
       #nav-icon3.menu-button
@@ -148,30 +147,40 @@ html
                 path(d='M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0')
                 path(d='M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2')
               span.ms-3 Logout
-    .container-fluid.form-container
+    .container-fluid.form-container#form-container
       h1.text-center.mb-4 Create New Coupon
       form#couponForm
         .mb-3
           label.form-label(for='code') Coupon Code
-          input#code.form-control(type='text', name='code', required='')
+          input#code.form-control(type='text', name='code' )
+          div#codeError.text-danger 
         .mb-3
           label.form-label(for='discount') Discount (%)
-          input#discount.form-control(type='number', name='discount', required='')
+          input#discount.form-control(type='text', name='discount' )
+          div#discountError.text-danger 
         .mb-3
           label.form-label(for='limit') Usage Limit
-          input#limit.form-control(type='number', name='limit', required='')
+          input#limit.form-control(type='text', name='limit')
+          div#limitError.text-danger 
         .mb-3
           label.form-label(for='expiry') Expiry Date
-          input#expiry.form-control(type='date', name='expiry', required='')
+          input#expiry.form-control(type='date', name='expiry')
+          div#expiryError.text-danger 
         .mb-3
           label.form-label(for='minAmt') Minimum Amount
-          input#minAmt.form-control(type='number', name='minAmt', required='')
+          input#minAmt.form-control(type='text', name='minAmt')
+          div#minAmtError.text-danger 
         .mb-3
           label.form-label(for='maxAmt') Maximum Amount
-          input#maxAmt.form-control(type='number', name='maxAmt', required='')
+          input#maxAmt.form-control(type='text', name='maxAmt')
+          div#maxAmtError.text-danger 
         .mb-3
           button.btn.btn-primary(type='submit') Create Coupon
-    // Bootstrap JS (optional if you need JavaScript features from Bootstrap)
-    script(src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js')
-    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js')
-    script(defer src='../../../../script/admin/coupon.js')
+      //- Bootstrap JS (optional if you need JavaScript features from Bootstrap)
+      script( src='../../script/admin/sidemenu.js')
+      script( src='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js')
+      script( src='../script/admin/confirmLogout.js')
+      script(src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js')
+      script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js')
+      script(src='../../../../script/admin/couponValidation.js') 
+      script(src='../../../../script/toast.js')

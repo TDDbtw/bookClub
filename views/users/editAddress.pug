@@ -1,7 +1,11 @@
 include ../partials/navbar
 link(rel='stylesheet' href='../../../stylesheet/user/addAddress.css')
 link(rel='stylesheet' href='../../../stylesheet/navbar.css')
+link(rel="stylesheet", href="../../../stylesheet/user/profile.css")
+script(src='../../../script/toast.js' defer)
+script( src='../../../script/confirmationModal.js' defer)
 script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
+
 style.
   .fieldset{
     width:862px;
@@ -10,115 +14,88 @@ style.
     width:66vw;
     }
 
-.container-fluid#mainAdd
-  .my-account
-    .col-sm-3.my-account-menu
+.container
+  h1.page-title My Orders
+
+  .account-layout
+    .account-menu
       ul
-        li
-          a(href='/user/profile') My Account
-        li
-          a(href='/user/profile/edit') Account Information
-        li
-          a(href='/user/address/new') Address Book
-        li
-          a(href='/user/order') My Orders
-        li
-          a(href='#') My Wallet
-  .column.main.snipcss-KcpgZ
-    .page-title-wrapper
-      h1.page-title
-        span.base(data-ui-id='page-title-wrapper')
-          | Edit Addressss
-    form.form-address-edit(action=`/user/address/${address._id}/edit`,method='put')
-      //- Address
-      fieldset.fieldset.me-5
-        legend.legend
-          span
-            | Address
-        br
-        .field.street
-          label.label(for='street_1')
-            span
-              | Address
-          .control
-            .field.primary
-              label.label(for='street_1')
-                span
-                  | Street Address: Line 1
-              input#address.input-text.pac-target-input(type='text' name='address' value=`${address.address}` title='Street Address' placeholder='Address'  autocomplete='off')
-              span#addressError
-              .nested
-                .field.additional
-                  label.label(for='street_2')
-                    span
-                      | Street Address: Line 2
-                  .control
-                    input#street_2.input-text(type='text' name='street[2]' value='' title='Street Address 2' placeholder='Apartment,suite,etc.(optional)' )
-        .field.city
-          label.label(for='city')
-            span
-              | City
-          .control
-            input#city.input-text(type='text' name='city' value=`${address.city}`  title='City' )
-            span#cityError
-        .field.region
-          label.label(for='region_id')
-            span
-              | State
-          .control
-            select#state(name='state' oninput="validateState()" title='State' defaultvalue='0' aria-required='true')
-              option(value=`0`)
-                | #{address.state} 
-              option(value='1')
-                | kerala
-            span#stateError
-        .field.zip
-          label.label(for='zip')
-            span
-              | Zip Code
-          .control
-            input#zip.input-text.validate-zip-international(type='text' name='zip_code' value=`${address.zip_code}` title='Zip Code' )
-            .message.warning(role='alert')
-              span
-            span#zipError
-        .field.country
-          label.label(for='country')
-            span
-              | Country
-          .control
-            select#country(name='country_id' title='Country' data-validate="{'validate-select':true}"  value=`${address.country_id}`)
-              option(value='US' selected='selected')
-                | United States
-            span#countryError
-        input#addressId(type='hidden' name='default_billing' value=`${address.id}`)
-        input(type='hidden' name='default_shipping' value='1')
+        li: a(href='/user/profile') My Account
+        li: a(href='/user/profile') My Wishlist
+        li: a(href='') Account Information
+        li: a(href='/user/address/new') Address Book
+        li: a(href='/user/order', class='active') My Orders
+        li: a(href='/user/wallet') My Wallet
+    .main-content
+      form#form-validate(action='/user/address/edit', method='post', enctype='application/x-www-form-urlencoded')
+        h2 Edit Address
+        .form-group
+          label(for='address') Home Address
+          input#address(type='text', name='address', placeholder='Enter your street address', value=address.address, oninput='validateAddress()')
+          span#addressError.error-message
 
-      //- Actions Toolbar
-      .actions-toolbar
-        .primary
-          button#saveAddress.action.submit.primary(type='submit')
-            span
-              | Save Address
-        .secondary
-          a.action.back(href='/user/address/new')
-            span
-              | Go back
-        #errorMessage
-  script(src="../../script/user/validateEditAddress.js")
-  script.
-    $(document).ready(function() {
-        // Get the current URL
-        var currentUrl = window.location.pathname;
+        .form-group
+          label(for='country') Country
+          select#country(name="country", title='Country', oninput='validateCountry()', data-country=countries, data-validate="{'validate-select':true}", aria-required='true')
+            option(value='') Select a Country
+            each country in countries
+              if country.name === address.country
+                option(value=country.name, selected)= country.name
+              else
+                option(value=country.name)= country.name
+          span#countryError.error-message
 
-        // Loop through each anchor tag and compare the href attribute with the current URL
-        $('.my-account-menu li a').each(function() {
-          var href = $(this).attr('href');
+        .form-group
+          label(for='state' ) State
+          select#state(name='state', oninput='validateState()' )
+            option(value=address.state) #{address.state} 
+          span#stateError.error-message
 
-          // Check if the current URL matches the href attribute
-          if (currentUrl === href) {
-            // Apply the background color to the parent li
-            $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
+        .form-group
+          label(for='city') City
+          input#city(type='text', name='city', placeholder='Enter your city', value=address.city, oninput='validateCity()')
+          span#cityError.error-message
 
-          }
+        .form-group
+          label(for='zip') Zip Code
+          input#zip(type='text', name='zip_code', placeholder='Enter your zip code', value=address.zip_code, oninput='validateZip()')
+          span#zipError.error-message
+
+        button#updateAddress(type='submit') Save Changes
+        input#userInput(type='hidden', name='user', value=user)
+        input#addressId(type='hidden', name='addressId', value=address._id)
+    script(src="../../../script/user/validateEditAddress.js")
+    script.
+      $(document).ready(function() {
+          var currentUrl = window.location.pathname;
+          $('.my-account-menu li a').each(function() {
+            var href = $(this).attr('href');
+          console.log(`${href}`)
+            if (currentUrl === href) {
+              $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
+
+            }
+          });
+        });
+    
+      const countrySelect = document.getElementById('country');
+      const stateSelect = document.getElementById('state');
+      const countryData = countrySelect.getAttribute('data-country');
+      const countries = JSON.parse(countryData);
+
+      countrySelect.addEventListener('change', () => {
+        stateSelect.innerHTML = '';
+        const selectedCountry = countrySelect.value;
+        const states = countries.find(country => country.name === selectedCountry).states;
+        states.forEach(state => {
+          const option = document.createElement('option');
+          option.value = state;
+          option.textContent = state;
+          stateSelect.appendChild(option);
         });
       });
+
+        const empty = document.createElement('option');
+        empty.value = ''
+        empty.textContent = 'Select a Country'
+        countrySelect.appendChild(empty);

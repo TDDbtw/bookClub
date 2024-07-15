@@ -47,9 +47,9 @@ if(searchValue==null&&sortValue==null&&filterValue==null){
       currentPage =response.data.page ;  // Current page (start on page 1)
       totalPages = Math.ceil(total/limit) // Will be updated from the backend response
       console.log(`total pages are  ${totalPages}`) 
-      renderPagination()
       const item = response.data.products;
       renderCards(item)
+      renderPagination()
     })
     .catch(error => {
       console.error('There was an error fetching the products!', error);
@@ -72,14 +72,15 @@ if(searchValue==null&&sortValue==null&&filterValue==null){
 //   document.getElementById('clearFilter').style.display = 'none';
 // }
 // }
-const items = document.querySelectorAll('li[data-sub-cat]');
+const items = document.querySelectorAll('input[data-sub-cat]');
 
 
 
 items.forEach(item => {
-  item.addEventListener('click', (e) => {
+  item.addEventListener('input', (e) => {
     e.stopPropagation();
     console.log(e.target.dataset.subCat);
+   console.log(`filter value is${filterValue}`) 
     // removeProduct(e.target.dataset.id);
     subCat=e.target.dataset.subCat
     searchSortFilter()
@@ -99,7 +100,7 @@ function searchSortFilter() {
   document.getElementById("cardSection").innerHTML=""
   let url = new URL(window.location.href);
   const page =  currentPage// example page number
-  const limit = 6; // example limit
+  const limit = 3; // example limit
   const search =document.getElementById('navSearch').value; // example search term
   const sort =  document.getElementById('sortBy').value// example sort order
 
@@ -244,14 +245,33 @@ function renderCards(products){
     productAuthor.className = "author mx-5"
     productAuthor.textContent = `${product.author}`
 
-
     const productPrice = document.createElement("p")
     productPrice.className = "card-price mx-5"
+    productPrice.style.color = 'gold'
+    productPrice.style.fontSize = '18px'
+    productPrice.style.fontWeight = 'bold'
 
-    productPrice.style.color='gold' /* Gold text color */
-      productPrice.style.fontSize='18px' /* Adjust font size as needed */
-      productPrice.style.fontWeight='bold' /* Make the text bold for emphasis */
-      productPrice.textContent = `$${product.price}`
+    const originalPrice = document.createElement("p")
+    originalPrice.className = "original-price mx-5"
+    originalPrice.style.color = 'gray'
+    originalPrice.style.fontSize = '16px'
+    originalPrice.style.textDecoration = 'line-through'
+
+    if (product.offer && product.offer.isValid()) {
+      const discountedPrice = product.offer.calculateDiscountedPrice(product.price)
+      productPrice.textContent = `$${discountedPrice.toFixed(2)}`
+      originalPrice.textContent = `$${product.price.toFixed(2)}`
+      
+      const priceContainer = document.createElement("div")
+      priceContainer.className = "price-container mx-5"
+      priceContainer.appendChild(originalPrice)
+      priceContainer.appendChild(productPrice)
+      
+      productCard.appendChild(priceContainer)
+    } else {
+      productPrice.textContent = `$${product.price.toFixed(2)}`
+      productCard.appendChild(productPrice)
+    }
 
 
     const addToCartForm = document.createElement("form")
@@ -413,3 +433,33 @@ function renderPagination() {
   }
 }
 
+     document.addEventListener('DOMContentLoaded', () => {
+     const categoryItems = document.querySelectorAll('#categoryList > li');
+
+      categoryItems.forEach(item => {
+      const checkboxes = item.querySelectorAll('.subcatCheckbox');
+      
+      // Toggle open class when clicking on category name
+        item.querySelector('.catName').addEventListener('click', () => {
+        item.classList.toggle('open');
+      });
+
+      // Handle checkbox changes
+        checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+          updateCategoryOpenState(item);
+          });
+        });
+      });
+
+      function updateCategoryOpenState(categoryItem) {
+      const checkboxes = categoryItem.querySelectorAll('.subcatCheckbox');
+      const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+    
+       if (anyChecked) {
+      categoryItem.classList.add('open');
+      } else {
+      categoryItem.classList.remove('open');
+      }
+      } 
+      });

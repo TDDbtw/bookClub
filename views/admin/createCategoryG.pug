@@ -38,8 +38,8 @@ link(rel="stylesheet", href="../../../stylesheet/admin/category.css")
           button.add-subcategory(type='button') Add More
       #subCategoryError(style='color: red;')
     .buttons
-      button.cancel(type='button') Cancel
-      button.add-category(type='submit') Add Category
+      a.btn.cancel(type='button' href='/admin/category') Cancel
+      a.btn.add-category(type='submit') Save Category
     .span#error
 script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
 script(defer src="../../../script/admin/createCategory.js")

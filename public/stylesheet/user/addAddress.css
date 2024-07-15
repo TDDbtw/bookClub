@@ -102,6 +102,7 @@ html {
 #mainAdd {
   display: flex;
   justify-content: space-around;
+
 }
 
 @media (min-width: 768px), print {
@@ -769,6 +770,8 @@ body {
   float: left;
   width: 30%;
   margin-right: 20px;
+    position: sticky;
+  top: 0; 
 }
 
 .my-account-menu ul {
@@ -1072,11 +1075,13 @@ select.required-entry {
 
 button#saveAddress {
   background-color: #007bff;
+  background-color: #40916c;
   color: #fff;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top:1rem;
 }
 
 button#saveAddress:hover {

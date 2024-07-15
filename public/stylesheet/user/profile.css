@@ -1,253 +1,300 @@
-@font-face {
-  font-family: "PlutoCondBlack";
-  src: url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff2")
-      format("woff2"),
-    url("https://www.oreo.com/static/version1706685311/frontend/mondelez/oreo/en_US/fonts/PlutoCondBlack.woff")
-      format("woff");
-  font-weight: 300;
-  font-style: normal;
-  font-display: auto;
-}
-body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #081c15 !important;
-}
 
-.my-account {
-  display: flex;
-  width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  height: 80vh;
-}
-
-.my-account-title {
-  font-size: 30px;
-  margin-bottom: 20px;
-}
-
-.my-account-menu {
-  float: left;
-  width: 20%;
-  margin-right: 20px;
-}
-
-.my-account-menu ul {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 2rem;
-}
-
-.my-account-menu li {
-  margin-bottom: 10px;
-}
-
-.my-account-menu a {
-  align-self: center;
-  /* background: red; */
-  /* margin-left: 2rem; */
-  display: block;
-  padding: 5px;
-  text-decoration: none;
-  color: #000;
-  transition: border-color 0.3s ease-in-out; /* Smooth transition for border color */
-}
-
-.my-account-menu a:hover {
-  background-color: #0e4935a3;
-  /* border-right: 4px solid #003366; */
-  /* background: linear-gradient(to right, #5c3a0c, #c99a5f); */
-  /* background: linear-gradient(to right, #6e6962, #d7cfcc); */
-  /* background: linear-gradient(to right, #2c2c54, #6a0572); */
-  background: linear-gradient(to right, #b71540, #e55039);
-  background: linear-gradient(to right, #b715406b, #e5503962);
-
-  /* background: linear-gradient(to right, #5d0a3a, #9a031e); */
-}
-
-.my-account-content {
-  float: left;
-  width: 80%;
-  background: #000;
-}
-
-/* Custom styling */
-
-.my-account-menu {
-  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
-
-  color: #fff;
-  padding: 10px;
-}
-
-.my-account-menu a {
-  font-size: 22px;
-  color: #fff;
-}
-
-body {
-  font-family: "Helvetica", "Arial", sans-serif;
-}
-#accContainer {
-  /* width: 100%; */
-  height: 100vh;
-  /* max-width: 1170px; */
-  /* padding: 20px; */
-}
-.account-information {
-  /* background-color: #f9f9f9; */
-  /* background-color: #0e4935a3; */
-  background: linear-gradient(to right, #081c15, #0d291f, #16372a);
-  color: white;
-
-  padding: 20px;
-}
-.account-information-header {
-  border-bottom: 1px solid #538d49;
-  padding-bottom: 20px;
-}
-.account-information-title {
-  font-size: 24px;
-  font-weight: bold;
-}
-h1 {
-  font-family: "PlutoCondBlack";
-  font-weight: 300;
-  line-height: 1.1;
-  font-size: 4rem;
-  margin-top: 0;
-  margin-bottom: 2rem;
-  color: #cac5c5;
-}
-.page-title-wrapper .page-title {
-  display: inline-block;
-}
-
-.page-title-wrapper .page-title {
-  margin-right: 25px;
-}
-.account-information-links {
-  color: #468847;
-  /* display: flex-box; */
-}
-.account-information-link {
-  margin-left: 2px;
-  color: #007d99;
-  padding-bottom: 10px;
-  text-decoration: none;
-}
-
-.account-information-body {
-  padding-top: 20px;
-}
-.account-information-section {
-  border-bottom: 1px solid #538d49;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-}
-.account-information-section-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-.account-information-section-content {
-  padding-top: 10px;
-}
-.account-information-form {
-  padding-top: 20px;
-}
-.account-information-form-group {
-  margin-bottom: 20px;
-}
-.account-information-form-label {
-  font-size: 14px;
-  font-weight: bold;
-}
-.account-information-form-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #e5e5e5;
-  border-radius: 3px;
-}
-.account-information-form-button {
-  background-color: #337ab7;
-  color: #fff;
-  padding: 10px 20px;
-  border: 1px solid #337ab7;
-  border-radius: 3px;
-  cursor: pointer;
-}
-.account-information-form-button:hover {
-  background-color: #286090;
-}
-.account-information-message {
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #e5e5e5;
-  border-radius: 3px;
-}
-.account-information-message-success {
-  color: #468847;
-  background-color: #dff0d8;
-}
-.account-information-message-error {
-  color: #d9534f;
-  background-color: #ffcdd2;
-}
-
-.address-information-links {
-  position: relative;
-  left: 60%;
-  top: -40px;
-}
-#editAddress {
-  color: #007d99;
-}
-#editAddressBtn,
-#manageAddressBtn {
-  /* background: linear-gradient(to right, #081c15, #0d291f, #16372a); */
-  color: #fff; /* Set text color to white or another contrasting color */
-  padding: 10px 20px; /* Adjust padding as needed */
-  border: none; /* Remove border or customize as needed */
-  border-radius: 5px; /* Add border-radius for rounded corners if desired */
-  cursor: pointer; /* Add a pointer cursor for better user experience */
-
-  /* Define color styles for the button */
-  background-color: #007d99;
-  background-color: #5c3b6f;
-  background-color: #134433;
-  &.color1 {
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #081c15;
+    color: #e0e0e0;
+    line-height: 1.6;
   }
-  &.color2 {
+  .container {
+    max-width: 90vw;
+    margin: 40px auto;
+    padding: 0 20px;
   }
-  &.color3 {
+  .page-title {
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 30px;
+    text-align: center;
   }
-  &.color4 {
+  .account-layout {
+    display: flex;
+    gap: 30px;
   }
-  &.color5 {
+  .account-menu {
+    flex: 0 0 250px;
+    background: #0f2a20;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 20px;
   }
-  &.color6 {
+  .account-menu ul {
+    list-style: none;
+    padding: 0;
   }
-  &.color7 {
+  .account-menu li {
+    margin-bottom: 10px;
   }
-  &.color8 {
+  .account-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: #b8c9c5;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
   }
-  &.color9 {
+  .account-menu a:hover, .account-menu a.active {
+    background-color: #1a4734;
+    color: #ffffff;
   }
-  &.color10 {
+  .main-content {
+    flex: 1;
+    background: #0f2a20;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 30px;
   }
-}
-#profile-photo-preview{
-width:6vw;
+  .order-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+  .order-table th, .order-table td {
+    padding: 15px;
+    text-align: left;
+    background-color: #1a4734;
+  }
+  .order-table th {
+    background-color: #143c2b;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  .order-table tr {
+    transition: all 0.3s ease;
+  }
+  .order-table tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  .order-table tr td:first-child, .order-table tr th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  .order-table tr td:last-child, .order-table tr th:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+  .order-details-btn {
+    background-color: #2d6a4f;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  .order-details-btn:hover {
+    background-color: #40916c;
+  }
+  .order-empty {
+    text-align: center;
+    padding: 50px 0;
+  }
+  .no-order {
+    font-size: 1.5rem;
+    color: #95d5b2;
+    margin-bottom: 20px;
+  }
+  .shop-button {
+    display: inline-block;
+    background-color: #40916c;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  .shop-button:hover {
+    background-color: #52b788;
+  }
+ .card {
+    background-color: #0c2a1e;
+    border-color: #1b4332;
+  }
+  .card-header {
+    background-color: #1b4332;
+    border-bottom: 1px solid #2d6a4f;
+  }
+  .btn-primary {
+    background-color: #40916c;
+    border-color: #52b788;
+  }
+  .btn-primary:hover {
+    background-color: #52b788;
+    border-color: #74c69d;
+  }
+  .btn-secondary {
+    background-color: #1b4332;
+    border-color: #2d6a4f;
+  }
+  .btn-secondary:hover {
+    background-color: #2d6a4f;
+    border-color: #40916c;
+  }
+  a {
+    color: #74c69d;
+  }
+  a:hover {
+    color: #95d5b2;
+  }
+  .text-light {
+    color: #e0e0e0 !important;
+  }
+  .text-lighter {
+    color: #ffffff !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+  }
+  .card-body {
+    color: #d0d0d0;
+  } 
 
-}
-#avatar{
-border-radius: 50%; 
-height:6rem;
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #081c15;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 90vw;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  .page-title {
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .account-layout {
+    display: flex;
+    gap: 30px;
+  }
+  .account-menu {
+    flex: 0 0 250px;
+    background: #0f2a20;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 20px;
+  }
+  .account-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  .account-menu li {
+    margin-bottom: 10px;
+  }
+  .account-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: #b8c9c5;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  .account-menu a:hover, .account-menu a.active {
+    background-color: #1a4734;
+    color: #ffffff;
+  }
+  .main-content {
+    flex: 1;
+    background: #0f2a20;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 30px;
+  }
+  .profile-section {
+    background: #1a4734;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .profile-picture {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .profile-picture img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #40916c;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #b8c9c5;
+  }
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #2d6a4f;
+    color: #ffffff;
+  }
+  input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder {
+    color: #b8c9c5;
+  }
+  button[type="submit"] {
+    background-color: #40916c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button[type="submit"]:hover {
+    background-color: #52b788;
+  }
+  .btn-primary {
+    background-color: #2d6a4f;
+    color: #ffffff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .btn-primary:hover {
+    background-color: #40916c;
+  }
+  .btn-warning {
+    background-color: #f39c12;
+    color: #ffffff;
+  }
+  .btn-warning:hover {
+    background-color: #e67e22;
+  }
+  .image-cropper {
+    margin-top: 20px;
+  }
+  #editPwd {
+    margin-right: 10px;
+  }
+  .fa-window-close {
+    color: #e74c3c;
+    cursor: pointer;
+  }
+  .action.back {
+    display: inline-block;
+    margin-top: 20px;
+    color: #b8c9c5;
+    text-decoration: none;
+  }
+  .action.back:hover {
+    color: #ffffff;
+  }
 
-}
-.page-title-wrapper{
-display:flex;
-justify-content:space-between;
-}

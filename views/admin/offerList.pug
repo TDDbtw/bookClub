@@ -304,7 +304,7 @@ include ../partials/sidemenu
         if (response.data.success) {
           await successToast('Offer status changed');
           //window.location.reload(false);
-          alert('success')
+          window.toast.success('offer status changed')
         }
       } catch (error) {
         console.error("Error:", error);

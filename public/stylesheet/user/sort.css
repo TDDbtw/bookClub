@@ -74,12 +74,14 @@
   top: 0;
  height: 100%;
   padding-top: 20px;
-  overflow-y: auto;
   /* margin-top:12rem; */ 
   background-color: #134433;
   background-color: #072017;
 text-align: center;
 margin-left:-300px;
+height:100vh; 
+
+  overflow: hidden; /* Hide scrollbars */
 }
 #heading{
   display:block;
@@ -103,6 +105,7 @@ color:white;
   border:1px;
 list-style-position:inside;
 
+  align-items:left;
 }
 #sidebar ul li:hover {
   background-color:#0E3024;
@@ -118,7 +121,7 @@ list-style-position:inside;
   background-color:#0E3024;
 }
 #sidebar ul li ul li {
-  padding: 8px 10px;
+  padding: 15px 10px;
   cursor: pointer;
 }
 #sidebar ul li ul li:hover {
@@ -167,7 +170,7 @@ border-bottom: 1px solid #14312a;
   background-color: var(--complementary-color);
   color: var(--accent-color-2);
   border-color: var(--complementary-color);
-
+}
 
   .out-of-stock-overlay {
   position: absolute;
@@ -175,7 +178,7 @@ border-bottom: 1px solid #14312a;
   left: 0;
   width: 100%;
   height: 100%;
-  //- background-color: rgba(0, 0, 0, 0.5);
+  /* //- background-color: rgba(0, 0, 0, 0.5); */
   color:#912727;
   font-size: 1.5rem;
   font-weight: bold;
@@ -189,5 +192,18 @@ border-bottom: 1px solid #14312a;
   font-weight: bold; /* Make the text bold for emphasis */
 
   }
-.container{
+#subLi{
+display:flex;
+margin:auto;
+
+}
+#subLi > * {
+    margin-left:1rem;
+}
+#sidbar {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+ #sidebar::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }

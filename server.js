@@ -1,6 +1,6 @@
+require('dotenv').config(); 
 const express = require("express")
 const path = require("path")
-const dotenv = require("dotenv")
 const user = require("./routes/user")
 const auth = require("./routes/auth")
 const products = require("./routes/products")
@@ -22,7 +22,6 @@ const jwt = require("jsonwebtoken")
 const { paypal } = require("./utils/paypalConfig")
 
 // Loading .env
-dotenv.config()
 
 //Connect to database
 connectDB()

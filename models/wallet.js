@@ -1,35 +1,48 @@
 const mongoose = require('mongoose');
 
-
-const wallet = new mongoose.Schema({
+const walletSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: true
   },
-  walletBalance: {
+  balance: {
     type: Number,
-    default: 0,
+    default: 0
   },
-  transaction:[
-    {   
-        date: {
-            type: Date,
-            default: Date.now
-        },
-        amount: {
-            type: Number,
-            required: true
-        },
-        type: {
-            type: String,
-            enum: ['debit', 'credit'],
-            required: true
-        }
+  transactions: [{
+    type: {
+      type: String,
+      enum: ['credit', 'debit'],
+      required: true
+    },
+    amount: {
+      type: Number,
+      required: true
+    },
+    description: String,
+    date: {
+      type: Date,
+      default: Date.now
     }
-  ],
-
+  }]
 });
 
-module.exports = mongoose.model('Wallet', wallet);
 
+walletSchema.methods.addTransaction = function(type, amount, description) {
+  this.transactions.push({ type, amount, description });
+  if (type === 'credit') {
+    this.balance += amount;
+  } else if (type === 'debit') {
+    this.balance -= amount;
+  }
+};
+
+walletSchema.statics.findOrCreate = async function(userId) {
+  let wallet = await this.findOne({ user: userId });
+  if (!wallet) {
+    wallet = new this({ user: userId, balance: 0, transactions: [] });
+  }
+  return wallet;
+};
+module.exports = mongoose.model('Wallet', walletSchema);

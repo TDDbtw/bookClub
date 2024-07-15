@@ -16,8 +16,12 @@ async function fetchAndDisplayWishlist() {
         row.innerHTML = `
           <td>
             <div class="product-info">
+              <a class='productRef' href="/products/${item.product._id}">
               <img src="${item.product.image[0]}" alt="${item.product.name}" width="50" height="70">
+              </a>
+              <a class='productRef' href="/products/${item.product._id}">
               <span>${item.product.name}</span>
+              </a>
             </div>
           </td>
           <td>$${item.product.price.toFixed(2)}</td>
@@ -71,12 +75,12 @@ async function handleAddToCart(event) {
     
     window.location.href = "/cart";
     } else {
-      console.error('Failed to add item to cart:', response.status);
-      alert('Failed to add item to cart.');
+      console.error('Failed to add item to wishlist:', response.status);
+      alert('Failed to add item to wishlist.');
     }
   } catch (error) {
-    console.error('Error adding item to cart:', error);
-    alert('An error occurred while adding the item to the cart.');
+    console.error('Error adding item to wishlist:', error);
+    alert('An error occurred while adding the item to the wishlist.');
   }
 }
 

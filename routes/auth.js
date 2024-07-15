@@ -19,9 +19,9 @@ const {
   resetOtpVerify,
   saveResetPassword,
 } = require("../controllers/auth")
-const { getUsers, updateUsers } = require("../controllers/user/user")
+
 const { protect, admin } = require("../middleware/authMiddleware")
-// router.route("/log_in", loginUser)
+
 router.route("/signup").get(getSignup).post(tempSave)
 router.route("/signup/email").post(isEmailExist)
 

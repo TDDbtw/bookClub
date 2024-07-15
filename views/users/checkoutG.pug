@@ -6,7 +6,12 @@ html(lang='en')
     title Checkout - Quasar
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css')
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css')
     link(rel="stylesheet", href="../stylesheet/user/checkoutG.css")
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+    script(src='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js')
+    script( src='../script/confirmationModal.js' defer)
+    script(src='../script/toast.js' defer)
   body
     .container-fluid.checkout-container
       .account-info
@@ -100,24 +105,38 @@ html(lang='en')
             countrySelect.appendChild(empty);
 
 
-      .payment-section
-        h2 Payment Information
-        label(for='payment_method') Payment Method:
-        select#payment_method(name='payment_method', required)
-          option(value='' selected) Select a payment method
-          option(value='paypal') PayPal
-          option(value='cod') Cash on Delivery
-          option(value='razorpay') Razorpay
-          
-        #paypal_details(style='display: none;')
-          p Pay securely with PayPal.
-          #paypal-button-container
+      .payment-method-inline
+        h3 Select Payment Method
+        label
+          input(type='radio', name='payment-inline', value='cod')
+          |  Cash on Delivery
+          |
+          small#codMsg
+        label
+          if walletBalance < (cart.billTotal + (0.05 * cart.billTotal) + shippingTotal).toFixed(2)
+           input( type='radio', name='payment-inline', value='wallet' disabled )
+           small(style='color:grey;') Wallet balance is low
+           small.ms-2(style='color:grey;')
+            | ( $#{walletBalance} )
+           small.ms-2(style='color:grey;')
+            | you need $#{(totalAmount - walletBalance).toFixed(2)} more
+          else
+           input(type='radio', name='payment-inline', value='wallet' )
+           |  Wallet
+        label
+           input(type='radio', name='payment-inline', value='razorpay')
+           |   razorpay 
+
+        #wallet_details(style='display: none;')
+          p Pay from Wallet.
+          p $#{walletBalance} left
           #result-message
         #cod_details(style='display: none;')
           p Pay with cash upon delivery.
         #razorpay_details(style='display: none;')
           p paywith razorpay
         #paymentError.text-warning.ms-2
+          
     .right
       .order-summary
         h2 Order Summary
@@ -155,12 +174,18 @@ html(lang='en')
               td#discountAmount $0.00
             tr
               td(colspan='3', align='right') Total:
-              td#totalAmount $#{(cart.billTotal + (0.05 * cart.billTotal) + shippingTotal).toFixed(2)}
+              td#totalAmount $#{totalAmount.toFixed(2)}
         .coupon-section
           h2 Apply Coupon
-          input#couponCode(type='text' placeholder='Enter coupon code')
+          .coupon-input-group
+            .d-flex
+              input#couponCode(type='text' placeholder='Enter coupon code')
+              H1#applyCouponBtn.text-success.mt-2.bi.bi-check(type='button')
+              H1#removeCouponBtn.text-danger.mt-2.bi.bi-x(type='button')
+              H1#clearCouponBtn.text-warning.mt-2.bi.bi-dash(type='button' )
+          .coupon-display
+            span#appliedCoupon
           span#couponError
-          button.btn.btn-primary#applyCouponBtn(type='button') Apply Coupon 
 
       .checkout-actions
         form.checkoutForm(action='', )
@@ -197,9 +222,5 @@ html(lang='en')
     
     document.addEventListener('DOMContentLoaded', () => {
       
-    if(document.getElementById('payment_method').value!=""){
-      document.getElementById('placeOrderBtn').disabled = true;
-      document.getElementById("paymentError").innerHTML = "Please select a Payment option";
-    }
       })
 

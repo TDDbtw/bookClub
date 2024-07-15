@@ -4,6 +4,7 @@ const asyncHandler = require("../../middleware/async")
 const colors = require("colors")
 const User = require("../../models/users")
 const Cart = require("../../models/cart")
+const Wallet = require("../../models/wallet")
 
 const getCart = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
@@ -51,14 +52,19 @@ console.log(`razor pay is${process.env.RAZORPAY_ID}`.red)
         break
     }
   } else shippingTotal = "please Select the billing and Shipping address"
+let totalAmount =(cart.billTotal + ((0.05 * cart.billTotal) + shippingTotal))
   const CLIENT_ID=process.env.RAZORPAY_ID
   shippingTotal=Number(shippingTotal)
+const wallet = await Wallet.findOrCreate(req.user.id);
+  wallet.balance=wallet.balance.toFixed(2)
   res.render(`./users/checkoutG`, {
     CLIENT_ID,
     user,
     products,
     cart,
     shippingTotal,
+    totalAmount,
+    walletBalance:wallet.balance,
   })
 
 })
@@ -70,7 +76,7 @@ const addItemToCart = asyncHandler(async (req, res, next) => {
   let { user, productId, image, name, productPrice, quantity } = req.body
   quantity = Number(quantity)
   let cart = await Cart.findOne({ user })
-
+console.log(`product id is ${productId}`.bgRed)
   if (!cart) {
     cart = new Cart({ user, items: [] })
   }

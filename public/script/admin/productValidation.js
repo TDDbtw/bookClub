@@ -199,6 +199,9 @@ function validateStockCount() {
  console.log(`stock count is${stockCount} type is ${typeof stockCount}`) 
   const errors = []
 
+  if (stockCount=="") {
+    errors.push("This field cant be empty")
+  }
   if (isNaN(stockCount) || stockCount< 0) {
     errors.push("Valid quantity is required")
   }
@@ -271,7 +274,7 @@ document.getElementById("save-product").addEventListener("click", (event) => {
   if (isNameValid && isAuthorValid  &&  isCategoryValid && isSubCategoryValid &&  isDescriptionValid && isPriceValid && isStockCountValid && isImageValid) {
 sendRequest ()
   } else {
-    alert("Please fill all the required fields correctly")
+    window.toast.errorMessage("Please fill all the required fields correctly")
   }
 })
 document.getElementById("mainContent").addEventListener("change", () => {

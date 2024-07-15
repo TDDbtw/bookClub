@@ -3,9 +3,9 @@ function editCatVal () {
 
   const catId = document.getElementById('catId').value;
   const name = document.getElementById('cName').value.trim();
-  const des = document.querySelector('textarea[name="description"]').placeholder.trim();
+  const des = document.getElementById('dName').value.trim() || document.getElementById('dName').placeholder.trim()
   const image = document.getElementById('file-input').files[0];
-  const imageSrc = document.getElementById('catImg').src
+  const imageSrc = document.getElementById('catImg').src || ''
   const sub = document.querySelectorAll('.subcategory-list input[type="text"]');
   const cancelButton = document.querySelector('.buttons .cancel');
   const fileInput = document.querySelector('#file-input');
@@ -23,6 +23,7 @@ function editCatVal () {
   }
 
   // Validate description
+console.log(`description is ${des}`)
   if (des.length === 0) {
     document.getElementById('descriptionError').innerText = 'Description is required.';
     isValid = false;
@@ -30,14 +31,14 @@ function editCatVal () {
 
   // Validate image upload
   if (!image && imageSrc==null) {
-    alert('Please upload an image.');
+    window.toast.warning('Please upload an image.');
     isValid = false;
   }
 
   // Validate subcategory inputs (optional)
   sub.forEach(input => {
     if (input.value.trim().length === 0) {
-      alert('Please enter a subcategory name.');
+     window.toast.warning('Please enter a subcategory name.');
       isValid = false;
     }
   });
@@ -79,7 +80,7 @@ function editCatVal () {
         },
       })
       .then((response) => {
-        alert("Category added successfully:", response.data);
+        window.toast.success("Category added successfully:", response.data);
         console.log("Category added successfully:", response.data);
         // Reset form and image container
         window.location = "/admin/category"; // Redirect after success
@@ -87,18 +88,12 @@ function editCatVal () {
       .catch((error) => {
         document.getElementById('error').innerHTML=""
         document.getElementById('error').style.color="red"
-        alert(`Error adding category: ${error.response.data.error}` );
+        window.toast.errorMessage(`Error adding category: ${error.response.data.error}` );
         console.log(error);
         document.getElementById('error').innerHTML=error.response.data.error
         // Handle errors appropriately (e.g., display error message to the user)
       });
   }
   // Cancel Button Logic
-  cancelButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    form.reset();
-    imageContainer.innerHTML = "";
-  }
-
-  )}
+}
 

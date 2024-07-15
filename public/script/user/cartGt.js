@@ -19,8 +19,12 @@ async function fetchAndDisplayCart() {
         row.innerHTML = `
           <td>
             <div class="product-info">
+              <a class='productRef' href="/products/${item.productId}">
               <img src="${item.image}" alt="${item.name}" width="50" height="70">
+          </a>
+              <a class='productRef' href="/products/${item.productId}">
               <span>${item.name}</span>
+          </a>
             </div>
           </td>
           <td>$${item.productPrice.toFixed(2)}</td>

@@ -1,6 +1,8 @@
 const Products = require("../../models/products")
 const Cart = require("../../models/cart")
 const User = require("../../models/users")
+const Offer = require("../../models/offer")
+const Wishlist = require("../../models/wishlist")
 const Categories = require("../../models/category")
 const Subcategories = require("../../models/subcategory")
 const ErrorResponse = require(`../../utils/errorResponse`)
@@ -33,21 +35,21 @@ const getProductsTwo=asyncHandler(async (req, res, next) => {
     query.Category = categoryFilter; 
   }
 
- const products = await Products.find(query)
-      .populate("Category", "name") // Populate only the category name
-      .populate("subcategories", "name") // Populate subcategory names
-      .skip(skip)
-      .limit(limit);
+  const products = await Products.find(query)
+    .populate("Category", "name") // Populate only the category name
+    .populate("subcategories", "name") // Populate subcategory names
+    .skip(skip)
+    .limit(limit);
 
-    const totalProducts = await Products.countDocuments(query);
+  const totalProducts = await Products.countDocuments(query);
 
-    res.json({
-      products,
-      currentPage: page,
-      totalPages: Math.ceil(totalProducts / limit),
+  res.json({
+    products,
+    currentPage: page,
+    totalPages: Math.ceil(totalProducts / limit),
 
 
-})
+  })
 });
 
 
@@ -62,35 +64,35 @@ const getProductsTwo=asyncHandler(async (req, res, next) => {
 
 
 const loadproducts = asyncHandler(async (req, res, next) => {
-    const products = await Products.find()
-      .populate("category", "name") // Populate category name
-      .populate("subcategories", "name") // Populate subcategory names
-      .exec();
+  const products = await Products.find()
+    .populate("category", "name") // Populate category name
+    .populate("subcategories", "name") // Populate subcategory names
+    .exec();
 
-    const categories = await Categories.find();
-    const subcategories = await Subcategories.find()
-      .populate("category", "name") // Populate category name in subcategories
-      .exec();
+  const categories = await Categories.find();
+  const subcategories = await Subcategories.find()
+    .populate("category", "name") // Populate category name in subcategories
+    .exec();
 
-    // ... (your logic for handling user and cookies) ...
+  // ... (your logic for handling user and cookies) ...
 
-  if (req.cookies.jwt != "") {
-    decoded = jwt.verify(req.cookies.jwt, process.env.SECRET)
-    req.user = await User.findById(decoded.userId).select("-password")
-    user = req.user
-    userVar = user
-  } else {
-    user = null
-    userVar = user
-  }
+    if (req.cookies.jwt != "") {
+      let decoded = jwt.verify(req.cookies.jwt, process.env.SECRET)
+      req.user = await User.findById(decoded.userId).select("-password")
+      let user = req.user
+      userVar = user
+    } else {
+      let user = null
+      userVar = user
+    }
 
 
-    res.render("./users/shop", {
-      products,
-      user,
-      categories,
-      subcategories,
-    });
+  res.render("./users/shop", {
+    products,
+    user:userVar,
+    categories,
+    subcategories,
+  });
 }); 
 
 const createProduct = asyncHandler(async (req, res, next) => {
@@ -111,156 +113,6 @@ const loadCreateProduct = asyncHandler(async (req, res, next) => {
     name: "Create Product",
   })
 })
-const getSearchProducts = asyncHandler(async (req, res, next) => {
-  let query = {}
-  // if (req.query.search) {
-  // }
-  user = req.cookies ? userVar : ""
-  const products = await Products.find({
-    name: { $regex: req.query.search, $options: "i" },
-  })
-  const responseData = {
-    products: products,
-    user: user,
-  }
-  res.json(responseData)
-})
-const getSortProducts = asyncHandler(async (req, res, next) => {
-console.log(`${ res.search}`.red)
-  let query = {}
-  if (req.query.sortBy) {
-    let sortOption = {}
-    switch (req.query.sortBy) {
-      case "popularity":
-        sortOption = { ratings: -1 }
-        break
-      case "lowToHigh":
-        sortOption = { price: 1 }
-        break
-      case "highToLow":
-        sortOption = { price: -1 }
-        break
-      case "averageRatings":
-        sortOption = { ratings: 1 }
-        break
-      case "featured":
-        sortOption = { featured: -1 }
-        break
-      case "newArrivals":
-        sortOption = { createdAt: -1 }
-        break
-      case "aToZ":
-        sortOption = { name: 1 }
-        break
-      case "zToA":
-        sortOption = { name: -1 }
-        break
-      default:
-        break
-    }
-    query = Products.find().sort(sortOption)
-  } else {
-    query = Products.find()
-  }
-
-  user = req.cookies ? userVar : ""
-  // if (req.query.subcategory) {
-  //   // Filter products by subcategory
-  //   query = query.find({ : req.query.subcategory })
-  // }
-  const products = await query.exec()
-  // console.log()
-  const responseData = {
-    products: products,
-    user: user,
-  }
-  res.json(responseData)
-  // catch (error) {
-  // res.status(500).json({ error: "Internal Server Error" })
-  // }
-})
-const getFilterProducts = asyncHandler(async (req, res, next) => {
-  let query = {}
-  if (req.query.subcategory) {
-    console.log(req.query.subcategory)
-  }
-  const products = await Products.find()
-  let filteredItems = products.filter((item) => {
-    return item.subcategories.includes(req.query.subcategory)
-  })
-  // console.log(filteredItems)
-  // res.json(req.query.products)
-  user = req.cookies ? userVar : ""
-  // // const products = await query.exec()
-  // // // console.log()
-  const responseData = {
-    products: filteredItems,
-    user: user,
-  }
-  res.json(responseData)
-  // catch (error) {
-  // res.status(500).json({ error: "Internal Server Error" })
-  // }
-})
-
-const getSearchSortFilter = asyncHandler(async (req, res, next) => {
-let query = {};
-  let sortOption = {};
-
-  // Search functionality
-  if (req.query.search) {
-    query.name = { $regex: req.query.search, $options: "i" };
-  }
-
-  // Sort functionality
-  if (req.query.sortBy) {
-    switch (req.query.sortBy) {
-      case "popularity":
-        sortOption = { ratings: -1 };
-        break;
-      case "lowToHigh":
-        sortOption = { price: 1 };
-        break;
-      case "highToLow":
-        sortOption = { price: -1 };
-        break;
-      case "averageRatings":
-        sortOption = { ratings: 1 };
-        break;
-      case "featured":
-        sortOption = { featured: -1 };
-        break;
-      case "newArrivals":
-        sortOption = { createdAt: -1 };
-        break;
-      case "aToZ":
-        sortOption = { name: 1 };
-        break;
-      case "zToA":
-        sortOption = { name: -1 };
-        break;
-      default:
-        break;
-    }
-  }
-
-  // Filter functionality
-  if (req.query.subcategory) {
-    query.subcategories = { $in: [req.query.subcategory] };
-  }
-
-  // Execute the query with sorting
-  const products = await Products.find(query).sort(sortOption);
-
-  const user = req.cookies ? userVar : "";
-  const responseData = {
-    products: products,
-    user: user,
-  };
-
-  res.json(responseData);
-});
-
 // @desc     Get all products
 // @route    GET /products
 // @access   private
@@ -285,47 +137,93 @@ const getProducts = asyncHandler(async (req, res, next) => {
 // @route    GET /products/:id
 // @access   public
 const getProduct = asyncHandler(async (req, res, next) => {
+  // Fetch product with populated fields
+  const product = await Products.findById(req.params.id)
+    .populate("category", "name")
+    .populate("subcategories", "name")
+    .exec();
 
-    const product = await Products.findById(req.params.id)
-      .populate("category", "name") // Populate category name
-      .populate("subcategories", "name") // Populate subcategory names
-      .exec();
-
-    // ... (your logic for handling user and cookies) ...
-
-  if (req.cookies.jwt != "") {
-    decoded = jwt.verify(req.cookies.jwt, process.env.SECRET)
-    req.user = await User.findById(decoded.userId).select("-password")
-    user = req.user
-    userVar = user
-  } else {
-    user = null
-    userVar = user
+  if (!product) {
+    return next(
+      new ErrorResponse(
+        `Product not found with the id of ${req.params.id}`,
+        404
+      )
+    );
   }
 
-
-    if (!product) {
-      return next(
-        new ErrorResponse(
-          `Product not found with the id of ${req.params.id}`,
-          404
-        )
-      );
+  // Handle user authentication
+  let user = null;
+  if (req.cookies.jwt) {
+    try {
+      const decoded = jwt.verify(req.cookies.jwt, process.env.SECRET);
+      user = await User.findById(decoded.userId).select("-password");
+    } catch (error) {
+      console.error("Error verifying JWT:", error);
     }
+  }
 
-    res.render("./users/PDP.pug", { product, user });
+  // Fetch wishlist status
+  let ifItem = false;
+  if (user) {
+    const wishlist = await Wishlist.findOne({ user: user._id });
+    ifItem = wishlist ? wishlist.items.some(item => item.product.equals(req.params.id)) : false;
+  }
+
+  // Fetch offers for this product and its category
+  const productOffers = await Offer.findOffersByProduct(product._id);
+  const categoryOffers = await Offer.findOffersByCategory(product.category._id);
+
+  // Combine and filter offers
+  const allOffers = [...productOffers, ...categoryOffers].filter(offer => offer.isValid());
+
+  // Calculate best offer and final price
+  let bestOffer = null;
+  let finalPrice = product.price;
+
+  allOffers.forEach(offer => {
+    const discountedPrice = offer.calculateDiscountedPrice(product.price);
+    if (discountedPrice < finalPrice) {
+      finalPrice = discountedPrice;
+      bestOffer = offer;
+    }
+  });
+
+  // Calculate discount percentage
+  const discountPercentage = bestOffer ? 
+    Math.round((1 - finalPrice / product.price) * 100) : 0;
+
+  // Prepare data for rendering
+  const productData = {
+    ...product.toObject(),
+    finalPrice,
+    discountPercentage,
+    offers: allOffers.map(offer => ({
+      ...offer.toObject(),
+      remainingTime: offer.remainingTime,
+      isBestOffer: offer._id.equals(bestOffer?._id)
+    })),
+    bestOffer: bestOffer ? {
+      ...bestOffer.toObject(),
+      remainingTime: bestOffer.remainingTime } : null
+  };
+
+  res.render("./users/PDP.pug", { 
+    product: productData, 
+    user,
+    ifItem
+  });
 });
-
 
 
 
 //  @desc     POST Create product
 //  @routes post/products/
-//  @access private
+  //  @access private
 
 //  @desc     Delete one product
 //  @routes delete /products/:id/delete
-//  @access private
+  //  @access private
 
 const loadupload = asyncHandler(async (req, res, next) => {
   const products = await Products.find(images)
@@ -375,20 +273,41 @@ const onetwo = asyncHandler(async (req, res, next) => {
     const subCategories = subCat === "All" ? subCatOptions : subCat.split(",");
 
     // Fetch filtered and sorted products
-    const products = await Products.find({ name: { $regex: search, $options: "i" } })
+    let products = await Products.find({ name: { $regex: search, $options: "i" } })
       .where("subcategories")
       .in(subCategories)
       .sort(sort)
       .skip(page * limit)
       .limit(limit);
+    const productIds = products.map(p => p._id);
+    const activeOffers = await Offer.findActiveOffers().where('product').in(productIds);
+console.log(`active offers ${activeOffers}`.red)
+    products = await Promise.all(products.map(async (product) => {
+    const productOffer = activeOffers.find(o => o.product.equals(product._id));
 
+      if (productOffer && productOffer.isValid()) {
+        const discountedPrice = productOffer.calculateDiscountedPrice(product.price);
+
+        return {
+          ...product.toObject(),
+          originalPrice: product.price,
+          discountedPrice: Math.round(discountedPrice * 100) / 100,
+          offer: {
+            id: productOffer._id,
+            name: productOffer.offerName,
+            discountType: productOffer.discountType,
+            discountValue: productOffer.discountValue
+          }
+        };
+      }
+      return product;
+    }));
+console.log(`${products}`.cyan)
     // Fetch the total count of products matching the filters
     const total = await Products.countDocuments({
       subcategories: { $in: subCategories },
       name: { $regex: search, $options: "i" },
     });
-
-    // Prepare the response
     const response = {
       error: false,
       total,
@@ -397,7 +316,6 @@ const onetwo = asyncHandler(async (req, res, next) => {
       subCat: subCatOptions,
       products,
     };
-
     res.status(200).json(response);
   } catch (error) {
     console.error(`Error fetching products: ${error.message}`);
@@ -409,18 +327,15 @@ const onetwo = asyncHandler(async (req, res, next) => {
 
 
 module.exports = {
-  getFilterProducts,
-  getSearchProducts,
   loadproducts,
   getProducts,
   getProductsTwo,
   getProduct,
-  getSortProducts,
   uploadImages,
   loadupload,
   loadCreateProduct,
   createProduct,
   onetwo,
 
-  
+
 }

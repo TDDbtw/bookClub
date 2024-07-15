@@ -3195,6 +3195,33 @@ table.grid td {
   color: rgba(255, 255, 255, 0.2) !important;
 }
 
+.text-light-1 {
+  color: rgba(8, 28, 21, 0.7) !important;
+}
+.text-light-2 {
+  color: rgba(8, 28, 21, 0.5) !important;
+}
+.text-light-3 {
+  color: rgba(8, 28, 21, 0.3) !important;
+}
+.text-light-4 {
+  color: rgba(8, 28, 21, 0.16) !important;
+}
+.text-light-5 {
+  color: rgba(8, 28, 21, 0.13) !important;
+}
+.text-light-6 {
+  color: rgba(8, 28, 21, 0.11) !important;
+}
+.text-light-7 {
+  color: rgba(8, 28, 21, 0.09) !important;
+}
+.text-light-8 {
+  color: rgba(8, 28, 21, 0.07) !important;
+}
+.text-light-9 {
+  color: rgba(8, 28, 21, 0.05) !important;
+}
 .popover-header {
   background-color: #000000;
 }

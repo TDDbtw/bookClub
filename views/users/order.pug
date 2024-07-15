@@ -100,7 +100,8 @@ style.
   }
 
 link(rel="stylesheet", href="../../stylesheet/user/navbar.css")
-
+script( src='../../script/confirmationModal.js' defer)
+script(src='../../script/toast.js' defer)
 body
   .container
     .header
@@ -150,6 +151,8 @@ body
           p Shipping:
             - var address = order.user.billing_address
             p Address: #{address.address}, City: #{address.city}, State: #{address.state}, Zip Code: #{address.zip_code}, Country: #{address.country}
+          if order.status === 'delivered' && order.returnRequest.status==null && !allReturned
+            button(onclick=`handleInvoice(${order._id})`) Generate Invoice #{order._id}
     .info-section
       h2 Product Info
       table
@@ -191,7 +194,6 @@ body
                         span requested return
                       if product.request.status=='accepted'
                         span return accepted
-
 
       .total-price
         p Subtotal: $#{order.totalAmount}

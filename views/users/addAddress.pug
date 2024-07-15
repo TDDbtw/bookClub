@@ -1,173 +1,302 @@
 include ../partials/navbar
-link(rel='stylesheet' href='../../stylesheet/user/addAddress.css')
-link(rel='stylesheet' href='../../stylesheet/navbar.css')
+link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap')
+link(rel='stylesheet', href='../../stylesheet/navbar.css')
+script(src='../../script/toast.js' defer)
+script(defer src='https://unpkg.com/htmx.org@2.0.0', integrity='sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw', crossorigin='anonymous')
+title Address Book
 
-.container-fluid#mainAdd
-  .my-account
-    .col-sm-3.my-account-menu
+style.
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #081c15;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 90vw;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  .page-title {
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .account-layout {
+    display: flex;
+    gap: 30px;
+  }
+  .account-menu {
+    flex: 0 0 250px;
+    background: #0f2a20;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 20px;
+  }
+  .account-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  .account-menu li {
+    margin-bottom: 10px;
+  }
+  .account-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: #b8c9c5;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  .account-menu a:hover, .account-menu a.active {
+    background-color: #1a4734;
+    color: #ffffff;
+  }
+  .main-content {
+    flex: 1;
+    background: #0f2a20;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 30px;
+  }
+  .address-card {
+    background: #1a4734;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .address-header {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+  .address-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .address-items h3 {
+    font-size: 1rem;
+    color: #b8c9c5;
+    margin: 0;
+  }
+  .address-items small {
+    color: #ffffff;
+  }
+  .address-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+  }
+  .btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  .btn-edit {
+    background-color: #2d6a4f;
+    color: #ffffff;
+  }
+  .btn-edit:hover {
+    background-color: #40916c;
+  }
+  .btn-delete {
+    background-color: #e74c3c;
+    color: #ffffff;
+  }
+  .btn-delete:hover {
+    background-color: #c0392b;
+  }
+  .address-defaults {
+    margin-top: 15px;
+  }
+  .address-defaults label {
+    margin-left: 5px;
+    color: #b8c9c5;
+  }
+  .default-address {
+    color: #52b788;
+    font-weight: 600;
+  }
+  form {
+    margin-top: 30px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #b8c9c5;
+  }
+  input[type="text"], select {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #2d6a4f;
+    color: #ffffff;
+  }
+  input[type="text"]::placeholder, select::placeholder {
+    color: #b8c9c5;
+  }
+  button[type="submit"] {
+    background-color: #40916c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button[type="submit"]:hover {
+    background-color: #52b788;
+  }
+  .error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+  .grid{
+    display:flex ;
+   }
+
+  input[type=radio] {
+    margin-end:2px;
+    }
+
+.container
+  h1.page-title Address Book
+
+  .account-layout
+    .account-menu
       ul
-        li
-          a(href='/user/profile') My Account
-        li
-          a(href='/user/wishlist') My Wishlist
-        li
-          a(href='/user/profile/edit') Account Information
-        li
-          a(href='/user/address/new') Address Book
-        li
-          a(href='/user/order') My Orders
-        li
-          a(href='#') My Wallet
+        li: a(href='/user/profile') My Account
+        li: a(href='/user/wishlist') My Wishlist
+        li: a(href='/user/address/new', class='active') Address Book
+        li: a(href='/user/order') My Orders
+        li: a(href='/user/wallet') My Wallet
 
-  .column.main.snipcss-KcpgZ
-    .page-title-wrapper
-      h1.page-title
-        span.base(data-ui-id='page-title-wrapper') Add New Address
-    input(name='form_key' type='hidden' value='viRUoafbYsKQ7xXw')
+    .main-content
+      if user.addresses && user.addresses.length > 0
+        .addresses-list
+          each address, index in user.addresses
+            .address-card
+              input#addressInput(type='hidden' value=address._id)
+              p.address-header Address #{index + 1}
+              .address-items
+                h3 Address:
+                small #{address.address}
+                h3 City:
+                small #{address.city}
+                h3 State:
+                small #{address.state}
+                h3 Zip Code:
+                small #{address.zip_code}
+                h3 Country:
+                small #{address.country}
 
-    if user.addresses && user.addresses.length > 0
-      .addresses-list
-        each address, index in user.addresses
-          .address-card
-            p.address-header Address #{index + 1}
-            .address-items
-              p Address:
-              span.ms-1.me-1 #{address.address}
-              p City:
-              span.ms-1.me-1 #{address.city}
-              p State:
-              span.ms-1.me-1 #{address.state}
-              p Zip Code:
-              span.ms-1.me-1 #{address.zip_code}
-              p Country:
-              span.ms-1.me-1 #{address.country}
+              .address-actions
+                a.btn.btn-edit(href=`/user/address/${address._id}/edit`) Edit
+                a.btn.btn-delete(href='#', onclick=`removeAddress('${address._id}')`)
+                  svg.icon.icon-tabler.icon-tabler-trash(xmlns='http://www.w3.org/2000/svg', width='20', height='20', viewBox='0 0 24 24', stroke-width='1.5', stroke='#ffffff', fill='none', stroke-linecap='round', stroke-linejoin='round')
+                    path(stroke='none', d='M0 0h24v24H0z', fill='none')
+                    path(d='M4 7l16 0')
+                    path(d='M10 11l0 6')
+                    path(d='M14 11l0 6')
+                    path(d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12')
+                    path(d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3')
 
-              .address-information-links
-              a#editAddress(href=`/user/address/${address._id}/edit`) Edit
-              input#addressInput(type="hidden", name="address", value=address._id)
-              a#deleteAddress.text-danger.ms-3(address-id=address._id onclick="removeAddress()")
-                svg.icon.icon-tabler.icon-tabler-trash(xmlns='http://www.w3.org/2000/svg', width='20', height='20', viewBox='0 0 24 24', stroke-width='1.5', stroke='#ff2825', fill='none', stroke-linecap='round', stroke-linejoin='round')
-                  path(stroke='none', d='M0 0h24v24H0z', fill='none')
-                  path(d='M4 7l16 0')
-                  path(d='M10 11l0 6')
-                  path(d='M14 11l0 6')
-                  path(d='M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12')
-                  path(d='M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3')
-
-            .address-defaults.d-flex
-              if user.billing_address 
-                if user.billing_address._id ==address.id
-                  p.mt-3(style="color: #007d99;") Default Billing Address
+              .address-defaults
+                if user.billing_address && user.billing_address._id == address.id
+                  p.default-address Current Billing Address
                 else
-                  input.ms-2.me-2#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
-                  p.me-3.mt-3 set as Billing address
-              else
-                //input#billing_address(type="checkbox" name='billing_address' value=`${address._id}`).ms-3
-                input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
-                label(for='billing_address').ms-1.me-2 Billing Address
-              if user.shipping_address 
-                if user.shipping_address._id == address.id
-                  p.mt-3.ms-3(style="color: #007d99;") Default Shipping Address
+                  .grid
+                    input#billing_address(type='radio', hx-get='/user/set', hx-trigger='change', name='billing_address', value=address._id)
+                    label(for='billing_address') Set as Billing Address
+
+                if user.shipping_address && user.shipping_address._id == address.id
+                  p.default-address Current Shipping Address
                 else
-                  input.ms-3#shipping_address(type='checkbox',hx-get="/user/set"  hx-trigger="change"  hx-target="body"  name='shipping_address',  value=address._id)
-                  p.me-3.mt-3.ms-2 set as Shipping address
-              else
-                input.ms-3#shipping_address(type='checkbox',hx-get="/user/set"  hx-trigger="change"  hx-target="body"  name='shipping_address',  value=address._id)
-                p.me-3.mt-3.ms-2 set as Shipping address
-            form.deleteForm(action=`/user/address/${address._id}/remove` method="delete")
-              input#userInput(type="hidden" name="user" value=user.id)
-              input#addressInput(type="hidden" name="address" value=address._id)
+                  .grid
+                    input#shipping_address(type='radio', hx-get='/user/set', hx-trigger='change', name='shipping_address', value=address._id)
+                    label(for='shipping_address') Set as Shipping Address
 
-    else
-      p You have not added any addresses yet.
+      else
+        p You have not added any addresses yet.
 
-    form#form-validate(action='/user/address/new', method='post', enctype='application/x-www-form-urlencoded')
-      br
-      .fieldset.fieldset.me-5
-        .field.street.required
-          label.label(for='street_1')
-            span Street Address: Line 1
-          .control
-            input#address.input-text.required-entry(type='text' name='address'  oninput='validateAddress()' placeholder='Address' aria-required='true')
-            span#addressError
+      form#form-validate(action='/user/address/new', method='post', enctype='application/x-www-form-urlencoded')
+        h2 Add New Address
 
-        .field.country.required
-          label.label(for='country')
-            span Country
-          .control
-            select#country.required-entry(name="country"   title='Country' oninput='validateCountry()' data-country=countries data-validate="{'validate-select':true}" aria-required='true')
-              option(value='') Please select a Country
-              each country in countries
-                option(value=country.name)= country.name
-            span#countryError
+        .form-group
+          label(for='address'  ) Street Address
+          input#address(type='text', name='address', placeholder='Enter your street address', oninput='validateAddress()')
+          span#addressError.error-message
 
-        .field.region.required
-          label.label(for='region_id')
-            span State
-          .control
-            select#state(name='state')
-              option(value='') Please select a region, state or province.
-            span#stateError
+        .form-group
+          label(for='country' ) Country
+          select#country(name="country"   title='Country' oninput='validateCountry()' data-country=countries data-validate="{'validate-select':true}" aria-required='true')
+            option(value='') Select a Country
+            each country in countries
+              option(value=country.name)= country.name
+          span#countryError.error-message
 
-        .field.city.required
-          label.label(for='city')
-            span City
-          .control
-            input#city.input-text.required-entry(type='text' name='city' oninput='validateCity()' aria-required='true')
-            span#cityError
+        .form-group
+          label(for='state' ) State
+          select#state(name='state', oninput='validateState()' )
+            option(value='') Select a State
+          span#stateError.error-message
 
-        .field.zip.required
-          label.label(for='zip')
-            span Zip Code
-          .control
-            input#zip.input-text.required-entry(type='text' name='zip_code' oninput='validateZip()' aria-required='true')
-            span#zipError
+        .form-group
+          label(for='city' ) City
+          input#city(type='text', name='city', placeholder='Enter your city', oninput='validateCity()')
+          span#cityError.error-message
 
-        input(type='hidden' name='default_billing' value='1')
-        input(type='hidden' name='default_shipping' value='1')
+        .form-group
+          label(for='zip' ) Zip Code
+          input#zip(type='text', name='zip_code', oninput='validateZip()' placeholder='Enter your zip code' )
+          span#zipError.error-message
+        button#saveAddress(type='submit') Save Address
+        input#userInput(type='hidden' value=user)
 
-        .actions-toolbar
-          .primary
-            button#saveAddress.action.submit.primary(type='submit') Save Address
-          .secondary
-            a.action.back(href='/user/address/new') Go back
-        span#errorMessage
-
-  script(src="../../script/user/addAddress.js")
-  script(defer src='https://unpkg.com/htmx.org@2.0.0', integrity='sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw', crossorigin='anonymous')
-  script.
-    $(document).ready(function() {
-      var currentUrl = window.location.pathname;
-      $('.my-account-menu li a').each(function() {
-        var href = $(this).attr('href');
-       console.log(`href isss ... ${href}`) 
-       console.log(`url isss ... ${currentUrl}`) 
-        if (currentUrl === href) {
-          $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
-        }
-      });
+script(src="../../script/user/addAddress.js")
+script.
+  $(document).ready(function() {
+    var currentUrl = window.location.pathname;
+    $('.my-account-menu li a').each(function() {
+      var href = $(this).attr('href');
+     console.log(`href isss ... ${href}`) 
+     console.log(`url isss ... ${currentUrl}`) 
+      if (currentUrl === href) {
+        $(this).parent('li').css('background', 'linear-gradient(to right, #b71540, #e55039)');
+      }
     });
+  });
 
-    const countrySelect = document.getElementById('country');
-    const stateSelect = document.getElementById('state');
-    const countryData = countrySelect.getAttribute('data-country');
-    const countries = JSON.parse(countryData);
+  const countrySelect = document.getElementById('country');
+  const stateSelect = document.getElementById('state');
+  const countryData = countrySelect.getAttribute('data-country');
+  const countries = JSON.parse(countryData);
 
-    countrySelect.addEventListener('change', () => {
-      stateSelect.innerHTML = '';
-      const selectedCountry = countrySelect.value;
-      const states = countries.find(country => country.name === selectedCountry).states;
-      states.forEach(state => {
-        const option = document.createElement('option');
-        option.value = state;
-        option.textContent = state;
-        stateSelect.appendChild(option);
-      });
+  countrySelect.addEventListener('change', () => {
+    stateSelect.innerHTML = '';
+    const selectedCountry = countrySelect.value;
+    const states = countries.find(country => country.name === selectedCountry).states;
+    states.forEach(state => {
+      const option = document.createElement('option');
+      option.value = state;
+      option.textContent = state;
+      stateSelect.appendChild(option);
     });
+  });
 
-      const empty = document.createElement('option');
-      empty.value = ''
-      empty.textContent = 'Select a Country'
-      countrySelect.appendChild(empty);
+    const empty = document.createElement('option');
+    empty.value = ''
+    empty.textContent = 'Select a Country'
+    countrySelect.appendChild(empty);
 
 
+// Your existing JavaScript code here
+// (Country and state selection logic, validation, etc.)

@@ -99,11 +99,10 @@ const loadCreateProduct = asyncHandler(async (req, res, next) => {
 })
 const createProduct = asyncHandler(async (req, res, next) => {
 
-  const existingProduct = await Products.findOne({ name: req.body.name });
-
+  const existingProduct = await Products.findOne({ name: { $regex: new RegExp(req.body.name, 'i') } });
   if (existingProduct) {
     return next(
-      new ErrorResponse(`Product with the same name already exists`, 403)
+      new ErrorResponse(`Product with the same name already exists` )
     );
   }
 

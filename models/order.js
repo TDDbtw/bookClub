@@ -53,7 +53,7 @@ const orderSchema = new mongoose.Schema({
   },
   payment_method: {
     type: String,
-    enum: ["cod", "razorpay"],
+    enum: ["cod", "razorpay",'wallet'],
     required: true,
   },
   payment_details: {
@@ -113,6 +113,39 @@ orderSchema.pre("save", function (next) {
   next();
 });
 
+orderSchema.methods.calculateTotalAmount = function() {
+  return this.totalAmount;
+};
+
+orderSchema.methods.isReturnable = function() {
+  const returnPeriod = 7; // 7 days return policy
+  return this.status === 'delivered' && 
+         moment().diff(this.deliveryDate, 'days') <= returnPeriod;
+};
+
+orderSchema.methods.getOrderSummary = function() {
+  return {
+    orderId: this._id,
+    totalAmount: this.totalAmount,
+    status: this.status,
+    itemCount: this.items.length,
+    createdAt: this.created_at,
+    deliveryDate: this.deliveryDate
+  };
+};
+
+
+orderSchema.methods.calculateRefundAmount = function() {
+  let refundableAmount = 0;
+
+  this.items.forEach(item => {
+    if (item.request.status !== 'accepted' || item.request.type !== 'return') {
+      refundableAmount += item.price * item.quantity;
+    }
+  });
+
+  return refundableAmount;
+};
 // orderSchema.pre("save", function (next) {
   //   const currentDate = new Date()
 

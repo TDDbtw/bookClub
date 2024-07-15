@@ -1,176 +1,75 @@
-const express = require("express")
-const {
-  upload,
-catImg,} = require("../utils/multerUpload")
-const productController = require("../controllers/admin/products")
-const router = express.Router()
+const express = require("express");
+const { upload, catImg } = require("../utils/multerUpload");
+const { protect, admin } = require("../middleware/authMiddleware");
+const router = express.Router();
 
-const {
-  createUsers,
-  deleteUsers,
-  getUser,
-  getUsers,
-  getAdmin,
-  getCreateUser,
-} = require("../controllers/user/user")
+// Import controllers
+const adminController = require("../controllers/admin/admin");
+const productController = require("../controllers/admin/products");
+const categoryController = require("../controllers/admin/category");
+const couponController = require("../controllers/admin/coupons");
+const offerController = require("../controllers/admin/offer");
+const orderController = require("../controllers/admin/order");
+const userProductController = require("../controllers/user/products");
+const { getAllAdminData  } = require("../controllers/admin/adminData")
+// Admin routes
+router.get("/", protect, admin, adminController.getAdmin);
+router.get("/all", protect, admin, getAllAdminData);
+router.get("/data", protect, admin, adminController.getAdminData);
 
-// usersRoute.js
-const { uploadImages, loadupload } = require("../controllers/user/products")
-const {
-  loadUsers,
-  getEditUsers,
-  updateUsers,
-  getSearchUsers,
-} = require("../controllers/admin/user")
-const {
-  updateProducts,
-  loadCreateProduct,
-  createProduct,
-  loadEditProduct,
-  loadProductList,
-  deleteProducts,
-  getSearchProducts,
-  updateImage,
-  removeImg,
-  test,
-} = require("../controllers/admin/products")
-//
-const {
-  getCategoryEdit,
-  getCategoryList,
-  getCreateCategory,
-  deleteCategoryById,
-  createSubCategory,
-  deleteSubCategory,
-  createCategory,
-  updateCategoryById,
-  getSearchCategory,
-  getSearchSubCategory,
-  changeStatus,
-} = require("../controllers/admin/category")
+// User management routes
+router.get("/users", protect, admin, adminController.loadUsers);
+router.get("/users/search", adminController.getSearchUsers);
+router.route("/users/register").get(protect, admin, adminController.getCreateUser).post(protect, admin, adminController.createUsers);
+router.get("/users/:id", protect, admin, adminController.getUser);
+router.route("/users/:id/edit").get(adminController.getEditUsers).put(adminController.updateUsers);
+router.delete("/users/:id/delete", protect, admin, adminController.deleteUsers);
 
-const {
-  renderCouponList,
-  renderCouponEdit,
-  getAddCoupon,
-  createCoupon,
-  updateCoupon,
-  getCouponList,
+// Product routes
+router.get("/products", protect, admin, productController.loadProductList);
+router.get("/products/search", productController.getSearchProducts);
+router.route("/products/create").get(protect, admin, productController.loadCreateProduct).post(protect, admin, upload.array("image"), productController.createProduct);
+router.route("/products/:id/edit").get(protect, admin, productController.loadEditProduct).put(protect, admin, productController.updateProducts).patch(protect, admin, upload.array("image"), productController.updateProducts);
+router.delete("/products/:id/delete", protect, admin, productController.deleteProducts);
+router.route("/products/:id/upload").get(userProductController.loadupload).post(userProductController.uploadImages);
+router.delete("/products/image/:imageIndex", protect, admin, productController.updateImage);
+router.post("/products/:id/remove-image", protect, admin, productController.removeImg);
 
-} = require("../controllers/admin/coupons")
+// Category routes
+router.get("/categories/:id/edit", protect, admin, categoryController.getCategoryEdit);
+router.patch("/categories/:id/edit", protect, admin, catImg.single("image"), categoryController.createSubCategory);
+router.delete("/categories/delete", protect, admin, categoryController.deleteSubCategory);
+router.delete("/categories/:id/delete", protect, admin, categoryController.deleteCategoryById);
+router.get("/category", protect, admin, categoryController.getCategoryList);
+router.get("/category/search", protect, admin, categoryController.getSearchCategory);
+router.get("/category/:id/edit/search", protect, admin, categoryController.getSearchSubCategory);
+router.route("/category/create").get(protect, admin, categoryController.getCreateCategory).post(protect, admin, catImg.single("image"), categoryController.createCategory);
+router.patch("/category/:id/edit", protect, admin, catImg.single("image"), categoryController.updateCategoryById);
+router.delete("/category/:id/delete", protect, admin, categoryController.updateCategoryById);
+router.patch("/category/:id/status", protect, admin, categoryController.changeStatus);
 
-const{
-createOffer,
-  getOfferList,
-  updateOffer,
-  renderEditOffer,
-  renderCreateOffer,
-  renderOfferList,
-  
-} = require("../controllers/admin/offer")
+// Order routes
+router.get("/orders", protect, admin, orderController.getAdminOrderList);
+router.route("/orders/:id").get(protect, admin, orderController.getOrderById).put(protect, admin, orderController.updateOrderById);
+router.patch('/order/:orderId/:productId/return', protect, admin, orderController.manageProductReturn);
+router.patch('/order/:orderId/return', protect, admin, orderController.manageOrderReturn);
 
+// Sales report routes
+router.get("/sales-report", protect, admin, orderController.renderSalesReport);
+router.get("/sales-report/list", protect, admin, orderController.getSalesReport);
+router.get("/sales-report/download/excel", protect, admin, orderController.downloadExcel);
+router.get("/sales-report/download/pdf", protect, admin, orderController.downloadPdf);
 
-const {
-  getAdminOrderList,
-  getOrderById,
-  updateOrderById,
-  manageProductReturn,
-  manageOrderReturn,
-  renderSalesReport,
-  getSalesReport,
-  downloadPdf,
-  downloadExcel,
+// Coupon routes
+router.get("/coupons", protect, admin, couponController.renderCouponList);
+router.route("/coupons/create").get(protect, admin, couponController.getAddCoupon).post(protect, admin, couponController.createCoupon);
+router.route("/coupons/:id/edit").get(protect, admin, couponController.renderCouponEdit).patch(protect, admin, couponController.updateCoupon);
+router.get("/coupons/list", protect, admin, couponController.getCouponList);
 
-} = require("../controllers/admin/order")
-//
-const { protect, admin } = require("../middleware/authMiddleware")
-const { validateProduct   } = require("../middleware/productValidation")
-//
-router.route("/").get(protect, admin, getAdmin)
-router.route(`/users`).get(protect, admin, loadUsers)
-router.route(`/users/search`).get(getSearchUsers)
+// Offer routes
+router.get("/offers", protect, admin, offerController.renderOfferList);
+router.route("/offers/create").get(protect, admin, offerController.renderCreateOffer).post(protect, admin, offerController.createOffer);
+router.get("/offers/list", protect, admin, offerController.getOfferList);
+router.route("/offers/:id/edit").get(protect, admin, offerController.renderEditOffer).patch(protect, admin, offerController.updateOffer);
 
-router
-  .route("/users/register")
-  .get(protect, admin, getCreateUser)
-  .post(protect, admin, createUsers)
-router.route(`/users/:id`).get(protect, admin, getUser)
-router.route(`/users/:id/edit`).get(getEditUsers).put(updateUsers)
-router.route(`/users/:id/delete`).delete(deleteUsers)
-
-// router.route(`/users/:id/edit/save`).get(loadUsers).put(updateUsers)
-
-router
-  .route(`/users/:id/edit/save`)
-  .put(protect, admin, updateUsers)
-  .get(protect, admin, loadUsers)
-
-router.route(`users/:id/delete`).delete(protect, admin, deleteUsers)
-
-// Display all products
-router.route(`/products`).get(protect, admin, loadProductList)
-router
-  .route("/products/:id/edit")
-  .get(protect, admin, loadEditProduct)
-  .put(protect, admin, updateProducts)
-  .patch(protect, admin,upload.array("image"),updateProducts)
-
-router.route(`/products/search`).get(getSearchProducts)
-
-router
-  .route("/products/create")
-  .get(protect, admin, loadCreateProduct)
-  .post(protect, admin, upload.array("image"), createProduct)
-router.route("/products/:id/delete").delete(protect, admin, deleteProducts)
-router.route("/products/:id/upload").get(loadupload).post(uploadImages)
-router.route("/products/image/:imageIndex").delete(protect, admin, updateImage)
-router.route("/products/:id/upload").get(loadupload).post(uploadImages)
-router.route("/products/:id/remove-image").post(protect, admin,removeImg)
-//
-router.route("/categories/:id/edit").get(protect, admin, getCategoryEdit)
-router.route("/categories/:id/edit").patch(protect, admin,catImg.single("image"), createSubCategory)
-router.route("/categories/delete").delete(protect, admin, deleteSubCategory)
-router
-  .route("/categories/:id/delete")
-  .delete(protect, admin, deleteCategoryById)
-
-router.route("/category").get(protect, admin, getCategoryList)
-router.route("/category/search").get(protect, admin, getSearchCategory)
-router.route("/category/:id/edit/search").get(protect, admin, getSearchSubCategory)
-router
-  .route("/category/create")
-  .get(protect, admin, getCreateCategory)
-  .post(protect, admin,catImg.single("image"), createCategory)
-
-  router.route("/category/:id/edit").patch(protect, admin,catImg.single("image"), updateCategoryById)
-  router.route("/category/:id/delete").delete(protect,admin, updateCategoryById)
-  router.route("/category/:id/status").patch(protect,admin, changeStatus)
-// Oreder route
-// Get All Orders
-router.route("/orders").get(protect, admin, getAdminOrderList)
-router
-  .route("/orders/:id")
-  .get(protect, admin, getOrderById)
-  .put(protect, admin, updateOrderById)
-router.route('/order/:orderId/:productId/return').patch(protect, admin,manageProductReturn);
-router.route('/order/:orderId/return').patch(protect, admin,manageOrderReturn);
-
-
-router.route("/sales-report").get(protect, admin,renderSalesReport )
-router.route("/sales-report/list").get(protect, admin,getSalesReport )
-router.route("/sales-report/download/excel").get(protect, admin,downloadExcel )
-router.route("/sales-report/download/pdf").get(protect, admin,downloadPdf )
-
-router.route("/coupons").get(protect,admin,renderCouponList)
-router.route("/coupons/create").get(protect,admin,getAddCoupon).post(protect,admin,createCoupon)
-router.route("/coupons/:id/edit").get(protect, admin,renderCouponEdit).patch(protect,admin,updateCoupon)
-router.route("/coupons/list").get(protect,admin,getCouponList)
-
-
-
-
-router.route("/offers").get(protect,admin,renderOfferList)
-router.route("/offers/create").get(protect,admin,renderCreateOffer).post(protect,admin,createOffer)
-router.route("/offers/list").get(protect,admin,getOfferList)
-router.route("/offers/:id/edit").get(protect,admin, renderEditOffer).patch(protect,admin,updateOffer)
-module.exports = router
+module.exports = router;

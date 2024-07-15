@@ -18,37 +18,12 @@ const validateProduct = [
     .notEmpty().withMessage('Product price is required')
     .isFloat({ min: 0 }).withMessage('Product price cannot be negative'),
   
-  // check('categories')
-  //   .isArray({ min: 1 }).withMessage('Product must belong to at least one category'),
-    // .custom((categories, { req }) => {
-    //   return categories.every(categoryId => mongoose.Types.ObjectId.isValid(categoryId));
-    // }).withMessage('Invalid category ID format'),
-
-  // check('subcategories')
-  //   .optional()
-  //   .isArray()
-  //   .custom((subcategories, { req }) => {
-  //     return subcategories.every(subcategoryId => mongoose.Types.ObjectId.isValid(subcategoryId));
-  //   }).withMessage('Invalid subcategory ID format'),
-
   check('stockCount')
     .optional()
     .isInt({ min: 0, max: 300 }).withMessage('Stock count must be an integer between 0 and 300'),
 
   check('image')
     .notEmpty().withMessage('Choose an image'),
-    // .isArray({ min: 1 }).withMessage('Product image is required'),
-
-  // check('specifications')
-  //   .optional()
-  //   .isArray()
-  //   .custom((specifications) => {
-  //     return specifications.every(spec => 
-  //       typeof spec.name === 'string' &&
-  //       ['formFactor', 'pcieConnectors', 'sataConnectors', 'molexConnectors', 'warranty'].includes(spec.name) &&
-  //       typeof spec.value === 'string'
-  //     );
-  //   }).withMessage('Invalid specifications format'),
 
   (req, res, next) => {
     const errors = validationResult(req);

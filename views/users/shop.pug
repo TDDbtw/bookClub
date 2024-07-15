@@ -6,19 +6,22 @@ link(rel='stylesheet', href='../stylesheet/user/sort.css')
 .container.d-flex
   #sidebar
     #heading Categories
-    ul
+    ul#categoryList
       each category in categories
         li.catLi
           .catName= category.name
           ul
             each subcategory in subcategories
               if subcategory.category._id == category.id
-                li(data-sub-cat=subcategory.id)= subcategory.name 
+                  li#subLi
+                    input.me-4(type='checkbox' data-sub-cat=subcategory.id)
+                    |#{subcategory.name}
+                    
   .filter-icon.text-decoration-none
     label.text-white.me-3#clearBtn() clear all
-    label.text-white.me-3#clearSearch search
-    span.btn.text-white.me-3#clearSort sort
-    label.text-white.me-3#clearFilter Filter
+    label.text-white.me-3#clearSearch(style='display:none') search
+    span.btn.text-white.me-3#clearSort(style='display:none') sort
+    label.text-white.me-3#clearFilter(style='display:none') Filter
     label#sort-by-label(for='sortBy') Sort By:
     select#sortBy
       option(value='lowToHigh') Price: Low to High
@@ -45,16 +48,10 @@ link(rel='stylesheet', href='../stylesheet/user/sort.css')
   script( type='text/javascript', src='https://cdn.jsdelivr.net/npm/toastify-js')
   script( src='https://unpkg.com/htmx.org@1.9.10' integrity='sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC' crossorigin='anonymous')
   script.
-    document.querySelectorAll('#sidebar > ul > li').forEach(item => {
-      item.addEventListener('click', () => {
-        item.classList.toggle('open');
-      });
-    });
-    
       const addToWishlistButtons = document.querySelectorAll('add-to-wishlist-btn');
       console.log(`wishlist buttons -- ${addToWishlistButtons.length}`)
       addToWishlistButtons.forEach(button => {
-      console.log(`button ${button} clicke`)
+      console.log(`button ${button} clicked`)
         button.addEventListener('click', handleAddToWishlist);
       });
 

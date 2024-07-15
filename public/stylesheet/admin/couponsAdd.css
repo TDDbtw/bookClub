@@ -25,13 +25,13 @@ input[type="text"],input[type="date"],input[type="number"]{
     color: #fff;
 background:#1D4A38;
 }
-input:focus {
+
+input:focus[type="text"],input:focus[type="date"],input:focus[type="number"]{
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-top: 5px;
-    color:white;
-background-color:#1D4A38;
-background:#1D4A38 !important;
- background: rgba(76, 175, 80, 0.3)
+    color: white;
+    color: #fff;
+background:#1D4A38;
 }

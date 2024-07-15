@@ -1,45 +1,56 @@
 console.log(`coupon result is ${couponResult.discountAmount}`);
+const radios = document.querySelectorAll('input[name="payment-inline"]');
 const ID = document.getElementById('ID').value;
-const paymentMethodSelect = document.getElementById('payment_method');
 const cart = document.querySelector('[name=cart]').value;
 const totalAmount = document.querySelector('[name=total_amount]').value;
 let user = document.getElementById('userInput').value;
-let paymentMethod = paymentMethodSelect.value;
-if (document.getElementById('payment_method').value == "") {
+let selectedPayment=''
+let paymentMethod = ''
+if (paymentMethod == "") {
   document.getElementById('placeOrderBtn').disabled = true;
   document.getElementById("paymentError").innerHTML = "Please select a Payment option";
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
   const codDetails = document.getElementById('cod_details');
   const razorpayDetails = document.getElementById('razorpay_details');
-  const paypalDetails = document.getElementById('paypal_details');
-
-  paymentMethodSelect.addEventListener('change', () => {
-    const paymentMethod = paymentMethodSelect.value;
-
-    codDetails.style.display = 'none';
-    razorpayDetails.style.display = 'none';
-    paypalDetails.style.display = 'none';
-
-    if (paymentMethod === 'cod') {
-      codDetails.style.display = 'block';
-    } else if (paymentMethod === 'razorpay') {
-      razorpayDetails.style.display = 'block';
-    } else if (paymentMethod === 'paypal') {
-      paypalDetails.style.display = 'block';
+  const walletDetails = document.getElementById('wallet_details');
+  let selectedValue;
+  radios.forEach((radio) => {
+    if (radio.checked) {
+      selectedValue = radio.value;
     }
+  });
+  document.querySelectorAll('input[name="payment-inline"]').forEach((radio) => {
+    radio.addEventListener('change',function(){
+      window.toast.success(this.value)
+       paymentMethod = this.value;
 
-    if (document.getElementById('payment_method').value != "") {
-      document.getElementById('placeOrderBtn').disabled = false;
-      document.getElementById("paymentError").innerHTML = '';
-    }
+      codDetails.style.display = 'none';
+      razorpayDetails.style.display = 'none';
+      walletDetails.style.display = 'none';
+
+      if (paymentMethod === 'cod') {
+        codDetails.style.display = 'block';
+      } else if (paymentMethod === 'razorpay') {
+        razorpayDetails.style.display = 'block';
+      } else if (paymentMethod === 'wallet') {
+        walletDetails.style.display = 'block';
+      }
+
+      if (this.value != "") {
+        document.getElementById('placeOrderBtn').disabled = false;
+        document.getElementById("paymentError").innerHTML = '';
+      }
+
+    });
   });
 
 
+
   document.getElementById('placeOrderBtn').addEventListener('click', async (event) => {
-    event.preventDefault();
-    paymentMethod = paymentMethodSelect.value
+    event.preventDefault(); 
     console.log(`mthode is ${paymentMethod}`.yellow)
     placeOrder()
 
@@ -54,7 +65,7 @@ function placeOrder(){
     coupon: couponResult
 
   }
-  if(paymentMethod=='cod'){
+  if(paymentMethod=='cod'||paymentMethod=='wallet'){
 
     // COD payment
     Swal.fire({
@@ -169,7 +180,25 @@ function placeOrder(){
       .catch(error => {
         console.error("Error in making the request:", error);
       });
-
-
   }
+}
+
+if (totalAmount>200 ) {
+  const codOption = document.querySelector('input[ value=cod]');
+  codOption.setAttribute('disabled', '')
+  const codMsg=document.getElementById('codMsg')
+  codOption.style.color='grey'
+  codMsg.innerHTML='(not available for orders above 200)'
+}
+
+
+function getSelectedPaymentMethod() {
+  const radios = document.querySelectorAll('input[name="payment-inline"]');
+  let selectedValue;
+  radios.forEach((radio) => {
+    if (radio.checked) {
+      selectedValue = radio.value;
+    }
+  });
+  window.toast.success('Selected Payment Method: ' + selectedValue);
 }

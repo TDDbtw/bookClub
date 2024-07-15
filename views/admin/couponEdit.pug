@@ -153,24 +153,24 @@ html
       form#couponForm
         .mb-3
           label.form-label(for='code') Coupon Code
-          input#code.form-control(type='text', name='code', required='' value= coupon.code )
+          input#code.form-control(type='text', name='code',  placeholder= coupon.code )
         .mb-3
           label.form-label(for='discount') Discount (%)
-          input#discount.form-control(type='number', name='discount', required='' value= coupon.discount)
+          input#discount.form-control(type='number', name='discount',  placeholder= coupon.discount)
         .mb-3
           label.form-label(for='limit') Usage Limit
-          input#limit.form-control(type='number', name='limit', required='' value= coupon.limit)
-        .mb-3
+          input#limit.form-control(type='number', name='limit',  placeholder= coupon.limit)
+          .mb-3
           label.form-label(for='expiry') Expiry Date
-          input#expiry.form-control(type='text', name='expiry', required='' placeholder ='hheh' value= formatDate(coupon.expiry))
-        .mb-3
+          input#expiry.form-control(type='text', name='expiry',   placeholder= formatDate(coupon.expiry))
+          .mb-3
           label.form-label(for='minAmt') Minimum Amount
-          input#minAmt.form-control(type='number', name='minAmt', required='' value= coupon.minAmt)
-        .mb-3
+          input#minAmt.form-control(type='number', name='minAmt',  placeholder= coupon.minAmt)
+          .mb-3
           label.form-label(for='maxAmt') Maximum Amount
-          input#maxAmt.form-control(type='number', name='maxAmt', required='' value= coupon.maxAmt)
-        button.btn.btn-primary#saveEdit(type='submit')  Save Changes
-    // Bootstrap JS (optional if you need JavaScript features from Bootstrap)
-    script(src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js')
-    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js')
-    script(defer src='../../../../script/admin/coupon.js')
+          input#maxAmt.form-control(type='number', name='maxAmt',  placeholder= coupon.maxAmt)
+          button.btn.btn-primary#saveEdit(type='submit')  Save Changes
+          // Bootstrap JS (optional if you need JavaScript features from Bootstrap)
+          script(src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js')
+          script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js')
+          script(defer src='../../../../script/admin/coupon.js')

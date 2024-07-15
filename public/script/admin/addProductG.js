@@ -1,4 +1,5 @@
 const nameError = document.getElementById('nameError')
+nameError.style.color="red"
 const authorError = document.getElementById('nameError')
 const descriptionError = document.getElementById('descriptionError')
 const imageError = document.getElementById('imageError')
@@ -59,11 +60,14 @@ console.log(`${JSON.stringify(selectedCategoryId)}`)
   })
     .then(response => {
       console.log(response.data); // Handle successful creation response
-      alert("sucessfully added")
+      window.toast.success("sucessfully added")
 window.location.href = "/admin/products"
     })
     .catch(error => {
-      if(error.response.data.errors){ // Handle errors
+     console.log(`${error}`) 
+      if(error.response.data.errors && error.reponse.data.errors.length<2){
+      }// Handle errors
+      if(error.response.data.errors && error.reponse.data.errors.length>2){ // Handle errors
         items=error.response.data.errors
         displayErrors(items);
       }

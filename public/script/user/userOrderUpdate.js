@@ -2,7 +2,8 @@
   console.log('order update running');
 
   async function handleCancelOrder(orderId) {
-console.log(`order id isss ${orderId}`)
+  const result = await window.confirmationModal.confirmDelete('Cancel Order', 'Are you sure you want to cancel this order?');
+  if (result.isConfirmed) {
     try {
       const response = await axios.put(`/order/${orderId}/cancel`, {}, {
         headers: {
@@ -10,18 +11,20 @@ console.log(`order id isss ${orderId}`)
         },
       });
       if (response.data.success) {
-        alert('Order cancelled successfully');
+        window.toast.success('Order cancelled successfully');
         location.reload();
       } else {
-        alert(response.data.message || 'Failed to cancel order');
+        window.toast.error(response.data.message || 'Failed to cancel order');
       }
     } catch (error) {
       console.error('Error:', error);
     }
   }
+  }
 
   async function handleReturnOrder(orderId) {
-   console.log(`ordir id is${orderId}`) 
+  const result = await window.confirmationModal.return('Return Product', 'Are you sure you want to return this Order?');
+  if (result.isConfirmed) {
     try {
       const response = await axios.put(`/order/${orderId}/return`, {}, {
         headers: {
@@ -29,51 +32,83 @@ console.log(`order id isss ${orderId}`)
         },
       });
       if (response.data.success) {
-        successToast('Order return requested successfully')
+        window.toast.success('Order Return Requested');
         location.reload();
       } else {
-        alert(response.data.message || 'Failed to return order');
+        window.toast.error(response.data.message || 'Failed to return order');
       }
     } catch (error) {
       console.error('Error:', error);
-      errorToast(error)
+      window.toast.error(error)
     }
   }
-
-  async function handleCancelProduct(orderId, productId) {
+  }
+async function handleCancelProduct(orderId, productId) {
+  const result = await window.confirmationModal.confirmDelete('Cancel Product', 'Are you sure you want to cancel this product?');
+  
+  if (result.isConfirmed) {
     try {
       const response = await axios.put(`/order/${orderId}/product/${productId}/cancel`, {}, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
+      
       if (response.data.success) {
-        alert('Product cancel request added successfully');
+        window.toast.success('Product cancel request added successfully');
         location.reload();
       } else {
-        alert(response.data.message || 'Failed to cancel product');
+        window.toast.error(response.data.message || 'Failed to cancel product');
       }
     } catch (error) {
       console.error('Error:', error);
-     errorToast(error) 
+      errorToast(error);
     }
   }
+}
+
 
   async function handleReturnProduct(orderId, productId) {
+  const {value: text} = await window.confirmationModal.return('Return Product', 'Are you sure you want to return this product?');
+  if (text) {
     try {
-      const response = await axios.put(`/order/${orderId}/product/${productId}/return`, {}, {
+      const response = await axios.put(`/order/${orderId}/product/${productId}/return`, {reason:text}, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
       if (response.data.success) {
-        successToast('Product return request added successfully')
         location.reload();
+        window.toast.success('Product return request added successfully')
       } else {
-        alert(response.data.message || 'Failed to return product');
+        window.toast.error(response.data.message || 'Failed to return product');
       }
     } catch (error) {
       console.error('Error:', error);
       errorToast(error)
     }
+  }}
+
+async function handleInvoice(orderId) {
+  const result = await window.confirmationModal.show('generate invoice Product', 'Are you sure you want to generate invoice of this order?t');
+  
+  if (result.isConfirmed) {
+    try {
+      const response = await axios.get(`/order/${orderId}/invoice`, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.data.success) {
+        window.toast.success('invoice generate successfully');
+        location.reload();
+      } else {
+        window.toast.error(response.data.message || 'Failed to cancel product');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      errorToast(error);
+    }
   }
+}

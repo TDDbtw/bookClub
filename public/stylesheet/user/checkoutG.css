@@ -21,6 +21,7 @@ body {
 .address-selection,
 .address-form,
 .payment-section,
+.payment-method-inline,
 .order-summary,
 .checkout-actions {
     background-color: #142821;
@@ -103,7 +104,7 @@ width:26%;
     margin-top: 0.5rem;
 }
 
-#paypal_details,
+#wallet_details,
 #cod_details,
 #razorpay_details {
     margin-top: 1rem;
@@ -140,3 +141,13 @@ width:26%;
         margin-top: 1rem;
     }
 }
+
+
+.payment-method-inline label {
+    display: inline-block;
+    margin-right: 20px;
+}
+.payment-method-inline input[type="radio"] {
+    margin-right: 5px;
+}
+

@@ -224,3 +224,8 @@ h1 {
         margin-top: 2rem;
     }
 }
+
+.productRef{
+text-decoration: none;
+color:white;
+}

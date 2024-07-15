@@ -136,6 +136,9 @@ const tempSave = asyncHandler(async (req, res, next) => {
 const createUser = asyncHandler(async (req, res, next) => {
   console.log(`one create user ${req.body}`)
   const users = await Users.create(req.session.userData)
+  if (users){
+  createWallet(users)
+  }
   res.redirect("/auth/login")
 })
 
@@ -157,58 +160,7 @@ const otpVerify = asyncHandler(async (req, res, next) => {
   if (verifyOTP(userOtp)) {
     // Send a success response
     res.json({ success: true, message: "OTP verification successful!" })
-    const newUserSave = await Users.create(req.body)
-      if(newUserSave){
-        req.session.registrationsuccess=true
-        if (req.session.referralCode) {
-        
-        const walletData = await Wallet.findOne({ user: newUserSave._id });
-        if (walletData) {
-          walletData.walletBalance +=50;
-          walletData.transaction.push({
-            type: "credit",
-            amount:50,
-          });
-        
-          await walletData.save(); 
-        }else{
-          const wallet = new Wallet({
-            user: newUserSave._id,
-            transaction:[{type:"credit",amount:50}],
-            walletBalance:50,
-          });
-        await wallet.save();
-        }
-      
-      
-        const referrer = await Users.findOne({
-          referralCode: req.session.referralCode,
-        });
-        const user = await Users.findOne({ _id: newUserSave._id });
-
-        referrer.userReferred.push(user.email);
-        let gets = await referrer.save();
-        const walletrefer = await Wallet.findOne({ user: referrer._id });
-
-          if (walletrefer) {
-            walletrefer.walletBalance +=100;
-            walletrefer.transaction.push({
-              type: "credit",
-              amount:100,
-            });
-          
-            await walletrefer.save(); 
-          }else{
-            const wallet = new Wallet({
-              user: referrer._id,
-              transaction:[{type:"credit",amount:100}],
-              walletBalance:100,
-          });
-          await wallet.save();
-          }
-          delete req.session.referralCode;
-
-        }
+    const users = await Users.create(req.body)
     res.redirect("/auth/login")
   } else {
     // Send a failure response
@@ -216,7 +168,7 @@ const otpVerify = asyncHandler(async (req, res, next) => {
       .status(400)
       .json({ success: false, message: "OTP verification failed." })
   }
-  }} )
+})
 
 const userLogin = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body
@@ -293,7 +245,52 @@ const logoutUser = asyncHandler(async (req, res, next) => {
 //   })
 //   res.redirect("/")
 // })
+async function createWallet(data){
+ let wallet = new Wallet({
+        user: data._id,
+        balance: 0,
+        transactions: []
+      });
 
+ // Handle referral if applicable
+      if (data.referralCode) {
+        // Add referral bonus to new user's wallet
+        wallet.balance += 50;
+        wallet.transactions.push({
+          type: 'credit',
+          amount: 50,
+          description: 'Signup referral bonus'
+        });
+
+        // Handle referrer's bonus
+        const referrer = await Users.findOne({
+          referralCode: data.referralCode,
+        });
+        if (referrer) {
+          referrer.userReferred.push(newUserSave.email);
+          await referrer.save();
+
+          let referrerWallet = await Wallet.findOne({ user: referrer._id });
+          if (!referrerWallet) {
+            referrerWallet = new Wallet({
+              user: referrer._id,
+              balance: 0,
+              transactions: []
+            });
+          }
+          referrerWallet.balance += 100;
+          referrerWallet.transactions.push({
+            type: 'credit',
+            amount: 100,
+            description: 'Referral reward'
+          });
+          await referrerWallet.save();
+        }
+        delete data.referralCode;
+      }
+
+await wallet.save();
+}
 module.exports = {
   // verifySignup,
   getSignup,

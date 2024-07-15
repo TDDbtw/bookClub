@@ -46,32 +46,38 @@ const getAddCoupon = asyncHandler(async (req, res, next) => {
 })
 
 const createCoupon = asyncHandler(async (req, res, next) => {
+  let { discount, limit, expiry, minAmt, maxAmt } = req.body;
+  const code = req.body.code.trim().toUpperCase();
 
-  let {discount,limit,expiry,minAmt,maxAmt} = req.body;
-  const code = req.body.code.replace(/\s/g,"");
-  if (!code || !discount || !expiry ) {
-    return res.status(206).json({ success: false, error: "Required fields missing" });
+  if (!code || !discount || !expiry) {
+    return res.status(400).json({ success: false, error: "Required fields missing" });
   }
-  const existingCoupon = await Coupon.findOne({
-    code: { $regex: new RegExp("^" + code, "i") },
-  });
-  console.log(`${existingCoupon}`) 
 
+  try {
+    const existingCoupon = await Coupon.findOne({
+      code: { $regex: new RegExp(`^${code}$`, 'i') }
+    });
 
-  const newCoupon = new Coupon({
-    code: code,
-    discount: discount,
-    limit: limit,
-    expiry: expiry,
-    maxAmt: maxAmt,
-    minAmt: minAmt,
-  });
-  await newCoupon.save();
-  res.status(200).json({ success: true, message: "Coupon added successfully" });
+    if (existingCoupon) {
+      return res.status(409).json({ success: false, error: "Coupon code already exists" });
+    }
 
-  // res.json({"code":code,"exist":existingCoupon,"newCoupon":newCoupon} )
-})
+    const newCoupon = new Coupon({
+      code,
+      discount,
+      limit,
+      expiry,
+      maxAmt,
+      minAmt,
+    });
 
+    await newCoupon.save();
+    res.status(201).json({ success: true, message: "Coupon added successfully" });
+  } catch (error) {
+    console.error('Error creating coupon:', error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
 
 
 const updateCoupon = asyncHandler(async (req, res, next) => {
@@ -88,7 +94,7 @@ const updateCoupon = asyncHandler(async (req, res, next) => {
 
 
 
-    const existingCoupon = await Coupon.findById(req.params.id);
+   const existingCoupon = await Coupon.findById(req.params.id);
     if (!existingCoupon) {
       return res.status(404).json({ error: 'Coupon not found' });
     }

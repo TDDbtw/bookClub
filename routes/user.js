@@ -17,11 +17,11 @@ const {
   getAddAddress,
   getEditAddress,
   postAddAddress,
-  putEditAddress,
+  patchEditAddress,
   deleteAddress,
   test,
 } = require("../controllers/user/address")
-const {getWallet} = require("../controllers/user/wallet")
+const {getWallet,handlePayPalPayment,createPayPalOrder} = require("../controllers/user/wallet")
 const { getCheckout } = require("../controllers/user/cart")
 const { getWishlist,getUserWishlist,addToWishlist,removeFromWishlist  } = require("../controllers/user/wishlist")
 const { getUserOrder, createOrder } = require("../controllers/user/order")
@@ -41,7 +41,7 @@ router
 router
   .route("/address/:id/edit")
   .get(protect, getEditAddress)
-  .patch(putEditAddress)
+  .patch(patchEditAddress)
 
 router
   .route("/address/new")
@@ -66,4 +66,6 @@ router.route("/order").get(protect, getUserOrder)
 router.route("/order/:id").get(protect, getOrderById)
 
 router.route("/wallet").get(protect,getWallet)
+router.route("/wallet/paypal/create-order").post(protect,createPayPalOrder)
+router.route("/wallet/paypal/capture-order").post(protect,handlePayPalPayment)
 module.exports = router

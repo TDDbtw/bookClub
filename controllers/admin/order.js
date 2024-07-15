@@ -2,6 +2,7 @@ const Products = require("../../models/products")
 const Cart = require("../../models/cart")
 const User = require("../../models/users")
 const Order = require("../../models/order")
+const Wallet = require("../../models/wallet")
 const Offer = require("../../models/offer")
 const Coupon = require("../../models/coupon")
 const Categories = require("../../models/category")
@@ -119,7 +120,11 @@ order.items[productIndex].request = {
       type: 'return',
       status: 'accepted',
     }
-
+const returnedItem=order.items[productIndex]
+const amount=  returnedItem.quantity * returnedItem.price
+ const wallet = await Wallet.findOrCreate(order.user);
+wallet.addTransaction('credit', amount, `Refund for the cancellation of ${returnedItem.quantity} ${returnedItem.name}(s).`);
+await wallet.save()
     await order.save();
     res.status(200).json({
       success: true,
@@ -148,7 +153,8 @@ console.log(`${order}`.red)
    status: 'accepted',
     };
     await order.save();
-
+const amount =order.calculateRefundAmount()
+   console.log(`refundable amount is ${amount}`.bgRed) 
     res.status(200).json({
       success: true,
       message: 'Order return requested successfully',

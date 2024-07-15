@@ -224,23 +224,15 @@ include ../partials/sidemenu
         h2 Overview
         .metric-grid
           .metric-card
-            i.fas.fa-book(aria-hidden="true") 
-            .metric-data
-              h2#totalProductsCount
-              h3  #{ote}  
-              p Total Products
-               
-          .metric-card
             i.fas.fa-list-alt(aria-hidden="true")
             .metric-data
               h2#totalCategoriesCount
               h3  totalCategories 
-              p Total Categories
-                
+              p Orders Delivered                
           .metric-card
             i.fas.fa-shopping-cart(aria-hidden="true")
             .metric-data
-              h3  totalOrders
+              h3= orders.length
               p Total Orders
           .metric-card
             i.fas.fa-users(aria-hidden="true")

@@ -35,7 +35,7 @@ h1 {
 
 .wishlist-table {
     width: 100%;
-    max-width: 70%; 
+    max-width: 100%; 
     border-collapse: collapse;
 }
 
@@ -148,4 +148,7 @@ h1 {
         max-width: 100%; 
         margin-top: 2rem;
     }
+}
+.productRef{
+text-decoration: none;
 }

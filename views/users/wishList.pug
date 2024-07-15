@@ -10,20 +10,39 @@
 //    header
 include ../partials/navbar
 link(rel="stylesheet", href="../stylesheet/user/wishlist.css")
+link(rel="stylesheet", href="../stylesheet/user/profile.css")
 link(rel="stylesheet", href="../stylesheet/user/cartG.css")
-.container-fluid.wishlist-container
-  h1 Your Wishlist
-  .wishlist-content
-    table.wishlist-table
-      thead
-        tr
-          th Product
-          th Price
-          th Actions
-      tbody
-        // This will be populated by JavaScript
-  .empty-wishlist-message
-  input#userInput(type="hidden", name="user" value=`${user.id}`)
-script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js')
-script(src='../script/user/wishlist.js')
+.container
+  h1.page-title Wishlist
+  .account-layout
+    .account-menu
+      ul
+        li: a(href='/user/profile') My Account
+        li: a(href='/user/wishlist') My Wishlist
+        li: a(href='/user/address/new', class='active') Address Book
+        li: a(href='/user/order') My Orders
+        li: a(href='/user/wallet') My Wallet
+
+    .main-content
+      .wishlist-content
+        table.wishlist-table
+          thead
+            tr
+              th Product
+              th Price
+              th Actions
+          tbody
+            // This will be populated by JavaScript
+      .empty-wishlist-message
+      input#userInput(type="hidden", name="user" value=`${user.id}`)
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js')
+    script(src='../script/user/wishlist.js')
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        const currentUrl = window.location.pathname;
+        document.querySelectorAll('.account-menu a').forEach(link => {
+          if (link.getAttribute('href') === currentUrl) {
+            link.classList.add('active');
+          }
+        });
 

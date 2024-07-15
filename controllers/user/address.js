@@ -48,55 +48,77 @@ router.get("/addresses", async (req, res) => {
   })
 
 // ****  UPDATE ADDRESS  ****
-
-const putEditAddress = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const updatedAddress = req.body;
-
+const patchEditAddress = asyncHandler(async (req, res, next) => {
   try {
-    const result = await User.updateOne(
-      { "addresses._id": id },
-      { 
-        $set: { 
-          "addresses.$.street": updatedAddress.street,
-          "addresses.$.city": updatedAddress.city,
-          "addresses.$.state": updatedAddress.state,
-          "addresses.$.zip_code": updatedAddress.zip_code,
-          "addresses.$.country": updatedAddress.country,
-        }
-      }
-    );
-
-    if (result.nModified === 0) {
-      console.log(`Address not found or not updated`.red.inverse);
-      return res.status(404).json({ message: "Address not found" });
+    const addressId = req.params.id; // Assuming you pass the address ID in the URL
+    const updateData = req.body;
+    const user = await User.findOne({'addresses._id':addressId})
+    // Validate input data
+    if (!updateData.address || !updateData.city || !updateData.state || !updateData.zip_code) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    res.json({ success: true });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find the address in the user's addresses array
+    const addressIndex = user.addresses.findIndex(addr => addr._id.toString() === addressId);
+
+    if (addressIndex === -1) {
+      return res.status(404).json({ error: 'Address not found' });
+    }
+
+    // Update the address
+    user.addresses[addressIndex] = {
+      ...user.addresses[addressIndex],
+      address: updateData.address,
+      city: updateData.city,
+      state: updateData.state,
+      zip_code: updateData.zip_code,
+      country: updateData.country || 'United States'
+    };
+
+    // Check if this address should be set as billing or shipping address
+    if (updateData.default_billing === '1') {
+      user.billing_address = user.addresses[addressIndex];
+    }
+    if (updateData.default_shipping === '1') {
+      user.shipping_address = user.addresses[addressIndex];
+    }
+
+    // Save the updated user document
+    await user.save();
+
+    res.status(200).json({ message: 'Address updated successfully', addressIndex });
   } catch (error) {
-    next(error);
+    console.error('Error updating address:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
+
+
+
+
+
+
 });
 // ****  DELETE ADDRESS  ****
 
   const deleteAddress = asyncHandler(async (req, res, next) => {
     console.log(`user is ${req.body.user}`)
-    // Use updateOne to remove the address from the addresses array
     const result = await User.updateOne(
       { _id: req.body.user },
       { $pull: { addresses: { _id: req.params.id } } }
     )
-
+console.log(`${req.params.id}`.yellow)
+console.log(`${req.body.user}`.cyan)
     if (result.nModified === 0) {
-      // If nModified is 0, it means the address was not found
       return res.status(404).json({ message: "Address not found" })
     }
 
-    // Fetch the updated user after the update
     const user = await User.findById(req.body.user)
-
     res.status(200).json({ success: true })
-    // res.redirect("/user/profile")
   })
 
 const test = asyncHandler(async (req, res, next) => {
@@ -142,7 +164,7 @@ module.exports = {
   getAddAddress,
   getEditAddress,
   postAddAddress,
-  putEditAddress,
+  patchEditAddress,
   deleteAddress,
   test,
 }

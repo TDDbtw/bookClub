@@ -49,7 +49,7 @@ async function addSubcategory() {
   //- console.log(name)
   try {
     const response = await fetch(`/admin/categories/${category}/edit`, {
-      method: "POST",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },

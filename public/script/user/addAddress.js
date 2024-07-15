@@ -1,17 +1,17 @@
-let erroList = []
+let errorList = []
 
 if(document.getElementById("checkoutAddress")){
 
-    document.getElementById("checkoutAddress").addEventListener('change', () => {
-validateAddress()
-validateCountry()
-validateState()
-validateCity()
-validateZip()
+  document.getElementById("checkoutAddress").addEventListener('change', () => {
+    validateAddress()
+    validateCountry()
+    validateState()
+    validateCity()
+    validateZip()
 
 
 
-    });
+  });
 
 }
 
@@ -92,17 +92,17 @@ function validateState() {
   var stateError = document.getElementById("stateError")
   stateError.innerHTML = ""
   const errors = []
-console.log(`state is ---> ${state}`)
+  console.log(`state is ---> ${state}`)
   if (Number(state) < 0 || state=="") {
     errors.push("please select a state")
   }
   // if (state.length > 20) {
-  //   errors.push("State must be less than 20 characters")
-  // }
+    //   errors.push("State must be less than 20 characters")
+    // }
   // // You might want to customize the regular expression based on the allowed characters in a state name
   // if (/[^a-zA-Z\s]/.test(state)) {
-  //   errors.push("State must only contain letters and spaces")
-  // }
+    //   errors.push("State must only contain letters and spaces")
+    // }
 
   if (errors.length > 0) {
     stateInput.style.border = "2px solid red"
@@ -185,136 +185,132 @@ function validateCountry() {
     countryInput.style.border = "2px solid #39ff14"
   }
 }
-if( document.getElementById("userInput").value.addresses &&  document.getElementById("userInput").value.addresses.length > 0){
-// Add a click event listener to the submit button
-document.getElementById("saveAddress").addEventListener("click", (event) => {
-  // Prevent the form from submitting
-  event.preventDefault()
-validateAddress()
-validateCountry()
-validateState()
-validateCity()
-validateZip()
+// if( document.getElementById("userInput").value &&  document.getElementById("userInput").value.addresses.length > 0){
+  // Add a click event listener to the submit button
+  document.getElementById("saveAddress").addEventListener("click", (event) => {
+    // Prevent the form from submitting
+    event.preventDefault()
+    validateAddress()
+    validateCountry()
+    validateState()
+    validateCity()
+    validateZip()
 
-  // Validate the form fields
-  const addressError = document.getElementById("addressError")
-  const address = document.getElementById("address").value
-  const state = document.getElementById("state").value
-  const zip = document.getElementById("zip").value
-  const country = document.getElementById("country").value
-  const stateError = document.getElementById("stateError")
-  const zipError = document.getElementById("zipError")
-  const countryError = document.getElementById("countryError")
-  const city = document.getElementById("city").value
-  const cityError = document.getElementById("cityError")
+    // Validate the form fields
+    const addressError = document.getElementById("addressError")
+    const address = document.getElementById("address").value
+    const state = document.getElementById("state").value
+    const zip = document.getElementById("zip").value
+    const country = document.getElementById("country").value
+    const stateError = document.getElementById("stateError")
+    const zipError = document.getElementById("zipError")
+    const countryError = document.getElementById("countryError")
+    const city = document.getElementById("city").value
+    const cityError = document.getElementById("cityError")
 
 
-  if (
-    addressError.innerText.length > 0 ||
-    address.length == 0 ||
-    stateError.innerText.length > 0 ||
-    state.length == 0 ||
-    zipError.innerText.length > 0 ||
-    zip.length == 0 ||
-    countryError.innerText.length > 0 ||
-    country.length == 0
-  ) {
-    // Show an error message
-    alert("Please fill all the required fields")
-  } else {
-    let response = fetch(`/user/address/new`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        address: address,
-        state: state,
-        city: city,
-        zip_code: zip,
-        country: country,
-      }),
-    })
-      .then(function (response) {
-        return response.json()
+    if (
+      addressError.innerText.length > 0 ||
+      address.length == 0 ||
+      stateError.innerText.length > 0 ||
+      state.length == 0 ||
+      zipError.innerText.length > 0 ||
+      zip.length == 0 ||
+      countryError.innerText.length > 0 ||
+      country.length == 0
+    ) {
+      // Show an error message
+      window.toast.info("Please fill all the required fields")
+    } else {
+      let response = fetch(`/user/address/new`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          address: address,
+          state: state,
+          city: city,
+          zip_code: zip,
+          country: country,
+        }),
       })
-      .then(function (data) {
-        console.log(data)
-        if (data.error) {
-          document.getElementById("errorMessage").innerHTML = data.error
-        } else {
-          window.location.href = "/user/profile"
-        }
-      })
-      .catch((error) => console.error("Error:", error))
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (data) {
+          console.log(data)
+          window.toast.success('address added successfully')
+          if (data.error) {
+            document.getElementById("errorMessage").innerHTML = data.error
+          } else {
+            window.location.href = "/user/profile"
+          }
+        })
+        .catch((error) => console.error("Error:", error))
+    }
+  })
+
+  countrySelect.addEventListener('change', () => {
+    validateCountry
+  });
+  stateSelect.addEventListener('change', () => {
+    validateCountry
+  });
+// }
+
+
+
+async function removeAddress() {
+  const addressIdElement = document.getElementById("addressInput")
+  const userId =JSON.parse(document.getElementById("userInput").value);
+  let addressId=undefined
+
+  if(addressIdElement.value){
+    addressId=addressIdElement.value
   }
-})
 
-    countrySelect.addEventListener('change', () => {
-      validateCountry
-    });
-    stateSelect.addEventListener('change', () => {
-      validateCountry
-    });
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You are about to delete this address.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'No, cancel!',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+  }).then(async (result) => { // `async` added here for the callback function
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`/user/address/${addressId}/remove`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({user: userId._id }),
+        });
 
+        const data = await response.json();
 
+        if (data.success) {
+          // Show SweetAlert success message
+          window.toast.success('Address deleted successfull')
+          setTimeout(() => {
+            window.location.reload();
+          }, "3500");
+        } else {
+          // Show SweetAlert error message
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Deletion failed!',
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        // Handle errors as needed
+      }
+    }
+  });
 }
-          async function removeAddress() {
-              const addressIdElement = document.getElementById("addressInput");
-              const userId = document.getElementById("userInput").value;
-            let addressId=undefined
-            if(addressIdElement.getAttribute('value')){
-               addressId = addressIdElement.getAttribute('value');
-          }
-              console.log(`user is ${userId}`);
-
-              Swal.fire({
-                  title: 'Are you sure?',
-                  text: 'You are about to delete this address.',
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonText: 'Yes, delete it!',
-                  cancelButtonText: 'No, cancel!',
-                  confirmButtonColor: '#d33',
-                  cancelButtonColor: '#3085d6',
-              }).then(async (result) => { // `async` added here for the callback function
-                  if (result.isConfirmed) {
-                      try {
-                          const response = await fetch(`/user/address/${addressId}/remove`, {
-                              method: "DELETE",
-                              headers: {
-                                  "Content-Type": "application/json",
-                              },
-                              body: JSON.stringify({ address: addressId, user: userId }),
-                          });
-
-                          const data = await response.json();
-
-                          if (data.success) {
-                              // Show SweetAlert success message
-                              Swal.fire({
-                                  icon: 'success',
-                                  title: 'Success!',
-                                  text: data.message, // changed from response.message to data.message
-                                  showConfirmButton: false,
-                                  timer: 2500,
-                                  timerProgressBar: true,
-                              }).then(() => {
-                                  window.location.reload();
-                              });
-                          } else {
-                              // Show SweetAlert error message
-                              Swal.fire({
-                                  icon: 'error',
-                                  title: 'Oops...',
-                                  text: 'Deletion failed!',
-                              });
-                          }
-                      } catch (error) {
-                          console.error("Error:", error);
-                          // Handle errors as needed
-                      }
-                  }
-              });
-          }
 

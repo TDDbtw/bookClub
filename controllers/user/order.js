@@ -5,6 +5,7 @@ const moment = require("moment")
 const Razorpay= require('razorpay')
 const User = require("../../models/users")
 const Cart = require("../../models/cart")
+const Wallet = require("../../models/wallet")
 const Product = require("../../models/products")
 const Order = require("../../models/order")
 const Coupon= require("../../models/coupon")
@@ -12,8 +13,10 @@ const express = require("express")
 const Subcategories = require("../../models/subcategory")
 const crypto = require("crypto")
 const { formatDate } = require("../../utils/date")
+const { generateOrderInvoice} = require('../../utils/reportGenerator');
 const router = express.Router()
-
+const puppeteer = require('puppeteer');
+const fs = require('fs').promises;
 
 
 
@@ -36,7 +39,7 @@ const getUserOrder = async (req, res, next) => {
 
     res.render("./users/ordersList", { user, orders, products,moment })
   } catch (error) {
-    
+
     next(error)
   }
 }
@@ -54,7 +57,7 @@ getOrderById = asyncHandler(async (req, res, next) => {
   const user = await User.findById(order.user._id)
   const createdDate = moment(order.created_at).format('MM/DD/YYYY')
   const deliveryDate = moment(order.deliveryDate).format('MM/DD/YYYY')
-const ID=order._id
+  const ID=order._id
 
 
   const cancelledItemCount = order.items.filter(item => item.request?.type === 'cancel').length;
@@ -62,7 +65,7 @@ const ID=order._id
   const allCancelled=order.items.length ===cancelledItemCount 
   const allReturned=order.items.length ===returnedItemCount 
 
-   console.log(`cancel count ${allCancelled }`.red) 
+  console.log(`cancel count ${allCancelled }`.red) 
   res.render(`./users/order`, { order, user, createdDate,deliveryDate,ID,allCancelled,allReturned })
 })
 
@@ -161,7 +164,14 @@ const createOrder = asyncHandler(async (req, res, next) => {
 
     const order = new Order(orderData);
 
-    await order.save();
+    let orderSave= await order.save();
+    
+    if(req.body.payment_method=='wallet'&& orderSave){
+      const wallet = await Wallet.findOrCreate(user._id);
+      console.log(`this is wallet ${wallet}`.red)
+      wallet.addTransaction('debit',totalAmount , `for the order ${orderSave._id}`);
+      await wallet.save()
+    }
     res.json({ success: true });
   } catch (error) {
     console.error(error);
@@ -172,10 +182,10 @@ const createOrder = asyncHandler(async (req, res, next) => {
 
 const razorpayOrder = asyncHandler(async (req, res, next) => {
 
-var instance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-}); 
+  var instance = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  }); 
   try {
 
     let userData = JSON.parse(req.body.user);
@@ -218,20 +228,20 @@ var instance = new Razorpay({
     );
     totalAmount = parseFloat(totalAmount) + shippingTotal +( parseFloat(totalAmount) * 0.05)
     totalAmount = Number(totalAmount).toFixed(2);
-  console.log(`bfr discount ${totalAmount}`.bgBlue) 
+    console.log(`bfr discount ${totalAmount}`.bgBlue) 
     let discount = 0;
     if (req.body.coupon) {
       try {
         discount = req.body.coupon.discount||0;
-          totalAmount = req.body.coupon.newTotalAmount||totalAmount;
+        totalAmount = req.body.coupon.newTotalAmount||totalAmount;
       } catch (error) {
         return res.status(400).json({ error: error.message });
       }
     }
 
-   console.log(`${discount}`.red ) 
+    console.log(`${discount}`.red ) 
     totalAmount = Number(totalAmount).toFixed(2);
-console.log(`total amout befor ${totalAmount}`.red)
+    console.log(`total amout befor ${totalAmount}`.red)
 
     const options = {
       amount:  Math.round(totalAmount * 100),
@@ -247,19 +257,19 @@ console.log(`total amout befor ${totalAmount}`.red)
       } else {
         // Payment succeeded, proceed to create the order
         const order = new Order({
-          
-      user: cart.user,
-      totalAmount: totalAmount,
-      discount: discount,
-      payment_method: req.body.payment_method,
-      shipping_address: user.shipping_address,
-      billing_address: user.billing_address,
-      items: cart.items.map((item) => ({
-        productId: item.productId._id,
-        name: item.productId.name,
-        price: item.productPrice,
-        quantity: item.quantity,
-        image: item.image,
+
+          user: cart.user,
+          totalAmount: totalAmount,
+          discount: discount,
+          payment_method: req.body.payment_method,
+          shipping_address: user.shipping_address,
+          billing_address: user.billing_address,
+          items: cart.items.map((item) => ({
+            productId: item.productId._id,
+            name: item.productId.name,
+            price: item.productPrice,
+            quantity: item.quantity,
+            image: item.image,
           })),
         });
 
@@ -278,7 +288,7 @@ console.log(`total amout befor ${totalAmount}`.red)
       }
     });
 
-   
+
   } catch (error) {
     console.error("An error occurred while placing the order: ", error);
     return res.status(400).json({ success: false, error: "Payment Failed" });
@@ -287,7 +297,7 @@ console.log(`total amout befor ${totalAmount}`.red)
 
 
 
-  // Get all orders of a user
+// Get all orders of a user
 
 const getOrders = asyncHandler(async (req, res, next) => {
   const user = req.user
@@ -438,7 +448,15 @@ const cancelOrder = async (req, res, next) => {
     }
 
     order.status = 'cancelled';
-    await order.save();
+    const orderCancelStatus=await order.save();
+    
+    if(orderCancelStatus){
+      const wallet = await Wallet.findOrCreate(order.user);
+      const  totalAmount =order.calculateTotalAmount()
+      console.log(`this is total ${totalAmount}`.red)
+      wallet.addTransaction('credit',totalAmount , `for the return of the order ${orderCancelStatus._id}`);
+      await wallet.save()
+    }
 
     res.status(200).json({
       success: true,
@@ -456,12 +474,12 @@ const returnOrder = async (req, res, next) => {
     if (!order) {
       return next(new ErrorResponse('Order not found', 404));
     }
-console.log(`${order}`.red)
+    console.log(`${order}`.red)
     if (order.status !== 'delivered') {
       return next(new ErrorResponse('Only delivered orders can be returned', 400));
     }
- order.returnRequest = { 
-   status: 'pending',
+    order.returnRequest = { 
+      status: 'pending',
       reason: req.body.reason || "Requseted return",
       createdAt: Date.now()
     };
@@ -486,7 +504,7 @@ const cancelProduct = async (req, res, next) => {
     }
 
     const productIndex = order.items.findIndex(item => item.productId.toString() === req.params.productId);
-     console.log(`${productId}`.red)
+    console.log(`${productId}`.red)
     if (productIndex === -1) {
       return next(new ErrorResponse('Product not found', 404));
     }
@@ -495,11 +513,17 @@ const cancelProduct = async (req, res, next) => {
       return next(new ErrorResponse('already requested for cancellation', 400));
     }
 
-order.items[productIndex].request = {
-    type: 'cancel',
-    status: 'accepted',
-    reason: 'Customer cancelled the product'
-};
+    order.items[productIndex].request = {
+      type: 'cancel',
+      status: 'accepted',
+      reason: 'Customer cancelled the product'
+    };
+
+    const returnedItem=order.items[productIndex]
+    amount=  returnedItem.quantity * returnedItem.price
+    const wallet = await Wallet.findOrCreate(order.user);
+    wallet.addTransaction('credit', amount, `Refund of ${returnedItem.quantity} X  ${returnedItem.name} canceled order`);
+    await wallet.save()
     await order.save();
 
     res.status(200).json({
@@ -512,7 +536,7 @@ order.items[productIndex].request = {
 };
 // Return an individual product
 const returnProduct = async (req, res, next) => {
- try {
+  try {
     const order = await Order.findById(req.params.orderId);
     if (!order) {
       return next(new ErrorResponse('Order not found', 404));
@@ -525,8 +549,8 @@ const returnProduct = async (req, res, next) => {
       return next(new ErrorResponse('Product not found in order', 404));
     }
 
-
-order.items[productIndex].request = {
+    console.log(`${req.body.reason}`.red)
+    order.items[productIndex].request = {
       type: 'return',
       status: 'pending',
       reason: req.body.reason || 'Customer requested return',
@@ -546,6 +570,38 @@ order.items[productIndex].request = {
 
 
 
+const loadInvoice = async (req, res) => {
+  try {
+    console.log(`${req.params.id}`.cyan)
+    const order= await Order.findById(req.params.id)
+
+    if (!order) {
+      console.error('Order not found');
+      return null;
+    }
+
+    const invoiceHtml = generateOrderInvoice(order);
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(invoiceHtml, { waitUntil: 'networkidle0' });
+
+    const pdfBuffer = await page.pdf({ format: 'A4' });
+
+    await browser.close();
+
+    // Save the PDF to a file
+    const fs = require('fs');
+    const path = require('path');
+    const invoicePath = path.join(__dirname, '/', `invoice-${order._id}.pdf`);
+    fs.writeFileSync(invoicePath, pdfBuffer);
+
+    res.download(invoicePath);
+  } catch (err) {
+    console.error('Error fetching order:', err);
+    return null;
+  }
+}
 
 const testOrder = asyncHandler(async (req, res, next) => {
   // const orders = await Order.find()
@@ -555,18 +611,18 @@ const testOrder = asyncHandler(async (req, res, next) => {
 })
 
 
-
 module.exports = {
   getCheckout,
   getOrderSuccess,
   getUserOrder,
   createOrder,
   getOrders,
-cancelOrReturnOrder,
+  cancelOrReturnOrder,
   cancelOrder,
   returnOrder,
   cancelProduct,
   returnProduct,
   testOrder,
   razorpayOrder,
+  loadInvoice,
 }

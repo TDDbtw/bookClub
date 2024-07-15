@@ -1,31 +1,114 @@
-console.log(`coupon running`)
-const couponResult={}
-document.getElementById('applyCouponBtn').addEventListener('click', async () => {
-      const couponCode = document.getElementById('couponCode').value;
-      let user = document.getElementById('userInput').value;
-      user=JSON.parse(user)
-      user=user._id
-      const cart = document.getElementById('totalAmountInput').value;
-      try {
-        const response = await axios.post('/order/applyCoupon', { couponCode, user, cart });
+console.log(`coupon running`);
 
-        if (response.data.success) {
-          couponResult.discount=response.data.discount
-          couponResult.couponCode=couponCode
-          couponResult.newTotalAmount=response.data.newTotal
-          couponResult.totalAmountInput=response.data.newTotal
-          document.getElementById('discountAmount').innerHTML = `$${response.data.discount.toFixed(2)}`;
-          document.getElementById('totalAmount').innerHTML = `$${response.data.newTotal.toFixed(2)}`;
-          document.getElementById('totalAmountInput').value = response.data.newTotal.toFixed(2);
-          document.getElementById('couponError').textContent =''
-          document.getElementById('couponError').textContent = 'Coupon applied successfully!';
-          document.getElementById('couponError').style.color = 'green';
-        } else {
-          alert('bad')
-        }
-      } catch (error) {
-        console.error(error);
-        document.getElementById('couponError').innerHTML = error.response.data.message;
-        document.getElementById('couponError').style.color = 'red';
-      }
-    });
+const removeCouponBtn = document.getElementById('removeCouponBtn');
+const clearCouponBtn = document.getElementById('clearCouponBtn');
+const applyCouponBtn = document.getElementById('applyCouponBtn');
+const couponCodeInput = document.getElementById('couponCode');
+const userInput = document.getElementById('userInput');
+const totalAmountInput = document.getElementById('totalAmountInput');
+const discountAmount = document.getElementById('discountAmount');
+const couponError = document.getElementById('couponError');
+
+removeCouponBtn.style.display = 'none';
+clearCouponBtn.style.display = 'none';
+
+const couponResult = {};
+
+const updateDisplay = (discount, newTotal, message, messageColor, showApplyBtn, showClearBtn, showRemoveBtn) => {
+  if (discount !== undefined) discountAmount.innerHTML = `$${discount.toFixed(2)}`;
+  if (newTotal !== undefined) {
+    totalAmount.innerHTML = `$${newTotal.toFixed(2)}`;
+    totalAmountInput.value = newTotal.toFixed(2);
+  }
+  if (message !== undefined) {
+    couponError.textContent = message;
+    couponError.style.color = messageColor;
+  }
+  applyCouponBtn.style.display = showApplyBtn ? 'block' : 'none';
+  clearCouponBtn.style.display = showClearBtn ? 'block' : 'none';
+  removeCouponBtn.style.display = showRemoveBtn ? 'block' : 'none';
+};
+
+applyCouponBtn.addEventListener('click', async () => {
+  const couponCode = couponCodeInput.value;
+  let user = JSON.parse(userInput.value)._id;
+  const cart = totalAmountInput.value;
+
+  try {
+    const response = await axios.post('/order/applyCoupon', { couponCode, user, cart });
+
+    if (response.data.success) {
+      couponResult.discount = response.data.discount;
+      couponResult.couponCode = couponCode;
+      couponResult.newTotalAmount = response.data.newTotal;
+      couponResult.totalAmountInput = response.data.newTotal+couponResult;
+
+      updateDisplay(
+        response.data.discount,
+        response.data.newTotal,
+        'Coupon applied successfully!',
+        'green',
+        false,
+        false,
+        true
+      );
+    } else {
+      window.toast.error('bad');
+    }
+  } catch (error) {
+    console.error(error);
+    updateDisplay(
+      undefined,
+      undefined,
+      error.response.data.message,
+      'red',
+      false,
+      true,
+      false
+    );
+  }
+});
+
+clearCouponBtn.addEventListener('click', function () {
+  couponCodeInput.value = '';
+  updateDisplay(undefined, undefined, '', '', true, false, false);
+});
+
+removeCouponBtn.addEventListener('click', async () => {
+  const couponCode = couponResult.couponCode;
+  let user = JSON.parse(userInput.value)._id;
+
+  try {
+    const response = await axios.post('/order/removeCoupon', { couponCode, user });
+
+    if (response.data.success) {
+      couponResult.discount = 0;
+      couponResult.couponCode = '';
+      couponResult.newTotalAmount = response.data.originalTotal;
+      couponResult.totalAmountInput = response.data.originalTotal-couponResult;
+
+      updateDisplay(
+        0,
+        response.data.originalTotal,
+        'Coupon removed successfully!',
+        'green',
+        true,
+        false,
+        false
+      );
+    } else {
+      window.toast.error('bad');
+    }
+  } catch (error) {
+    console.error(error);
+    updateDisplay(
+      undefined,
+      undefined,
+      error.response.data.message,
+      'red',
+      false,
+      false,
+      true
+    );
+  }
+});

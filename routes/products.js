@@ -6,11 +6,6 @@ const {
   loadproducts,
   uploadImages,
   onetwo,
-  getSortProducts,
-  getSearchProducts,
-  getFilterProducts,
-  getSearchSortFilter,
-  getProductsTwo,
 } = require("../controllers/user/products")
 
 const { protect, admin } = require("../middleware/authMiddleware")
@@ -19,9 +14,6 @@ const { protect, admin } = require("../middleware/authMiddleware")
 // router.route("/").get(loadproducts)
 router.route("/").get(loadproducts)
 router.route("/list").get(onetwo)
-router.route("/sort").get(getSortProducts)
-router.route("/search").get(getSearchProducts)
-router.route("/filter").get(getFilterProducts)
 router.route("/:id").get(getProduct)
 router.route("/one").post(onetwo)
 
