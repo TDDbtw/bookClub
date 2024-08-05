@@ -9,22 +9,6 @@ if (user!=undefined){
   console.log(`user id is ${user}`)
 }
 let subCat="All"
-// window.navigation.addEventListener("navigate", (event) => {
-
-// if(searchValue!=null||sortValue!=null||filterValue!=null){
-//   console.log(`is NOTnull`)
-// if(searchValue!=null){
-//   document.getElementById('clearSearch').style.display = 'block';
-// }
-// if(sortValue!=null){
-//   document.getElementById('clearSort').style.display = 'block';
-// }
-// if(filterValue!=null){
-//   document.getElementById('clearFilter').style.display = 'block';
-// }
-
-// }
-// })
 let searchValue = urlParams.get('search') 
 let sortValue = urlParams.get('sort')  // Default value can be adjusted
 let filterValue = urlParams.get('filter') 
@@ -60,18 +44,6 @@ if(searchValue==null&&sortValue==null&&filterValue==null){
 
 
 
-// if(searchValue==null||sortValue==null||filterValue==null){
-//   console.log(`is NOTnull`)
-// if(searchValue==null){
-//   document.getElementById('clearSearch').style.display = 'none';
-// }
-// if(sortValue==null){
-//   document.getElementById('clearSort').style.display = 'none';
-// }
-// if(filterValue==null){
-//   document.getElementById('clearFilter').style.display = 'none';
-// }
-// }
 const items = document.querySelectorAll('input[data-sub-cat]');
 
 

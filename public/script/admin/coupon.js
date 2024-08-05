@@ -13,7 +13,7 @@ form.addEventListener('submit', async (event) => {
       body: JSON.stringify(data)
     });
     if (response.ok) {
-      successToast('Coupon created successfully!')
+      window.toast.info('Coupon created successfully!')
       window.location.href='/admin/coupons'
     } else {
       console.error('Error creating coupon:', response.statusText);

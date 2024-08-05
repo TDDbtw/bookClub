@@ -25,7 +25,7 @@ function validateName() {
     errors.push("Name must be at least 3 characters")
   }
   if (name!=document.getElementById("name").value) {
-    errors.push("Name Cant be start with a space")
+    errors.push("Name Cant have empty spaces ")
   }
   if (name.length > 100) {
     errors.push("Name must be less than 100 characters")
@@ -59,7 +59,7 @@ function validateAuthor() {
     errors.push("Author name must be at least 3 characters")
   }
   if (author!=document.getElementById("author").value) {
-    errors.push("Name Cant be start with a space")
+    errors.push("Author's Name Cant have empty spaces")
   }
   if (author.length > 50) {
     errors.push("Name must be less than 50 characters")

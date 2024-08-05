@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.querySelector('#mainContent');
   const saveButton = document.getElementById('save-product');
@@ -11,53 +10,55 @@ document.addEventListener('DOMContentLoaded', function () {
   const subCategorySelect = document.querySelector('#category');
   const fileInput = document.querySelector('#file-input');
   const productValInput = document.querySelector('#productVal');
-  const offerSelect=document.querySelector('.offerSelect')
+  const offerSelect = document.querySelector('.offerSelect');
 
   function getFormData() {
     const formData = new FormData();
-    formData.append('name', nameInput.value? nameInput.value: nameInput.placeholder);
-    formData.append('author', authorInput.value? authorInput.value: authorInput.placeholder);
-    formData.append('description', descriptionInput.value? descriptionInput.value: descriptionInput.placeholder);
-    formData.append('price', priceInput.value? priceInput.value: priceInput.placeholder);
-    formData.append('stockCount', stockCountInput.value? stockCountInput.value: stockCountInput.placeholder);
-    formData.append('category', categorySelect.value? categorySelect.value: categorySelect.placeholder);
-    formData.append('subcategory', subCategorySelect.value? subCategorySelect.value: subCategorySelect.placeholder);
-    formData.append('offer', offerSelect.value =='No Offer' || offerSelect.value =='Remove Offer' ? 'none': offerSelect.value);
+    formData.append('name', nameInput.value || nameInput.placeholder);
+    formData.append('author', authorInput.value || authorInput.placeholder);
+    formData.append('description', descriptionInput.value || descriptionInput.placeholder);
+    formData.append('price', priceInput.value || priceInput.placeholder);
+    formData.append('stockCount', stockCountInput.value || stockCountInput.placeholder);
+    formData.append('category', categorySelect.value || categorySelect.placeholder);
+    formData.append('subcategory', subCategorySelect.value || subCategorySelect.placeholder);
+    formData.append('offer', offerSelect.value == 'No Offer' || offerSelect.value == 'Remove Offer' ? 'none' : offerSelect.value);
 
-    // Add images if any
-
-const imageFiles = document.getElementById('file-input').files;
-if (imageFiles.length > 0) {
-  for (let i = 0; i < imageFiles.length; i++) {
-    formData.append('image', imageFiles[i]);
-  }
-}
+    const imageFiles = document.getElementById('file-input').files;
+    if (imageFiles.length > 0) {
+      for (let i = 0; i < imageFiles.length; i++) {
+        formData.append('image', imageFiles[i]);
+      }
+    }
     return formData;
   }
 
   async function sendRequest() {
+    if (!validateProduct()) {
+      window.toast.error('Please fix the errors before submitting');
+      return;
+    }
+
     const productId = JSON.parse(productValInput.value)._id;
-    const url =`/admin/products/${productId}/edit`
+    const url = `/admin/products/${productId}/edit`;
 
     try {
       const formData = getFormData();
-console.log(`form data is --- ${JSON.stringify(formData)}`)
       const response = await axios.patch(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       if (response.status === 200) {
-        alert('Product updated successfully');
-        // Optionally, redirect to another page or update the UI
-        ///admin/products
-        window.location.href = "/admin/products";
+        window.toast.success('Product updated successfully');
+        setTimeout(() => {
+          window.location.href = "/admin/products";
+        }, 1000);
       } else {
-        alert('Failed to update product');
+        window.toast.error('Failed to update product');
       }
     } catch (error) {
       console.error('Error updating product:', error);
-      alert('An error occurred while updating the product. Please try again.');
+      window.toast.error('An error occurred while updating the product. Please try again.');
     }
   }
 
@@ -69,17 +70,13 @@ console.log(`form data is --- ${JSON.stringify(formData)}`)
 
 const catS = document.getElementById('catSelect');
 const subcatSelect = document.getElementById('category');
-let subcategories = document.getElementById('ss').value; // Assuming subcategories is populated somewhere
-subcategories=JSON.parse(subcategories)
-console.log(`${subcategories}`)
-// Event listener for catSelect change event
+let subcategories = JSON.parse(document.getElementById('ss').value);
+
 catS.addEventListener('change', function() {
   const selectedCategoryId = catS.value;
   
-  // Clear existing options
   subcatSelect.innerHTML = '';
   
-  // Add default disabled option
   const defaultOption = document.createElement('option');
   defaultOption.value = '';
   defaultOption.disabled = true;
@@ -87,8 +84,6 @@ catS.addEventListener('change', function() {
   defaultOption.textContent = 'Select a subcategory';
   subcatSelect.appendChild(defaultOption);
   
-console.log(`${subcategories}`)
-  // Filter subcategories based on selected category
   subcategories.forEach(subcategory => {
     if (subcategory.category._id === selectedCategoryId) {
       const option = document.createElement('option');
@@ -97,5 +92,6 @@ console.log(`${subcategories}`)
       subcatSelect.appendChild(option);
     }
   });
+
+  validateProduct();
 });
-console.log('running')

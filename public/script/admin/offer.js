@@ -16,126 +16,130 @@ document.addEventListener('DOMContentLoaded', function() {
   const maxAmtError = document.getElementById('maxAmtError');
   const minAmtError = document.getElementById('minAmtError');
 
+  const inputs = [nameInput, descriptionInput, discountPercentageInput, startDateInput, endDateInput, maxAmtInput, minAmtInput];
+  const errorElements = [nameError, descriptionError, discountPercentageError, startDateError, endDateError, maxAmtError, minAmtError];
+
   function validate(event) {
-    let valid = true;
+    event.preventDefault();
+    let isValid = true;
 
     // Reset previous errors and styles
-    nameError.textContent = '';
-    nameInput.style.border = '';
-    descriptionError.textContent = '';
-    descriptionInput.style.border = '';
-    discountPercentageError.textContent = '';
-    discountPercentageInput.style.border = '';
-    startDateError.textContent = '';
-    startDateInput.style.border = '';
-    endDateError.textContent = '';
-    endDateInput.style.border = '';
-    maxAmtError.textContent = '';
-    maxAmtInput.style.border = '';
-    minAmtError.textContent = '';
-    minAmtInput.style.border = '';
+    errorElements.forEach(el => el.textContent = '');
+    inputs.forEach(input => input.classList.remove('is-valid', 'is-invalid'));
 
     // Validate name
     if (nameInput.value.trim() === '') {
-      nameError.textContent = 'Offer name is required';
-      nameInput.style.border = '2px solid red';
-      valid = false;
+      showError(nameInput, nameError, 'Offer name is required');
+      isValid = false;
     } else {
-      nameInput.style.border = '2px solid #39ff14';
+      nameInput.classList.add('is-valid');
     }
 
     // Validate description
     if (descriptionInput.value.trim() === '') {
-      descriptionError.textContent = 'Description is required';
-      descriptionInput.style.border = '2px solid red';
-      valid = false;
+      showError(descriptionInput, descriptionError, 'Description is required');
+      isValid = false;
     } else {
-      descriptionInput.style.border = '2px solid #39ff14';
+      descriptionInput.classList.add('is-valid');
     }
 
     // Validate discount percentage
     const discountPercentageValue = parseFloat(discountPercentageInput.value.trim());
     if (isNaN(discountPercentageValue) || discountPercentageValue <= 0 || discountPercentageValue > 100) {
-      discountPercentageError.textContent = 'Valid discount percentage is required (1-100)';
-      discountPercentageInput.style.border = '2px solid red';
-      valid = false;
+      showError(discountPercentageInput, discountPercentageError, 'Valid discount percentage is required (1-100)');
+      isValid = false;
     } else {
-      discountPercentageInput.style.border = '2px solid #39ff14';
+      discountPercentageInput.classList.add('is-valid');
     }
 
     // Validate start date
     if (startDateInput.value.trim() === '') {
-      startDateError.textContent = 'Start date is required';
-      startDateInput.style.border = '2px solid red';
-      valid = false;
+      showError(startDateInput, startDateError, 'Start date is required');
+      isValid = false;
     } else {
-      startDateInput.style.border = '2px solid #39ff14';
+      startDateInput.classList.add('is-valid');
     }
 
     // Validate end date
     if (endDateInput.value.trim() === '') {
-      endDateError.textContent = 'End date is required';
-      endDateInput.style.border = '2px solid red';
-      valid = false;
+      showError(endDateInput, endDateError, 'End date is required');
+      isValid = false;
     } else if (new Date(startDateInput.value) >= new Date(endDateInput.value)) {
-      endDateError.textContent = 'End date must be after the start date';
-      endDateInput.style.border = '2px solid red';
-      valid = false;
+      showError(endDateInput, endDateError, 'End date must be after the start date');
+      isValid = false;
     } else {
-      endDateInput.style.border = '2px solid #39ff14';
+      endDateInput.classList.add('is-valid');
     }
 
     // Validate max amount
     const maxAmtValue = parseFloat(maxAmtInput.value.trim());
     if (isNaN(maxAmtValue) || maxAmtValue <= 0) {
-      maxAmtError.textContent = 'Valid maximum amount is required';
-      maxAmtInput.style.border = '2px solid red';
-      valid = false;
+      showError(maxAmtInput, maxAmtError, 'Valid maximum amount is required');
+      isValid = false;
     } else {
-      maxAmtInput.style.border = '2px solid #39ff14';
+      maxAmtInput.classList.add('is-valid');
     }
 
     // Validate min amount
     const minAmtValue = parseFloat(minAmtInput.value.trim());
     if (isNaN(minAmtValue) || minAmtValue <= 0) {
-      minAmtError.textContent = 'Valid minimum amount is required';
-      minAmtInput.style.border = '2px solid red';
-      valid = false;
+      showError(minAmtInput, minAmtError, 'Valid minimum amount is required');
+      isValid = false;
+    } else if (minAmtValue >= maxAmtValue) {
+      showError(minAmtInput, minAmtError, 'Minimum amount must be less than maximum amount');
+      isValid = false;
     } else {
-      minAmtInput.style.border = '2px solid #39ff14';
+      minAmtInput.classList.add('is-valid');
     }
 
-    // Prevent form submission if not valid
-    if (!valid) {
-      event.preventDefault();
-    } else {
-      // If form is valid, prevent default submission and send Axios request
-      event.preventDefault();
-      const offerData = {
-        name: nameInput.value,
-        description: descriptionInput.value,
-        discountPercentage: discountPercentageInput.value,
-        startDate: startDateInput.value,
-        endDate: endDateInput.value,
-        maxAmt: maxAmtInput.value,
-        minAmt: minAmtInput.value
-      };
-
-      axios.post('/admin/offers/create', offerData)
-        .then(response => {
-          console.log(response.data);
-          
-
-          // Handle success (e.g., display a success message, redirect, etc.)
-        })
-        .catch(error => {
-          console.error(error);
-          window.toast.error(error)
-          // Handle error (e.g., display an error message)
-        });
+    if (isValid) {
+      submitForm();
     }
   }
 
+  function showError(input, errorElement, message) {
+    errorElement.textContent = message;
+    input.classList.add('is-invalid');
+  }
+
+  function submitForm() {
+    const offerData = {
+      name: nameInput.value.trim(),
+      description: descriptionInput.value.trim(),
+      discountPercentage: parseFloat(discountPercentageInput.value.trim()),
+      startDate: startDateInput.value,
+      endDate: endDateInput.value,
+      maxAmt: parseFloat(maxAmtInput.value.trim()),
+      minAmt: parseFloat(minAmtInput.value.trim())
+    };
+
+    axios.post('/admin/offers/create', offerData)
+      .then(response => {
+        console.log(response.data);
+        window.toast.success('Offer created successfully');
+        // Handle success (e.g., redirect or reset form)
+        form.reset();
+        inputs.forEach(input => input.classList.remove('is-valid', 'is-invalid'));
+
+
+       setTimeout(() => {
+          window.location.href = "/admin/offers";
+        }, 1000);
+      })
+      .catch(error => {
+        console.error('Error creating offer:', error);
+        window.toast.error(error.response?.data?.message || 'An error occurred while creating the offer');
+        // Handle specific errors if needed
+        if (error.response?.data?.errors) {
+          Object.entries(error.response.data.errors).forEach(([field, message]) => {
+            const errorElement = document.getElementById(`${field}Error`);
+            if (errorElement) {
+              showError(document.getElementById(field), errorElement, message);
+            }
+          });
+        }
+      });
+  }
+
   form.addEventListener('submit', validate);
-  form.addEventListener('change', validate);
 });

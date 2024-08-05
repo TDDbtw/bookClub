@@ -1,4 +1,5 @@
 console.log(`edit offer running `)
+const namePattern = /^[a-zA-Z\s-]+$/;
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('offerEditForm');
 
@@ -11,13 +12,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function validateForm() {
     let isValid = true;
-    
+
     // Validate Name
     const name = document.getElementById('name');
-    if (name.value.trim() === '') {
+    if (name.value.length ===0 ) {
       showError('nameError', 'Offer name is required');
       isValid = false;
-    } else {
+    } 
+    else if (name.value!= name.value.trim()){
+      showError('nameError',"Offer name Cant be start with a space")
+      isValid = false;
+    }
+    else if (!namePattern.test(name.value)){
+      showError('nameError',"Enter A Valid Name")
+      isValid = false;
+    }
+    else {
       clearError('nameError');
     }
 
@@ -72,27 +82,30 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById(elementId).textContent = '';
   }
 
+
+
+
   function submitForm() {
     const formData = new FormData(form);
-    const offerId = form.getAttribute('data-offer-id');  // Get the offer ID from somewhere, e.g., a hidden input field or URL parameter
+    const offerId = form.getAttribute('data-offer-id');  // Ensure this attribute is correctly set
 
-    fetch(`/admin/offers/${offerId}/edit`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(Object.fromEntries(formData)),
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        window.toast.success('Offer updated successfully');
-        // Redirect to offer list or details page
-        // window.location.href = '/offers';
-      }     })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('An error occurred while updating the offer');
-    });
+    console.log(`offer id is ${offerId}`) 
+
+    axios.patch(`/admin/offers/${offerId}/edit`, Object.fromEntries(formData))
+      .then(response => {
+        const data = response.data;
+        if (data.success) {
+          window.toast.success('Offer updated successfully');
+       setTimeout(() => {
+          window.location.href = '/admin/offers';
+        }, 1000);
+        } else {
+          window.toast.info('Failed to update the offer. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error is the:', error);
+        window.toast.error(error);
+      });
   }
 });

@@ -1,8 +1,8 @@
 async function getSearchProducts(searchValue) {
   const response = await fetch(`/admin/products/search?search=${searchValue}`)
   const responseData = await response.json()
-  products = responseData.products
-  user = responseData.user
+  let products = responseData.products
+  let user = responseData.user
   const tableBody = document.getElementById("contentTbody")
   tableBody.innerHTML = "" // Clear previous cards
 
@@ -216,12 +216,12 @@ async function getSearchCategory(searchValue) {
     editLink.className = "btn btn-sm text-warning"
     editLink.textContent = "Edit"
 
-    const deleteButton = document.createElement('a');
-    deleteButton.className = 'btn btn-sm text-danger';
-    deleteButton.style.width = '5rem';
-    deleteButton.textContent = 'Delete';
-    deleteButton.setAttribute('data-id', category.id); // Assuming category is defined in your scope
-    deleteButton.setAttribute('onclick', 'removeCategory()');
+    // const deleteButton = document.createElement('a');
+    // deleteButton.className = 'btn btn-sm text-danger';
+    // deleteButton.style.width = '5rem';
+    // deleteButton.textContent = 'Delete';
+    // deleteButton.setAttribute('data-id', category.id); // Assuming category is defined in your scope
+    // deleteButton.setAttribute('onclick', 'removeCategory()');
 
     // Create the hidden input
     const hiddenInput = document.createElement('input');
@@ -230,7 +230,7 @@ async function getSearchCategory(searchValue) {
     hiddenInput.value = `${category._id}`;
 
     actionsTd.appendChild(editLink)
-    actionsTd.appendChild(deleteButton)
+    // actionsTd.appendChild(deleteButton)
     actionsTd.appendChild(hiddenInput)
     tr.appendChild(actionsTd)
     // Append the row to the table body

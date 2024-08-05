@@ -11,7 +11,7 @@ if (errorMessage) {
 
 ////////////////////
 
-let errorList = [];
+  let errorList = [];
 
 function validateCode() {
   var code = document.getElementById("code").value.trim();
@@ -223,14 +223,14 @@ document.getElementById("couponForm").addEventListener("submit", (event) => {
   }
 });
 function load (){
-document.getElementById("couponForm").addEventListener("change", () => {
-  validateCode();
-  validateDiscount();
-  validateLimit();
-  validateExpiry();
-  validateMinAmt();
-  validateMaxAmt();
-});
+  document.getElementById("couponForm").addEventListener("change", () => {
+    validateCode();
+    validateDiscount();
+    validateLimit();
+    validateExpiry();
+    validateMinAmt();
+    validateMaxAmt();
+  });
 }
 async function sendRequest() {
   const formData = new FormData(form);
@@ -253,7 +253,9 @@ async function sendRequest() {
 
     console.log(result); // Handle successful creation response
     window.toast.success("Successfully added");
-    // window.location.href = "/admin/coupons";
+    setTimeout(() => {
+      window.location.href = "/admin/coupons";
+    }, 1000);
   } catch (error) {
     console.error('Error:', error);
     window.toast.errorMessage(error.message);
@@ -267,43 +269,43 @@ async function sendRequest() {
   }
 }
 
- const urlPath = window.location.pathname; 
+const urlPath = window.location.pathname; 
 const segments = urlPath.split('/');
-  const couponId = segments[3]
+const couponId = segments[3]
 if (couponId!='create'){
 
-const dateis = document.getElementById('expiry')
-dateis.addEventListener('click',()=>  {
-  dateis.type='date'
-})
-document.getElementById('couponForm').addEventListener('submit', async (event) => {
-  event.preventDefault();
+  const dateis = document.getElementById('expiry')
+  dateis.addEventListener('click',()=>  {
+    dateis.type='date'
+  })
+  document.getElementById('couponForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-  const url = `/admin/coupons/${couponId}/edit`;
+    const url = `/admin/coupons/${couponId}/edit`;
 
-  const couponData = {
-    code: document.getElementById('code').value,
-    discount: document.getElementById('discount').value,
-    limit: document.getElementById('limit').value,
-    expiry: document.getElementById('expiry').value,
-    minAmt: document.getElementById('minAmt').value,
-    maxAmt: document.getElementById('maxAmt').value
-  };
+    const couponData = {
+      code: document.getElementById('code').value,
+      discount: document.getElementById('discount').value,
+      limit: document.getElementById('limit').value,
+      expiry: document.getElementById('expiry').value,
+      minAmt: document.getElementById('minAmt').value,
+      maxAmt: document.getElementById('maxAmt').value
+    };
 
-  try {
-    const response = await axios.patch(url, couponData);
-    if (response.status === 200) {
-      alert('Coupon updated successfully!');
+    try {
+      const response = await axios.patch(url, couponData);
+      if (response.status === 200) {
+        alert('Coupon updated successfully!');
 
-      window.location.href='/admin/coupons'
-    } else {
-      alert('Failed to update the coupon. Please try again.');
+        window.location.href='/admin/coupons'
+      } else {
+        alert('Failed to update the coupon. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error updating coupon:', error);
+      window.toast.error(error)
     }
-  } catch (error) {
-    console.error('Error updating coupon:', error);
-    window.toast.error(error)
-  }
-});
+  });
 
 
 }
