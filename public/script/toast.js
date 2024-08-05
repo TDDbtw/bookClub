@@ -48,7 +48,7 @@ class Toast {
   }
 
   error(error) {
-    this.show(error.response.error||error.response.data.error||error.response.data.message, 'error');
+    this.show( error);
   }
 
   errorMessage(message) {
