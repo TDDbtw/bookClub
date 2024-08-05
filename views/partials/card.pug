@@ -9,8 +9,14 @@
     h5.mx-5.mt-3.card-title(style="color:lightblue; ") #{product.name}
     //- Assuming product is a variable in your template
     p#productId(type="hidden", value=product.id)
-    p.author.mx-5 #{product.author}
-    p.card-price.mx-5 $#{product.price} ththet 
+    p.author.mx-5 #{product.author} #{product.discountedPrice}
+    if product.price != product.discountedPrice
+      .d-flex
+        span.fs-2 #{product.discountedPrice.toFixed(2)}$
+        span.ms-2.mt-2.text-decoration-line-through.fs-5.text-bold #{product.price}$
+        span.mt-3.ms-3.fs-9 (#{product.offer.discountPercentage}% OFF)
+    else
+      p.card-price.mx-5 $#{product.price}
     //ul
       each spec in product.specifications
         li.mx-4= `${spec.name}: ${spec.value}`
