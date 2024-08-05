@@ -3,16 +3,25 @@ const User = require("../models/users")
 const asyncHandler = require("../middleware/async")
 
 //protect routes
-
 const protect = asyncHandler(async (req, res, next) => {
   let token
-
   token = req.cookies.jwt
   if (token) {
     try {
       console.log(`protect running`)
       const decoded = jwt.verify(token, process.env.SECRET)
-      req.user = await User.findById(decoded.userId).select("-password")
+      const user = await User.findById(decoded.userId).select("-password")
+      
+      if (!user) {
+        return res.status(401).render("auth/errors/401.pug")
+      }
+
+      // Check if user is blocked
+      if (user.status === false) {
+        return res.status(403).render("auth/errors/blocked.pug")
+      }
+
+      req.user = user
       next()
     } catch (error) {
       console.error(error)
