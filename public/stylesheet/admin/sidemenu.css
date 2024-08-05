@@ -150,7 +150,8 @@ background-color:red;
 
 #content-wrapper {
   padding-top: 60px;
-  padding-left: 60px;
+  padding-left: 4%;
+  padding-right: 1%;
 }
 /* Copyright Footer */
 .copyright {

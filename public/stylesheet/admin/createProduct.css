@@ -209,3 +209,9 @@ color:#EB5252;
 .image-placeholder .imgC:hover .removeImg {
   display: block;
 }
+  .error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+  }
