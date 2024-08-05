@@ -17,56 +17,62 @@ include ../partials/mixins
             i.fas.fa-book(aria-hidden="true") 
             .metric-data
               h2#totalProductsCount
-              h3  #{totalCount} 
+              h3  #{totalCount || 0} 
               p  totalProducts
                
           .metric-card
             i.fas.fa-list-alt(aria-hidden="true")
             .metric-data
               h2#totalCategoriesCount
-              h3  #{active} 
+              h3  #{active || 0} 
               p  Listed Products
 
     h1.text-center.text-light.my-5 #{name}
-    a#createProduct.btn.btn-primary.mb-3(href="/admin/products/create") Create Product
-    table#my-table.table-sortable
-      thead#contentThead
-        tr#contentTheadTr
-          //- th(scope="col") #
-          th(scope="col") Name
-          th(scope="col") Price
-          th(scope="col") Stock
-          th(scope="col") Image
-          th(scope="col") status
-          th(scope="col") List/Unlist
-          //- th(scope="col") 
-          th(scope="col") Actions
-      tbody#contentTbody
-        each product in products
-          tr#contentTbodyTr
-            //- th(scope="row") #{product._id}
-            td #{product.name}
-            //- td #{product.description}
-            td #{product.price}
-            //- td #{product.category.name}
-            td #{product.stockCount}
-            td
-              img(src=product.image && product.image[0], alt="Product image", class="img-thumbnail" width="70" )
-            td#status.status #{product.status ? 'Active' : 'Unlisted'}
-            td
-              .toggle-button-cover
-                .button-cover
-                  #button-2.button.r
-                    input#checkbox.checkbox(type="checkbox" data-status=product.status data-id=product.id)
-                    .knobs
-                    .layer
-            td#ed
-              a.btn.btn-sm.text-warning(href=`/admin/products/${product._id}/edit` style="width:5rem;") Edit
-              | &nbsp;
-              a#deleteButton.btn.btn-sm.text-danger( data-id=product.id onclick="removeProduct()" style="width:5rem;") Delete 
-              input#productId(type='hidden' value=`${product._id}`)
-    .pagination
-      ol#numbers
+    if products.length >0
+      a#createProduct.btn.btn-primary.mb-3(href="/admin/products/create") Create Product
+    if products.length >0
+      table#my-table.table-sortable
+        thead#contentThead
+          tr#contentTheadTr
+            //- th(scope="col") #
+            th(scope="col") Name
+            th(scope="col") Price
+            th(scope="col") Stock
+            th(scope="col") Image
+            th(scope="col") status
+            th(scope="col") List/Unlist
+            //- th(scope="col") 
+            th(scope="col") Actions
+        tbody#contentTbody
+          each product in products
+            tr#contentTbodyTr
+              //- th(scope="row") #{product._id}
+              td #{product.name}
+              //- td #{product.description}
+              td #{product.price}
+              //- td #{product.category.name}
+              td #{product.stockCount}
+              td
+                img(src=product.image && product.image[0], alt="Product image", class="img-thumbnail" width="70" )
+              td#status.status #{product.status ? 'Active' : 'Unlisted'}
+              td
+                .toggle-button-cover
+                  .button-cover
+                    #button-2.button.r
+                      input#checkbox.checkbox(type="checkbox" data-status=product.status data-id=product.id)
+                      .knobs
+                      .layer
+              td#ed
+                a.btn.btn-sm.text-warning(href=`/admin/products/${product._id}/edit` style="width:5rem;") Edit
+                | &nbsp;
+                a#deleteButton.btn.btn-sm.text-danger( data-id=product.id onclick="removeProduct()" style="width:5rem;") Delete 
+                input#productId(type='hidden' value=`${product._id}`)
+      .pagination
+        ol#numbers
+    else
+      .d-grid
+        .empty.text-center(style='color:gold;') You haven't added any products yet
+        a.btn.btn-outline-info.mt-2(style='align-self: center; margin:auto;' href="/admin/products/create") create Product
  
 
   script(src="../../script/admin/pagination.js")

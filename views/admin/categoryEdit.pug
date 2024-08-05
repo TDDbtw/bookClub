@@ -145,7 +145,7 @@ style.
             if category.offer
               option(value= category.offer._id selected) #{category.offer.name} (#{category.offer.discountPercentage}%)
             else
-              option(value='') No Offer
+              option(value=null selected) No Offer
             each offer in items
               option(value=offer._id) #{offer.name} (#{offer.discountPercentage}%)
             if category.offer

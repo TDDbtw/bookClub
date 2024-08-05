@@ -44,24 +44,8 @@ include ../partials/sidemenu
         user-select: none;
         -webkit-tap-highlight-color: transparent;
       }
-      .row {
-        //- display: table-row;
-      }
-
-      .toggle-button-cover {
-       
-        //- display: table-cell;
-        position: relative;
-        width: 120px;
-        /* height: 140px; */
-        box-sizing: border-box;
-      }
 
       .button-cover {
-        //- height: 28px;
-        //- margin: 20px;
-        //- background-color: transparent;
-        //- box-shadow: 0 10px 20px -8px #c5d6d6;
         border-radius: 4px;
       }
 
@@ -128,7 +112,6 @@ include ../partials/sidemenu
         z-index: 1;
       }
 
-      /* Button 2 */
       #button-2 .knobs:before,
       #button-2 .knobs:after {
         content: "YES";
@@ -236,41 +219,46 @@ include ../partials/sidemenu
               h3  #{subCount} 
               p  Subcategories
 
-    h1.text-center.text-light.my-5 #{name}
-    a#createProduct.btn.btn-primary.mb-3(href="/admin/category/create") Create Category
-    table#my-table
-      thead#contentThead
-        tr#contentTheadTr
-          //- th(scope="col") #
-          th(scope="col") Name
-          th(scope="col") Image
-          th(scope="col") status
-          th(scope="col") List/Unlist
-          //- th(scope="col") 
-          th(scope="col") Actions
-      tbody#contentTbody
-        each category in categories
-          tr#contentTbodyTr
-            //- th(scope="row") #{category._id}
-            td #{category.name}
-            //- td #{category.description}
-            //- td #{category.category.name}
-            td
-              img(src=category.image , alt="Product image", class="img-thumbnail" width="70" )
-            td#status.status #{category.status ? 'Active' : 'Unlisted'}
-            td
-              .toggle-button-cover
-                .button-cover
-                  #button-2.button.r
-                    input#checkbox.checkbox(type="checkbox" data-status=category.status data-id=category._id)
-                    .knobs
-                    .layer
-            td#ed
-              a.btn.btn-sm.text-warning(href=`/admin/categories/${category._id}/edit` style="width:5rem;") Edit
-              | &nbsp;
-              input#productId(type='hidden' value=`${category._id}`)
-    .pagination
-      ol#numbers
+    h1.text-center.text-light.my-5 #{name || 'category list'}
+    if categories.length > 0
+      a#createProduct.btn.btn-primary.mb-3(href="/admin/category/create") Create Category
+      table#my-table
+        thead#contentThead
+          tr#contentTheadTr
+            //- th(scope="col") #
+            th(scope="col") Name
+            th(scope="col") Image
+            th(scope="col") status
+            th(scope="col") List/Unlist
+            //- th(scope="col") 
+            th(scope="col") Actions
+        tbody#contentTbody
+          each category in categories
+            tr#contentTbodyTr
+              //- th(scope="row") #{category._id}
+              td #{category.name}
+              //- td #{category.description}
+              //- td #{category.category.name}
+              td
+                img(src=category.image , alt="Product image", class="img-thumbnail" width="70" )
+              td#status.status #{category.status ? 'Active' : 'Unlisted'}
+              td
+                .toggle-button-cover
+                  .button-cover
+                    #button-2.button.r
+                      input#checkbox.checkbox(type="checkbox" data-status=category.status data-id=category._id)
+                      .knobs
+                      .layer
+              td#ed
+                a.btn.btn-sm.text-warning(href=`/admin/categories/${category._id}/edit` style="width:5rem;") Edit
+                | &nbsp;
+                input#productId(type='hidden' value=`${category._id}`)
+      .pagination
+        ol#numbers
+    else
+      .d-grid
+        .empty.text-center(style='color:gold;') You haven't added any Category yet
+        a.btn.btn-outline-info.mt-2(style='align-self: center; margin:auto;' href="/admin/category/create") create Category
  
 
   script(src="../../script/admin/pagination.js")

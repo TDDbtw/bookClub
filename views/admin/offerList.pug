@@ -22,20 +22,20 @@ include ../partials/mixins
               p  Active Offers
 
     h1.text-center.text-light.my-5 #{name}
-    a#createOffer.btn.btn-primary.mb-3(href="/admin/offers/create") Create Offer
-    table#my-table
-      thead#contentThead
-        tr#contentTheadTr
-          th Title
-          th Description
-          th Discount
-          th Start Date
-          th End Date
-          th Status
-          th list/unlist
-          th Action 
-      tbody#contentTbody
-        if items
+    if items.length > 0
+      a#createOffer.btn.btn-primary.mb-3(href="/admin/offers/create") Create Offer
+      table#my-table
+        thead#contentThead
+          tr#contentTheadTr
+            th Title
+            th Description
+            th Discount
+            th Start Date
+            th End Date
+            th Status
+            th list/unlist
+            th Action 
+        tbody#contentTbody
           each offer in items
             tr#contentTbodyTr
               td= offer.name
@@ -55,6 +55,10 @@ include ../partials/mixins
                 a.btn.btn-sm.text-warning(href=`/admin/offers/${offer._id}/edit` style="width:5rem;") Edit
                 | &nbsp;
                 input#offerId(type='hidden' value=`${offer._id}`)
+    else
+      .d-grid
+        .empty.text-center(style='color:gold;') You haven't added any offers yet
+        a.btn.btn-outline-info.mt-2(style='align-self: center; margin:auto;' href="/admin/offers/create") create offer
 
   script.
     function errorToast(error) {

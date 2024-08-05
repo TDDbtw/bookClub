@@ -8,6 +8,10 @@ html(lang='en')
     script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
     script(src="https://code.jquery.com/jquery-3.6.0.min.js")
     script(src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js")
+    script( src="../../../script/toast.js" defer)
+    script( src="../../../script/confirmationModal.js" defer)
+    script(src="../../../script/admin/productEditValidation.js" defer)
+    script( src='../../../../script/admin/editProductG.js' defer)
   body
     .container
       .main-content#mainContent
@@ -16,7 +20,7 @@ html(lang='en')
             h2 Edit Product
             label
               | Product Name
-              input(type='text' id='name' name='name' value=`${product.name}` placeholder=`${product.name}`)
+              input(type='text' id='name' name='name' value=`${product.name}` )
               span#nameError
             label
               | Author Name
@@ -93,7 +97,6 @@ html(lang='en')
             input#productVal(type="hidden" value=product)
 
 
-    script(defer src='../../../../script/admin/editProductG.js')
     script.
       let id =document.getElementById('productVal').value
       id =JSON.parse(id)._id

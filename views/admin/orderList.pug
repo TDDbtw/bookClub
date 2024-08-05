@@ -28,54 +28,60 @@ include ../partials/sidemenu
               h3  newUsers 
               p New Users This Month
     h1.text-center.text-light.my-5 #{name}
-    table#my-table.table-sortable
-      thead#contentThead
-        tr#contentTheadTr
-          th Order ID
-          th User
-          th Total Amount
-          th Order Date
-          th Delivery Date
-          th Status
-          th Actions
-      tbody#contentTbody
-        each order in orders
-          tr#contentTbodyTr
-            td #{order._id}
-            td #{order.user.name}
-            td #{order.totalAmount}
-            td= formatDate(order.created_at)
-            td= formatDate(order.deliveryDate)
-            td
-              if order.status === 'pending'
-                span.status.pending Pending
-              else if order.status === 'processing'
-                span.status.processing Processing
-              else if order.status === 'shipped'
-                span.status.shipped Shipped
-              else if order.status === 'delivered' && order.returnRequest.status==null 
-                span.status.delivered Delivered
-              else if order.status === 'delivered' && order.returnRequest.status=='pending' 
-                span.status.returned Return requested
-              else if order.returnRequest.status== 'accepted'
-                span.status.return-approved Return approved
-              else if order.status === 'cancelled'
-                span.status.cancelled Cancelled
-            td
-              if order.status === 'cancelled'
-                .editD.text-center.border.border-info
-                  a(href=`/admin/orders/${order._id}`) view
-              else
-                .editD.border.border-info
-                  a(href=`/admin/orders/${order._id}`) update
-              //a(href='/orders/#{order._id}/delete') Delete
+    if orders.length > 0
+      table#my-table.table-sortable
+        thead#contentThead
+          tr#contentTheadTr
+            th Order ID
+            th User
+            th Total Amount
+            th Order Date
+            th Delivery Date
+            th Status
+            th Actions
+        tbody#contentTbody
+          each order in orders
+            tr#contentTbodyTr
+              td #{order._id}
+              td #{order.user.name}
+              td #{order.totalAmount}
+              td= formatDate(order.created_at)
+              td= formatDate(order.deliveryDate)
+              td
+                if order.status === 'pending'
+                  span.status.pending Pending
+                else if order.status === 'processing'
+                  span.status.processing Processing
+                else if order.status === 'Failed'
+                  span.status.failed Failed
+                else if order.status === 'shipped'
+                  span.status.shipped Shipped
+                else if order.status === 'delivered' && order.returnRequest.status==null 
+                  span.status.delivered Delivered
+                else if order.status === 'delivered' && order.returnRequest.status=='pending' 
+                  span.status.returned Return requested
+                else if order.returnRequest.status== 'accepted'
+                  span.status.return-approved Return approved
+                else if order.status === 'cancelled'
+                  span.status.cancelled Cancelled
+              td
+                if order.status === 'cancelled'  || order.status === 'Failed'
+                  .editD.text-center.border.border-info
+                    a(href=`/admin/orders/${order._id}`) view
+                else
+                  .editD.border.border-info
+                    a(href=`/admin/orders/${order._id}`) update
+                //a(href='/orders/#{order._id}/delete') Delete
 
-    .pagination
-      if currentPage > 1
-        a.pagination-link(href=`/admin/orders?page=${currentPage - 1}`) Previous
-      span Page #{currentPage} of #{totalPages}
-      if currentPage < totalPages
-        a.pagination-link(href=`/admin/orders?page=${currentPage + 1}`) Next
+      .pagination
+        if currentPage > 1
+          a.pagination-link(href=`/admin/orders?page=${currentPage - 1}`) Previous
+        span Page #{currentPage} of #{totalPages}
+        if currentPage < totalPages
+          a.pagination-link(href=`/admin/orders?page=${currentPage + 1}`) Next
+    else
+      .d-grid
+        .empty.text-center(style='color:gold;') You haven't recived any orders yet
     script.
       document.addEventListener('DOMContentLoaded', function() {
         const transactionTable = document.querySelector('#my-table');
@@ -187,6 +193,11 @@ include ../partials/sidemenu
       .status.return-approved {
       background-color: #ffcc80; 
       color: #e65100; 
+      }
+
+      .status.failed {
+          background-color: #f8d7da;
+          color: #721c24;
       }
       a {
           text-decoration: none;

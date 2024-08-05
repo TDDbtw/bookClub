@@ -1,126 +1,114 @@
+
 include ../partials/sidemenu
+
 style.
   body {
-    font-family: Arial, sans-serif;
-    background-color: #081c15;
-    color: #e0e0e0;
-    margin: 0;
-    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
   }
-
-  .container-fluid  {
-    width: 90% !important;
-    background-color: #1b4332;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    padding: 2rem;
-    position: absolute;
-    top: 20%;
-    margin-left: 4%;
+  .content-wrapper {
+    margin:auto;
+    margin-left:4%;
   }
-  h1 {
-    text-align: center;
-    color: #74c69d;
+  .card {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s;
   }
-  .transaction-list {
-    list-style-type: none;
-    padding: 0;
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  .card-header {
+    background-color: #4e73df;
+    color: white;
+    font-weight: bold;
   }
   .transaction-item {
-    background-color: #2d6a4f;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    transition: background-color 0.3s;
   }
-  .transaction-info {
-    flex-grow: 1;
+  .transaction-item:hover {
+    background-color: #f8f9fc;
   }
-  .transaction-amount {
+  .status-badge {
+    font-size: 0.8rem;
     font-weight: bold;
-    font-size: 1.1em;
   }
-  .transaction-date {
-    font-size: 0.9em;
-    color: #b7e4c7;
+  .amount-paid {
+    color: #28a745;
   }
-  .transaction-status {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8em;
-    text-transform: uppercase;
-  }
-  .status-completed {
-    background-color: #40916c;
-  }
-  .status-pending {
-    background-color: #d8f3dc;
-    color: #081c15;
-  }
-  .status-failed {
-    background-color: #d62828;
+  .amount-refunded {
+    color: #dc3545;
   }
 
-  .summary-container {
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  .summary-item {
-    background-color: #2d6a4f;
-    border-radius: 4px;
-    padding: 15px;
-    width: 300px;
-    margin-bottom: 10px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .summary-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  }
-  .summary-label {
-    font-size: 0.9em;
-    color: #b7e4c7;
-    display: block;
-    margin-bottom: 5px;
-  }
-  .summary-value {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #e0e0e0;
-  }
-
-#content-wrapper
+.content-wrapper
   .container-fluid
-    h1 Transactions Summary
-    .summary-container
+    h1.mb-4.text-center Transactions Dashboard
+    // Summary Cards
+    .row.mb-4
       each paymentMethod in transactions
-        .summary-item
-          h2= paymentMethod._id
-          .summary-label Total Transactions:
-          .summary-value= paymentMethod.totalTransactions
-          .summary-label Total Revenue:
-          .summary-value= '$' + paymentMethod.totalRevenue.toFixed(2)
-          .summary-label Average Order Value:
-          .summary-value= '$' + paymentMethod.averageOrderValue.toFixed(2)
-          .summary-label Total Items Sold:
-          .summary-value= paymentMethod.totalItems
-          .summary-label Min Order Value:
-          .summary-value= '$' + paymentMethod.minOrderValue.toFixed(2)
-          .summary-label Max Order Value:
-          .summary-value= '$' + paymentMethod.maxOrderValue.toFixed(2)
-    h1 Transactions List
-    ul.transaction-list
-      each order in orders 
-        li.transaction-item
-          .transaction-info
-            .transaction-amount $#{order.totalAmount}
-            .transaction-date #{formatDateISO(order.created_at)}
-          .transaction-status.status-completed Completed
-      // Add more list items for additional transactions
+        .col-md-4.mb-4
+          .card
+            .card-header= paymentMethod._id
+            .card-body
+              .row
+                .col-6.mb-3
+                  small.text-muted Total Transactions
+                  .h4= paymentMethod.totalTransactions
+                .col-6.mb-3
+                  small.text-muted Total Revenue
+                  .h4= '$' + paymentMethod.totalRevenue.toFixed(2)
+                .col-6.mb-3
+                  small.text-muted Avg Order Value
+                  .h4= '$' + paymentMethod.averageOrderValue.toFixed(2)
+                .col-6.mb-3
+                  small.text-muted Total Items
+                  .h4= paymentMethod.totalItems
+                .col-6
+                  small.text-muted Min Order
+                  .h4= '$' + paymentMethod.minOrderValue.toFixed(2)
+                .col-6
+                  small.text-muted Max Order
+                  .h4= '$' + paymentMethod.maxOrderValue.toFixed(2)
+
+    // Transactions List
+    // Transactions List
+    .card
+      .card-header
+        h2.mb-0 All Transactions
+      .card-body
+        .table-responsive
+          table.table.table-hover
+            thead
+              tr
+                th Order ID
+                th Type
+                th Amount
+                th Date
+                th Status
+            tbody
+              each transaction in allTransactions
+                tr.transaction-item
+                  td= transaction.orderId
+                  td
+                    if transaction.type === 'payment'
+                      i.bi.bi-arrow-down-circle.text-success.me-2
+                      | Payment
+                    else
+                      i.bi.bi-arrow-up-circle.text-danger.me-2
+                      | Refund
+                  td
+                    if transaction.type === 'payment'
+                      span.amount-paid +$#{transaction.amount.toFixed(2)}
+                    else
+                      span.amount-refunded -$#{transaction.amount.toFixed(2)}
+                  td= formatDateISO(transaction.date)
+                  td
+                    span.badge(class=transaction.status === 'Completed' ? 'bg-success' : 'bg-warning')= transaction.status
+
+script.
+  // You can add any JavaScript functionality here
+  // For example, to initialize tooltips:
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })

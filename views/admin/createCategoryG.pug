@@ -126,7 +126,7 @@ style.
         .mb-3
           label.form-label(for="offerSelect") Select Offer
           select#offerSelect.offerSelect.form-select(name="offer", required)
-            option(value='' selected) No Offer
+            option(value=null selected) No Offer
             each offer in items
               option(value=offer._id) #{offer.name} (#{offer.discountPercentage}%)
           #couponError.form-text.text-danger

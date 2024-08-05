@@ -11,50 +11,55 @@ include ../partials/mixins
             i.fas.fa-book(aria-hidden="true") 
             .metric-data
               h2#totalProductsCount
-              h3  #{totalCount} 
+              h3  #{totalCount || 0} 
               p    Total Coupons
                
           .metric-card
             i.fas.fa-list-alt(aria-hidden="true")
             .metric-data
               h2#totalCategoriesCount
-              h3  #{activeCount} 
+              h3  #{activeCount || 0} 
               p  Active Coupons
 
-    h1.text-center.text-light.my-5 #{name}
-    a#createProduct.btn.btn-primary.mb-3(href="/admin/coupons/create") Create Coupons
-    table#my-table
-      thead#contentThead
-        tr#contentTheadTr
-          th Coupon Code
-          th Discount Value
-          th Validity Period
-          th Max Amount
-          th Status
-          th List/Unlist
-          th Action
-      tbody#contentTbody
-        if coupons
-          each coupon in coupons
-            tr#contentTbodyTr
-              td= coupon.code
-              td= coupon.discount
-              td= formatDate(coupon.expiry)
-              td= coupon.maxAmt
-              td#status.status #{coupon.status ? 'Active' : 'Unlisted'}
-              td
-                .toggle-button-cover
-                  .button-cover
-                    #button-2.button.r
-                      input#checkbox.checkbox(type="checkbox" data-status=coupon.status data-id=coupon.id)
-                      .knobs
-                      .layer
-              td#ed
-                a.btn.btn-sm.text-warning(href=`/admin/coupons/${coupon._id}/edit` style="width:5rem;") Edit
-                | &nbsp;
-                input#productId(type='hidden' value=`${coupon._id}`)
-      //.pagination
-      //ol#numbers
+    h1.text-center.text-light.my-5 #{name || "Coupons list"}
+    if coupons.length >0
+      a#createProduct.btn.btn-primary.mb-3(href="/admin/coupons/create") Create Coupons
+      table#my-table
+        thead#contentThead
+          tr#contentTheadTr
+            th Coupon Code
+            th Discount Value
+            th Validity Period
+            th Max Amount
+            th Status
+            th List/Unlist
+            th Action
+        tbody#contentTbody
+          if coupons
+            each coupon in coupons
+              tr#contentTbodyTr
+                td= coupon.code
+                td= coupon.discount
+                td= formatDate(coupon.expiry)
+                td= coupon.maxAmt
+                td#status.status #{coupon.status ? 'Active' : 'Unlisted'}
+                td
+                  .toggle-button-cover
+                    .button-cover
+                      #button-2.button.r
+                        input#checkbox.checkbox(type="checkbox" data-status=coupon.status data-id=coupon.id)
+                        .knobs
+                        .layer
+                td#ed
+                  a.btn.btn-sm.text-warning(href=`/admin/coupons/${coupon._id}/edit` style="width:5rem;") Edit
+                  | &nbsp;
+                  input#productId(type='hidden' value=`${coupon._id}`)
+        //.pagination
+        //ol#numbers
+    else
+      .d-grid
+        .empty.text-center.mb-3(style='color:gold;') You haven't added any coupons yet 
+        a.btn.btn-outline-info.mt-2(style='align-self: center; margin:auto;' href="/admin/coupons/create" ) create Coupons
  
 
 
