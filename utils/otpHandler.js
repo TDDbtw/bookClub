@@ -31,8 +31,8 @@ const sendOTPEmail = (email, otp, name) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
-    subject: "Welocme To QUASARX",
-    text: `hello ${name},\n Welcome to QUASARX Your One time password for Email verification is : ${otp}`,
+    subject: "Welcome To bookClub",
+    text: `hello ${name},\n Welcome to bookClub Your One time password for Email verification is : ${otp}`,
   }
 
   transporter.sendMail(mailOptions, (error, info) => {

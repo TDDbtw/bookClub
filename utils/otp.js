@@ -35,7 +35,7 @@ const sendOTPEmail = (email, otp) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
-    subject: "Welocme To QUASARX",
+    subject: "Welcome To bookClub",
     text: `Your One time password for Email verification is : ${otp}`,
   }
 
