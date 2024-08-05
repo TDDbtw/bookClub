@@ -59,7 +59,7 @@ router.patch('/order/:orderId/return', protect, admin, orderController.manageOrd
 
 // Sales report routes
 router.get("/sales-report", protect, admin, orderController.renderSalesReport);
-router.get("/sales-report/list", protect, admin, orderController.getSalesReport);
+router.post("/sales-report/generate", protect, admin, orderController.generateSalesReport);
 router.get("/sales-report/download/excel", protect, admin, orderController.downloadExcel);
 router.get("/sales-report/download/pdf", protect, admin, orderController.downloadPdf);
 

@@ -14,6 +14,7 @@ const {
   returnOrder,
   cancelProduct,
   returnProduct,
+  createFailedOrder,
   loadInvoice,
 } = require("../controllers/user/order")
 const couponController = require("../controllers/user/coupon")
@@ -21,6 +22,7 @@ router.route("/").get(protect, getUserOrder).post(createOrder)
 router.route('/wallet')
 router.route("/razorpayOrder").post(protect, razorpayOrder)
 router.route(`/success`).get(protect,getOrderSuccess)
+router.route(`/failed`).post(protect,createFailedOrder)
 router.route(`/test`).get(protect, getAccessToken).post(protect, createOrder)
 router.post("/:id/change", protect,cancelOrReturnOrder);
 router.route("/applyCoupon").post(couponController.applyCoupon)

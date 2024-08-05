@@ -24,7 +24,7 @@ const {
 const {getWallet,handlePayPalPayment,createPayPalOrder} = require("../controllers/user/wallet")
 const { getCheckout } = require("../controllers/user/cart")
 const { getWishlist,getUserWishlist,addToWishlist,removeFromWishlist  } = require("../controllers/user/wishlist")
-const { getUserOrder, createOrder } = require("../controllers/user/order")
+const { getUserOrder, createOrder,getOrderById} = require("../controllers/user/order")
 const { protect, admin } = require("../middleware/authMiddleware")
 
 
