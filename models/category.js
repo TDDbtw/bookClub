@@ -16,7 +16,7 @@ const CategorySchema = new mongoose.Schema({
   },
   offer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Offer'
+    ref: 'Offer',
   },
   status: {
     type: Boolean,

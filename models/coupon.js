@@ -55,15 +55,19 @@ couponSchema.methods.isValid = function(userId, orderAmount) {
   );
 };
 
-// Apply the coupon discount to the given amount
+
 couponSchema.methods.applyDiscount = function(amount) {
-  let discountedAmount = amount - this.discount;
+  const discountAmount = (amount * this.discount) / 100;
+
+  let discountedAmount = amount - discountAmount;
   if (discountedAmount < 0) discountedAmount = 0;
+
   return {
     discountedAmount,
-    discountApplied: amount - discountedAmount
+    discountApplied: discountAmount
   };
 };
+
 
 // Update the coupon after it has been used
 couponSchema.methods.use = function(userId) {

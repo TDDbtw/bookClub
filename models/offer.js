@@ -12,14 +12,22 @@ const offerSchema = new mongoose.Schema({
   minAmt: { type: Number, required: true }
 });
 
+
 // Check if the offer is currently active
 offerSchema.methods.isActive = function() {
   const now = new Date();
-// console.log(`start date is${this.startDate}`.red)
-// console.log(`end date is${this.endDate}`.blue)
-// console.log(`now is${now}`.green)
   return now >= this.startDate && now <= this.endDate && this.status;
 };
+
+offerSchema.methods.isApplicable = function(price) {
+
+console.log(`is this offer active ${this.isActive()}`)
+console.log(`price is ${price}`.yellow)
+console.log(`min amount is ${this.minAmt}`.blue)
+console.log(`max amount is ${this.maxAmt}`.red)
+  return price >= this.minAmt && price <= this.maxAmt && this.isActive();
+};
+
 
 // Apply discount to a given price
 offerSchema.methods.applyDiscount = function(price) {
