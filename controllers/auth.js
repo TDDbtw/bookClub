@@ -171,42 +171,58 @@ const otpVerify = asyncHandler(async (req, res, next) => {
 })
 
 const userLogin = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body
-  const user = await Users.findOne({ email })
-  req.session.user = user
-  console.log(await  user.matchPassword(password))
-  if (user && (await user.matchPassword(password))) {
-    // console.log(user)
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.SECRET,
-      {
-        expiresIn: process.env.JWTEXPIRE,
-      }
-    )
+  const { email, password } = req.body;
 
-    // Log the decoded token
-    // const decodedToken = jwt.verify(token, process.env.SECRET)
-    // console.log("Decoded Token:", decodedToken) //set jwt as http only cookie
-    res.cookie("jwt", token, {
-      httponly: true,
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
-    if (user.role == "user") {
-      res.json({ success: true, role: "user" })
-    } else if (user.role == "admin") {
-      res.json({ success: true, role: "admin" })
+  if (!email || !password) {
+    return next(new ErrorResponse("Please provide an email and password", 400));
+  }
+
+  const user = await Users.findOne({ email }).select('+password');
+
+  if (!user) {
+    return next(new ErrorResponse("email or password do not match", 401));
+  }
+
+  if (user.status === false) {
+    return next(new ErrorResponse("This account has been blocked", 403));
+  }
+  
+  const isMatch = await user.matchPassword(password);
+  if (!isMatch) {
+    return next(new ErrorResponse("Invalid credentials", 401));
+  }
+
+  const token = jwt.sign(
+    { userId: user._id, role: user.role },
+    process.env.SECRET,
+    { expiresIn: process.env.JWTEXPIRE }
+  );
+
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== "development",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  // Remove password from output
+  user.password = undefined;
+
+  // Send response
+  res.status(200).json({
+    success: true,
+    role: user.role,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
     }
-  } else {
-    console.log(user.role)
-    return next(new ErrorResponse("Invalid Email or Password", 401))
-  }
-  if (user.status == false) {
-    return next(new ErrorResponse("This email id has been blocked", 401))
-  }
-})
+  });
+});
+
+
+
 
 const forgotPassword = asyncHandler(async (req, res, next) => {})
 
