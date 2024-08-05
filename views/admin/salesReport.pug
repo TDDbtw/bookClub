@@ -1,5 +1,71 @@
-
 include ../partials/sidemenu
+#content-wrapper
+  .container-fluid
+    h1.text-center.mb-4 Sales Report
+    
+    form#filterForm.mb-4
+      .row.g-3
+        .col-md-4
+          label.form-label(for='filterType') Filter By
+          select#filterType.form-select(name='filterType')
+            option(value='daily' selected ) Daily
+            option(value='weekly') Weekly
+            option(value='monthly') Monthly
+            option(value='yearly') Yearly
+            option(value='custom') Custom Date Range
+        
+        .col-md-4#startDateGroup.d-none
+          label.form-label(for='startDate') Start Date
+          input#startDate.form-control(type='date', name='startDate')
+        
+        .col-md-4#endDateGroup.d-none
+          label.form-label(for='endDate') End Date
+          input#endDate.form-control(type='date', name='endDate')
+      
+      .row.mt-3
+        .col-12
+          button.btn.btn-primary(type='submit')
+            i.fas.fa-chart-line.me-2
+            | Generate Report
+
+    .report-container
+      p.text-center No sales data available for the selected period.
+      
+    .row.mt-4
+      .col-md-6
+        button#downloadPdf.btn.btn-secondary.w-100(disabled)
+          i.fas.fa-file-pdf.me-2
+          | Download PDF
+      .col-md-6
+        button#downloadExcel.btn.btn-secondary.w-100(disabled)
+          i.fas.fa-file-excel.me-2
+          | Download Excel
+
+script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")
+script(src="../../script/admin/sales-report.js")
+script.
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterType = document.getElementById('filterType');
+    const startDateGroup = document.getElementById('startDateGroup');
+    const endDateGroup = document.getElementById('endDateGroup');
+    const downloadPdfButton = document.getElementById('downloadPdf');
+    const downloadExcelButton = document.getElementById('downloadExcel');
+
+    filterType.addEventListener('change', function() {
+      if (this.value === 'custom') {
+        startDateGroup.classList.remove('d-none');
+        endDateGroup.classList.remove('d-none');
+      } else {
+        startDateGroup.classList.add('d-none');
+        endDateGroup.classList.add('d-none');
+      }
+    });
+
+    // Initially disable download buttons
+    downloadPdfButton.disabled = true;
+    downloadExcelButton.disabled = true;
+  });
+
 style.
   body {
     background-color: #081c15;
@@ -70,64 +136,8 @@ style.
     background-color: #2d6a4f !important;
     border-color: #52b788 !important;
   }
-
   .card {
     background-color: #1b4332 !important;
     border-color: #52b788 !important;
   }
-#content-wrapper
-  .container-fluid
-    h1.text-center.mb-4 Sales Report
-    
-    form#filterForm.mb-4
-      .row.g-3
-        .col-md-4
-          label.form-label(for='filterType') Filter By
-          select#filterType.form-select(name='filterType')
-            option(value='daily') Daily
-            option(value='weekly') Weekly
-            option(value='monthly') Monthly
-            option(value='yearly') Yearly
-            option(value='custom') Custom Date Range
-        
-        .col-md-4#startDateGroup.d-none
-          label.form-label(for='startDate') Start Date
-          input#startDate.form-control(type='date', name='startDate')
-        
-        .col-md-4#endDateGroup.d-none
-          label.form-label(for='endDate') End Date
-          input#endDate.form-control(type='date', name='endDate')
-      
-      .row.mt-3
-        .col-12
-          button.btn.btn-primary(type='submit')
-            i.fas.fa-chart-line.me-2
-            | Generate Report
 
-    .report-container
-      p.text-center No sales data available for the selected period.
-      
-    .row.mt-4
-      .col-md-6
-        button#downloadPdf.btn.btn-secondary.w-100
-          i.fas.fa-file-pdf.me-2
-          | Download PDF
-      .col-md-6
-        button#downloadExcel.btn.btn-secondary.w-100
-          i.fas.fa-file-excel.me-2
-          | Download Excel
-
-  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")
-  script(src="../../script/admin/sales-report.js")
-  script.
-    document.getElementById('filterType').addEventListener('change', function() {
-      const customDateFields = document.getElementById('startDateGroup');
-      const endDateField = document.getElementById('endDateGroup');
-      if (this.value === 'custom') {
-        customDateFields.classList.remove('d-none');
-        endDateField.classList.remove('d-none');
-      } else {
-        customDateFields.classList.add('d-none');
-        endDateField.classList.add('d-none');
-      }
-    });
