@@ -1,5 +1,6 @@
 const Products = require("../../models/products")
 const Cart = require("../../models/cart")
+const Offers = require("../../models/offer")
 const User = require("../../models/users")
 const Categories = require("../../models/category")
 const Subcategories = require("../../models/subcategory")
@@ -22,7 +23,12 @@ const loadEditProduct = asyncHandler(async (req, res, next) => {
   const product = await Products.findById(req.params.id)
     .populate("category", "name") // Populate category name
     .populate("subcategories", "name") // Populate subcategory names
+    .populate('offer')
     .exec();
+
+  const iscat = await Products.findById(req.params.id)
+
+  const offers=await Offers.find().sort({name:1})
   const categories = await Categories.find();
 
   const subcategories = await Subcategories.find()
@@ -30,40 +36,41 @@ const loadEditProduct = asyncHandler(async (req, res, next) => {
     .exec();
 
   req.productId = req.params.id;
-
+console.log(`${product}`.red)
   res.render("./admin/productEditG", {
     product,
     categories,
     subcategories,
+    items:offers,
     name: "Edit Product",
   });
 
 
 })
 
-const addProduct = asyncHandler(async (req, res, next) => {
+// const addProduct = asyncHandler(async (req, res, next) => {
 
-  upload.fields([{ name: "image", maxCount: 10 }])(req, res, async (err) => {
-    if (err) {
-      return res.status(500).json({ error: err });
-    }
+//   upload.fields([{ name: "image", maxCount: 10 }])(req, res, async (err) => {
+//     if (err) {
+//       return res.status(500).json({ error: err });
+//     }
 
-    const imagePaths = getImagePathsFromRequest(req);
-    console.log(`image path is${imagePaths}`)
-    const newProduct = await Products.create({
-      name: "Product", 
-      description: "this and that",
-      price: 22,
-      stockCount: 22,
-      image: imagePaths, 
-      // ... other fields you want to set by default ...
-    });
+//     const imagePaths = getImagePathsFromRequest(req);
+//     console.log(`image path is${imagePaths}`)
+//     const newProduct = await Products.create({
+//       name: "Product", 
+//       description: "this and that",
+//       price: 22,
+//       stockCount: 22,
+//       image: imagePaths, 
+//       // ... other fields you want to set by default ...
+//     });
 
-    console.log("New product created:", newProduct); 
-    res.redirect("/admin/products");
+//     console.log("New product created:", newProduct); 
+//     res.redirect("/admin/products");
 
-  })
-})
+//   })
+// })
 
 const loadProductList = asyncHandler(async (req, res, next) => {
   const products = await Products.find()
@@ -87,11 +94,13 @@ const loadCreateProduct = asyncHandler(async (req, res, next) => {
   const subcategories = await Subcategories.find()
     .populate("category", "name")
     .exec();
+  const offers= await Offers.find().sort({name:1})
 
   res.render("./admin/createProductG", {
     categories,
     subcategories,
     name: "Create Product",
+    items:offers,
   });
 
 
@@ -105,8 +114,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`Product with the same name already exists` )
     );
   }
-
-
+  let offer=''
   // file
   let fileData = {}
   if (req.files) {
@@ -127,24 +135,15 @@ const createProduct = asyncHandler(async (req, res, next) => {
     category:req.body.category,
 
   })
-  console.log(req.body)
+
+  if(req.body.offer!=''){
+  products.offer=req.body.offer
+  
+  }
   products.image = images
   products.subcategories = req.body.subcategories
   products.save()
   res.status(201).redirect("/admin/products")
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 })
 
@@ -152,38 +151,15 @@ const createProduct = asyncHandler(async (req, res, next) => {
 // @route    GET /products
 // @access   private
 const getProducts = asyncHandler(async (req, res, next) => {
-  // Building the query based on the request query parameters
   let queryStr = JSON.stringify(req.query)
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`)
   const query = Products.find(JSON.parse(queryStr))
-
-  // Executing the query
   const products = await query
 
-  // Sending JSON response
-  // res.status(200).json({
-    //   success: true,
-    //   count: products.length,
-    //   data: products,
-    // })
   res.redirect("/admin/products")
 })
 
 ///////////////
-  // const createProducts = asyncHandler(async (req, res, next) => {
-    //   console.log(req.body)
-    //   const products = await Products.create(req.body)
-    //   res.status(201).json({
-      //     success: true,
-      //     data: products,
-      //   })
-    // })
-
-//  @desc     Update product
-//  @routes PUT  /products/:id/edit
-//  @access private
-//////////////////////////////////////////////////////////////////////////////
-  //
 
   const updateProducts = asyncHandler(async (req, res, next) => {
 
@@ -203,10 +179,8 @@ const getProducts = asyncHandler(async (req, res, next) => {
       images = req.files.map((item, index) => {
         return item.path.replace("public", "..")
       })
-      console.log(images)
     }
 
-console.log(`existing product ${existingProduct.image}`)
     const updatedProductData = {
       name: req.body.name,
       price: req.body.price,
@@ -217,13 +191,20 @@ console.log(`existing product ${existingProduct.image}`)
       subcategories:req.body.subcategory
 
     }; // Create a copy of req.body
-    if(req.files){ 
+
+  if (req.body.offer!== 'none'){
+console.log(`${req.body.offer}`.bgCyan)
+    updatedProductData.offer = req.body.offer;
+  }
+    else{
+    console.log(`offer removed/ not found`.bgRed)
+    updatedProductData.offer = null;
+  }
+   if(req.files){ 
       if(images.length==0){
         updatedProductData.image= existingProduct.image
       }
       else{
-console.log(`${Array.isArray(images)}`.bgBlue)
-console.log(`existing product image -- > ${Array.isArray(existingProduct.image)}`.bgCyan)
         updatedProductData.image=(existingProduct.image).concat(images)
       }
     }
@@ -382,7 +363,7 @@ module.exports = {
   loadProductList,
   loadCreateProduct,
   createProduct,
-  addProduct,
+  // addProduct,
   getSearchProducts,
   removeImg,
   test,

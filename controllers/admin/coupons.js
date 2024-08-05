@@ -1,22 +1,12 @@
-const Products = require("../../models/products")
-const Cart = require("../../models/cart")
-const User = require("../../models/users")
-const Order = require("../../models/order")
 const Coupon = require("../../models/coupon")
-const Categories = require("../../models/category")
-const Subcategories = require("../../models/subcategory")
 const ErrorResponse = require(`../../utils/errorResponse`)
 const asyncHandler = require("../../middleware/async")
 const { formatDate } = require("../../utils/date")
-const jwt = require("jsonwebtoken")
 const colors = require("colors")
-const express = require("express")
-const router = express.Router()
 
 const renderCouponList = asyncHandler(async (req, res, next) => {
-const coupons = await Coupon.find()
-console.log(`${Array.isArray(coupons)}`.red )
-  res.render(`./admin/couponList` ,{coupons:coupons})
+  const coupons = await Coupon.find().sort({ createdDate: -1 });
+  res.render(`./admin/couponList` ,{coupons:coupons,formatDate})
 })
 
 
@@ -92,11 +82,24 @@ const updateCoupon = asyncHandler(async (req, res, next) => {
 
   const code = req.body.code.trim()
 
+  try {
 
 
-   const existingCoupon = await Coupon.findById(req.params.id);
+
+    const existingCoupon = await Coupon.findById(req.params.id);
     if (!existingCoupon) {
       return res.status(404).json({ error: 'Coupon not found' });
+    }
+    const existingCouponCode = await Coupon.findOne({ 
+      code: { $regex: new RegExp(`^${code}$`, 'i') },
+      _id: { $ne: req.params.id }
+    });
+
+    if (existingCouponCode) {
+      return res.status(409).json({ 
+        success: false, 
+        error: "Coupon with this code already exists" 
+      });
     }
 
     // Update existingCoupon details
@@ -108,7 +111,13 @@ const updateCoupon = asyncHandler(async (req, res, next) => {
     existingCoupon.maxAmt = maxAmt || existingCoupon.maxAmt;
     existingCoupon.status = status || existingCoupon.status;
     await existingCoupon.save();
+
     res.status(200).json({ message: 'Coupon updated successfully', existingCoupon });
+  }
+  catch(error){
+    return res.status(409).json({ success: false, error: "error updating coupon" });
+
+  }
 })
 
 const getCouponList = asyncHandler(async (req, res, next) => {
@@ -117,11 +126,11 @@ const getCouponList = asyncHandler(async (req, res, next) => {
 })
 module.exports = {
   renderCouponList,
-renderCouponEdit,
+  renderCouponEdit,
   getAddCoupon,
   createCoupon,
   updateCoupon,
-getCouponList,
+  getCouponList,
 }
 
 

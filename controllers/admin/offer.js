@@ -1,146 +1,149 @@
-
-const Products = require("../../models/products")
-const Offer = require("../../models/offer")
-const Cart = require("../../models/cart")
-const User = require("../../models/users")
-const Categories = require("../../models/category")
-const Subcategories = require("../../models/subcategory")
-const ErrorResponse = require(`../../utils/errorResponse`)
-const asyncHandler = require("../../middleware/async")
-const jwt = require("jsonwebtoken")
-const { formatDate } = require("../../utils/date")
-
+const Products = require("../../models/products");
+const Offer = require("../../models/offer");
+const Categories = require("../../models/category");
+const ErrorResponse = require("../../utils/errorResponse");
+const asyncHandler = require("../../middleware/async");
+const { formatDate , formatDateISO} = require("../../utils/date")
 
 const renderCreateOffer = asyncHandler(async (req, res, next) => {
 
   const product = await Products.find().sort({ name: 1 });
-  const category = await Categories.find().sort({ name: 1 })
-  res.render(`./admin/createOffer` ,{product,category})
-  // res.json({product:product.length,category:category.length})
-})
+  const category = await Categories.find().sort({ name: 1 });
+  res.render(`./admin/createOffer`, { product, category });
+});
 
 const renderEditOffer = asyncHandler(async (req, res, next) => {
+    const offer = await Offer.findById(req.params.id);
+console.log(`${offer}`.yellow)
 
-  const offerId = req.params.id;
+  res.render(`./admin/offerEdit`, {offer});
 
-  const product = await Products.find().sort({ name: 1 });
-  const category = await Categories.find().sort({ name: 1 })
-  console.log(`${offerId}`.yellow);
-  try {
-    const item = await Offer.findById(offerId);
-  const offerType= item.getOfferType()
-    if (!item) {
-      return res.status(404).send('Coupon not found');
-    }
-    console.log(`${item}`.red);
-    res.render('./admin/offerEdit', {offerType, item ,formatDate,product,category});
-  } catch (error) {
-    // Handle any errors that occur
-    console.error(error);
-    res.status(500).send('Server Error');
-  }
-})
-const renderOfferList = asyncHandler(async (req, res, next) => {
-  const offers = await Offer.find().sort({ offerName: -1 })
-  res.render(`./admin/offerList`,{items:offers} )
-})
-const createOffer = asyncHandler(async (req, res, next) => {
-  const { offerName, discountType, discountValue, maximumAmount, startDate, expiryDate } = req.body;
-  const itemId = req.body.product || req.body.category;
-console.log(`product is ${req.body.product} category is ${req.body.category}`)
- console.log(`${req.body.category}`.cyan) 
-  console.log(`${itemId}`.red) 
-  let item;
-  let existingOffer;
-  const existingOfferName = await Offer.findOne({ offerName: offerName });
-  if (existingOfferName) {
-    return next(new ErrorResponse('Offer with this name already exists', 401));
-  }
-  if (req.body.product) {
-    item = await Products.findById(itemId);
-    console.log(` item is${item}`.yellow)
-    existingOffer = await Offer.findOne({ product: itemId });
-
-    if (existingOffer) {
-      return next(new ErrorResponse('Offer for this Product already exists', 401));
-    }
-  }
-  else if (req.body.category) {
-    item = await Categories.findById(itemId);
-    existingOffer = await Offer.findOne({ category: itemId });
-    if (existingOffer) {
-      return next(new ErrorResponse('Offer for this Category already exists', 401));
-    }
-  }
-  if (!item) {
-    return res.status(404).json({ message: 'Product or Category not found' });
-  }
-
-
-  const newOffer = new Offer({
-    offerName,
-    discountType,
-    discountValue,
-    maximumAmount,
-    startDate,
-    expiryDate,
-    product: req.body.product || null,
-    category: req.body.category || null,
-  });
-
-  await newOffer.save();
-console.log(`${newOffer}`)
-  res.status(201).json({ message: 'Offer created successfully', offer: newOffer });
 });
 
 
+const renderOfferList = asyncHandler(async (req, res, next) => {
+    const offers = await Offer.find();
+    const activeOffers = await Offer.find({status:true})
+  console.log(`${offers.length}`) 
+
+    res.render('./admin/offerList', { items: offers , activeOffers:activeOffers.length});
+});
+
+
+const createOffer = asyncHandler(async (req, res, next) => {
+  try {
+    const {
+      name,
+      description,
+      discountPercentage,
+      startDate,
+      endDate,
+      maxAmt,
+      minAmt
+    } = req.body;
+
+console.log(`that is the name ${name}`)
+    // Check if an offer with the same name already exists
+    const existingOffer = await Offer.find({ name:name });
+   console.log(`existing offer ${existingOffer}`.yellow) 
+  
+    if (existingOffer.length!=0) {
+      return res.status(400).json({ message: 'Offer with this name already existsss' });
+    }
+
+    // Validate the input data (additional validations can be added as needed)
+    if (!name || !description || !discountPercentage || !startDate || !endDate || !maxAmt || !minAmt) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    if (isNaN(discountPercentage) || discountPercentage <= 0 || discountPercentage > 100) {
+      return res.status(400).json({ message: 'Valid discount percentage is required (1-100)' });
+    }
+
+    if (new Date(startDate) >= new Date(endDate)) {
+      return res.status(400).json({ message: 'End date must be after the start date' });
+    }
+
+    if (isNaN(maxAmt) || maxAmt <= 0) {
+      return res.status(400).json({ message: 'Valid maximum amount is required' });
+    }
+
+    if (isNaN(minAmt) || minAmt <= 0) {
+      return res.status(400).json({ message: 'Valid minimum amount is required' });
+    }
+
+    // Create and save the new offer
+    const offer = new Offer(req.body);
+    await offer.save();
+
+    res.status(201).json(offer);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 
 const updateOffer = asyncHandler(async (req, res, next) => {
-
-  if(req.query.change){
+  if (req.query.change) {
     const changeStatus = await Offer.findById(req.params.id);
-    changeStatus.status=!changeStatus.status
-    await changeStatus.save()
-    res.status(200).json({success:true ,message: 'Offer status updated ' });
+    changeStatus.status = !changeStatus.status;
+    await changeStatus.save();
+    return res.status(200).json({ success: true, message: 'Offer status updated' });
   }
-  
-  let {maximumAmount,discountType,discountValue,startDate,expiryDate,status,product,category} = req.body;
 
-  const offerName = req.body.offerName.trim()
-
-
-
+  let { name, description, discountPercentage, startDate, endDate, maxAmt, minAmt, status } = req.body;
+console.log(`name is ${name}`.red)
+  try {
     const existingOffer = await Offer.findById(req.params.id);
     if (!existingOffer) {
       return res.status(404).json({ error: 'Offer not found' });
     }
 
-    existingOffer.offerName = offerName || existingOffer.offerName;
-    existingOffer.discountType = discountType || existingOffer.discountType;
-    existingOffer.discountValue = discountValue || existingOffer.discountValue;
-    existingOffer.maximumAmount = maximumAmount || existingOffer.maximumAmount;
+    // Check for existing offer with the same name (case-insensitive)
+    const existingOfferName = await Offer.findOne({
+      name: { $regex: new RegExp(`^${name}$`, 'i') },
+      _id: { $ne: req.params.id }
+    });
+
+    if (existingOfferName) {
+      return res.status(409).json({
+        success: false,
+        error: "Offer with this name already exists"
+      });
+    }
+
+    // Update existingOffer details
+    existingOffer.name = name || existingOffer.name;
+    existingOffer.description = description || existingOffer.description;
+    existingOffer.discountPercentage = discountPercentage || existingOffer.discountPercentage;
     existingOffer.startDate = startDate || existingOffer.startDate;
-    existingOffer.expiryDate = expiryDate || existingOffer.expiryDate;
-    existingOffer.status = status || existingOffer.status;
-    existingOffer.product = product || existingOffer.product;
-    existingOffer.category = category || existingOffer.category;
+    existingOffer.endDate = endDate || existingOffer.endDate;
+    existingOffer.maxAmt = maxAmt || existingOffer.maxAmt;
+    existingOffer.minAmt = minAmt || existingOffer.minAmt;
+    existingOffer.status = status !== undefined ? status : existingOffer.status;
+
     await existingOffer.save();
 
-    res.status(200).json({ message: 'Offer updated successfully', existingOffer })
-})
+    res.status(200).json({ success:true,message: 'Offer updated successfully', existingOffer });
+  } catch (error) {
+    res.status(409).json({ success: false, error: "Error updating offer" });
+  }
+});
 
 const getOfferList = asyncHandler(async (req, res, next) => {
-  const offer = await Offer.find().sort({ offerName: -1 })
-      .populate("product")
-  res.json(offer)
-})
+ try {
+      const offers = await Offer.find();
+      res.json(offers);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+});
 
 module.exports = {
   renderCreateOffer,
   renderEditOffer,
   renderOfferList,
   createOffer,
-getOfferList,
   updateOffer,
-}
-
+  getOfferList,
+};

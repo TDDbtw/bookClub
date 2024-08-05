@@ -5,6 +5,7 @@ const colors = require("colors");
 const User = require("../../models/users");
 const Cart = require("../../models/cart");
 const Order = require("../../models/order");
+const Offer = require("../../models/offer");
 const Category = require("../../models/category");
 const Subcategories = require("../../models/subcategory");
 const fs = require('fs');
@@ -12,7 +13,7 @@ const path = require('path');
 // Get category for editing
 const getCategoryEdit = asyncHandler(async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findById(req.params.id).populate("offer");
     const subcategories = await Subcategories.find({
       category: req.params.id,
     }).populate("category", "name"); // Populate only category name
@@ -22,13 +23,14 @@ const getCategoryEdit = asyncHandler(async (req, res, next) => {
         new ErrorResponse(`Category not found with id ${req.params.id}`, 404)
       );
     }
-
+ const offers=await Offer.find().sort({name:1})
     req.productId = req.params.id;
 
     res.render(`./admin/categoryEdit`, {
       category,
       subcategories,
       name: `Edit Category`,
+      items:offers,
     });
   } catch (error) {
     return next(new ErrorResponse("Error fetching category data", 500));
@@ -45,6 +47,7 @@ const getCategoryList = asyncHandler(async (req, res, next) => {
       .populate("category", "name")
       .exec();
 
+   console.log(`${subcategories}`.cyan) 
     res.render(`./admin/categoryListG`, {
       categories,
       subcategories,
@@ -61,6 +64,7 @@ const getCategoryList = asyncHandler(async (req, res, next) => {
 const getCreateCategory = asyncHandler(async (req, res, next) => {
   try {
     const categories = await Category.find();
+    const offers=await Offer.find().sort({name:1})
     const subcategories = await Subcategories.find()
       .populate("category", "name")
       .exec();
@@ -69,6 +73,7 @@ const getCreateCategory = asyncHandler(async (req, res, next) => {
       categories,
       subcategories,
       name: `Create Category`,
+      items:offers,
     });
   } catch (error) {
     return next(new ErrorResponse("Error loading category creation page", 500));
@@ -107,6 +112,9 @@ const createCategory = asyncHandler(async (req, res, next) => {
   }
 
   // Check if subcategories exist and are valid
+  if (!Array.isArray(subCat) || subCat.length === 0) {
+    return next(new ErrorResponse("At least one subcategory is required", 400));
+  }
   const existingSubCategoryNames = await Subcategories.distinct("name");
 
   if (!existingSubCategoryNames) {
@@ -223,7 +231,7 @@ console.log(`req change is${req.query.change}`.red)
 const updateCategoryById = async (req, res) => {
   try {
 
-    const { name, description, subcategories } = req.body;
+    const { name, description, subcategories, offer } = req.body;
     const  catId  = req.params.id
     const subcategoriesArray = JSON.parse(subcategories);
 
@@ -256,6 +264,7 @@ const updateCategoryById = async (req, res) => {
       category.status =
         req.body.status === "change" ? !category.status : category.status;
     }
+    category.offer=offer
     // Save updated category
     await category.save();
 

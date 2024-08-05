@@ -4,7 +4,7 @@ const Category = require("../../models/category")
 const Order = require("../../models/order")
 const ErrorResponse = require(`../../utils/errorResponse`)
 const asyncHandler = require("../../middleware/async")
-const { formatDate } = require("../../utils/date")
+const { formatDate,formatDateISO } = require("../../utils/date")
 const {
   getMonthlyDataArray,
   getDailyDataArray,
@@ -52,33 +52,43 @@ const getUser = asyncHandler(async (req, res, next) => {
 
 
 const getAdmin = asyncHandler(async (req, res, next) => {
+
+  const PAGE_SIZE = 3// Number of transactions per page
+  const page = parseInt(req.query.page) || 1;
+  const skip = (page - 1) * PAGE_SIZE;
   const users = await User.find()
-    let totalRevenue = await Order.aggregate([
-      { $match: { status: "delivered" } },
-      { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
-    ]);
-  
-    const order = await Order.find().populate("user").limit(10).sort({ created_at: -1 });
-console.log(`${order}`)
-    let totalRevenueValue = totalRevenue.length > 0 ? totalRevenue[0].totalAmount : 0;
-    totalRevenue =(Math.round(totalRevenue * 100) / 100).toFixed(2);
-    totalRevenueValue =(Math.round(totalRevenueValue * 100) / 100).toFixed(2);
-    const products = await Products.find()
-      .populate("category")
-      .populate("subcategories")
-      .exec()
-  res.render(`./admin/panel`, { users,order,formatDate, products,totalRevenue:totalRevenueValue })
+  let totalRevenue = await Order.aggregate([
+    { $match: { status: "delivered" } },
+    { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
+  ]);
+
+  const order = await Order.find().populate("user")
+  const totalOrders = order.length;
+  const totalPages = Math.ceil(totalOrders / PAGE_SIZE);
+  let totalRevenueValue = totalRevenue.length > 0 ? totalRevenue[0].totalAmount : 0;
+  totalRevenue =(Math.round(totalRevenue * 100) / 100).toFixed(2);
+  totalRevenueValue =(Math.round(totalRevenueValue * 100) / 100).toFixed(2);
+  const products = await Products.find()
+    .populate("category")
+    .populate("subcategories")
+    .exec()
+
+  const paginatedOrders = order
+    .sort((a, b) => b.date - a.date)
+    .slice(skip, skip + PAGE_SIZE);
+  res.render(`./admin/panel`, { users,order:paginatedOrders,formatDate, products,totalRevenue:totalRevenueValue ,currentPage: page,totalPages,PAGE_SIZE}
+  )
 })
 
 const getAdminData = asyncHandler(async (req, res, next) => {
-try {
+  try {
     let query = {};
 
     const products = await Products.find()
       .populate("category")
       .populate("subcategories")
       .exec()
-  const users = await User.find()
+    const users = await User.find()
     const totalRevenue = await Order.aggregate([
       { $match: { status: "delivered" } }, // Include the conditions directly
       { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
@@ -102,42 +112,42 @@ try {
       { $group: { _id: null, monthlyAmount: { $sum: "$totalAmount" } } },
     ]);
 
-const salesPerCategory = await Order.aggregate([
-  { $match: { status: "delivered" } },
-  { $unwind: "$items" },
-  {
-    $lookup: {
-      from: "products",
-      localField: "items.productId",
-      foreignField: "_id",
-      as: "product",
-    },
-  },
-  { $unwind: "$product" },
-  {
-    $group: {
-      _id: "$product.category",
-      totalSales: { $sum: "$items.price" },
-    },
-  },
-  {
-    $lookup: {
-      from: "categories",
-      localField: "_id",
-      foreignField: "_id",
-      as: "category",
-    },
-  },
-  { $unwind: "$category" },
-  {
-    $project: {
-      _id: 0,
-      category: "$category.name",
-      totalSales: 1,
-    },
-  },
-  { $sort: { totalSales: -1 } },
-]);
+    const salesPerCategory = await Order.aggregate([
+      { $match: { status: "delivered" } },
+      { $unwind: "$items" },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.productId",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      { $unwind: "$product" },
+      {
+        $group: {
+          _id: "$product.category",
+          totalSales: { $sum: "$items.price" },
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "_id",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
+      {
+        $project: {
+          _id: 0,
+          category: "$category.name",
+          totalSales: 1,
+        },
+      },
+      { $sort: { totalSales: -1 } },
+    ]);
     const totalRevenueValue = totalRevenue.length > 0 ? totalRevenue[0].totalAmount : 0;
     const monthlyEarningsValue = monthlyEarnings.length > 0 ? monthlyEarnings[0].monthlyAmount : 0;
 
@@ -150,7 +160,7 @@ const salesPerCategory = await Order.aggregate([
 
     // Get daily data
     const dailyDataArray = await getDailyDataArray();
-    
+
     // Get yearly data
     const yearlyDataArray = await getYearlyDataArray();
 
@@ -161,21 +171,21 @@ const salesPerCategory = await Order.aggregate([
 
     res.json(
       {
-      users,
-      products,
-      totalRevenue: totalRevenueValue,
-      totalOrders,
-      totalCategories,
-      totalProducts,
-      totalUsers,
-      newUsers,
-      order,
-      monthlyEarningsValue,
-      monthlyOrderCounts,
-      dailyOrderCounts,
-      yearlyOrderCounts,
+        users,
+        products,
+        totalRevenue: totalRevenueValue,
+        totalOrders,
+        totalCategories,
+        totalProducts,
+        totalUsers,
+        newUsers,
+        order,
+        monthlyEarningsValue,
+        monthlyOrderCounts,
+        dailyOrderCounts,
+        yearlyOrderCounts,
 
-} )
+      } )
   } catch (error) {
     console.log(error.message);
     // Handle errors appropriately
@@ -186,10 +196,10 @@ const salesPerCategory = await Order.aggregate([
 
 ///////////////////////////////////////////////////////
 
-const getProfile = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id)
-  res.render(`./users/profile`, { user })
-})
+  const getProfile = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.user.id)
+    res.render(`./users/profile`, { user })
+  })
 
 const getEditInfo = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
@@ -199,9 +209,11 @@ const getEditInfo = asyncHandler(async (req, res, next) => {
 
 const loadUsers = asyncHandler(async (req, res, next) => {
   const users = await User.find()
+ console.log(`user is ${req.user}`.red) 
+  const currentAdminEmail=req.user.email
   const userCount = await User.countDocuments()
   const blockCount = await User.countDocuments({status:false})
-  res.render(`./admin/userList`, {userCount,blockCount, users, name: "User List" })
+  res.render(`./admin/userList`, {userCount,blockCount, users,currentAdminEmail, name: "User List" })
 })
 
 const getEditUsers = asyncHandler(async (req, res, next) => {
@@ -218,44 +230,40 @@ const getUsers = asyncHandler(async (req, res, next) => {
   })
 })
 
-
 const updateUsers = asyncHandler(async (req, res, next) => {
-  const updatedUserData = req.body
-  let userId = req.params.id
-  const userTest = await User.findById(req.params.id)
+  const userId = req.params.id;
 
-  if (req.query.status) {
-    updatedUserData.status = !userTest.status
-  }
-  console.log("admin user running")
+  // Find the user by ID
+  const user = await User.findById(userId);
 
-  const user = await User.findByIdAndUpdate(userTest, updatedUserData, {
-    new: true, // Return the updated user data
-    runValidators: true, // Run validation checks on the updated data
-  })
-
+  // If user not found, return an error
   if (!user) {
     return next(
-      new ErrorResponse(`User not found with the id of ${req.params.id}`, 404)
-    )
+      new ErrorResponse(`User not found with the id of ${userId}`, 404)
+    );
   }
-  if (req.query.status == true) {
-    user.status = false
-  } else if (req.query.status == false) {
-    user.status = true
+
+  // If a 'status' query parameter is provided, toggle the status
+  if (req.query.status !== undefined) {
+    user.status = !user.status;
+  } else {
+    // Otherwise, update user with the request body
+    Object.assign(user, req.body);
   }
-  console.log(user.status)
 
-  await user.save()
+  // Save the updated user data and validate
+  await user.save({ runValidators: true });
 
-  res.json(user.status)
+  // Respond with success and updated status
+  res.json({ success: true, status: user.status });
+});
 
-  // res.redirect("/admin/users")
-})
+
+
 const getSearchUsers = asyncHandler(async (req, res, next) => {
   let query = {}
   // if (req.query.search) {
-  // }
+    // }
   const users = await User.find({
     name: { $regex: req.query.search, $options: "i" },
   })
