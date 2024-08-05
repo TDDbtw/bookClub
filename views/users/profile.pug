@@ -6,9 +6,9 @@ link(rel='stylesheet' href='../stylesheet/cropper.css')
   .account-layout
     .account-menu
       ul
-        li: a(href='/user/profile') My Account
+        li: a(href='/user/profile' , class='active') My Account
         li: a(href='/user/wishlist') My Wishlist
-        li: a(href='/user/address/new', class='active') Address Book
+        li: a(href='/user/address/new') Address Book
         li: a(href='/user/order') My Orders
         li: a(href='/user/wallet') My Wallet
 
@@ -43,7 +43,7 @@ link(rel='stylesheet' href='../stylesheet/cropper.css')
                 p Country: #{address.country}
                 a#editBillingAddressBtn.btn.btn-sm.btn-primary.mt-2(href=`/user/address/${address._id}/edit`) Edit Billing Address
               else
-                p You have not set a default billing address yet.
+                p You have not set a billing address yet.
                 a#addBillingAddressBtn.btn.btn-sm.btn-primary.mt-2(href='/user/address/new') Add Address
 
             .mt-4
@@ -56,7 +56,7 @@ link(rel='stylesheet' href='../stylesheet/cropper.css')
                 p Country: #{address.country}
                 a#editShippingAddressBtn.btn.btn-sm.btn-primary.mt-2(href='#') Edit Shipping Address
               else
-                p You have not set a default shipping address yet.
+                p You have not set a shipping address yet.
                 a#addShippingAddressBtn.btn.btn-sm.btn-primary.mt-2(href='#') Add Address
 
   script(src="../../script/cropper.js")

@@ -3,9 +3,11 @@ title Edit Profile
 link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap')
 link(rel='stylesheet', href='../../../stylesheet/navbar.css')
 link(rel='stylesheet', href='../../../stylesheet/user/profile.css')
+link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css")
 script(defer src='https://code.jquery.com/jquery-3.6.0.min.js')
 script(src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.js")
-
+script( src="../../../script/toast.js" defer)
+script( src="../../../script/confirmationModal.js" defer)
 .container
   h1.page-title Edit Profile
 
@@ -39,7 +41,7 @@ script(src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.js")
 
           .form-group
             label(for='email') Email:
-            input#email(type='email', name='email', value=user.email)
+            input#email(type='text', name='email', value=user.email)
 
           .form-group.d-flex
             input#editPwd(type="radio")

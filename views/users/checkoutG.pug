@@ -10,7 +10,7 @@ html(lang='en')
     link(rel="stylesheet", href="../stylesheet/user/checkoutG.css")
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
     script(src='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js')
-    script( src='../script/confirmationModal.js' defer)
+    script(src='../script/confirmationModal.js' defer)
     script(src='../script/toast.js' defer)
   body
     .container-fluid.checkout-container
@@ -23,45 +23,15 @@ html(lang='en')
           strong Email:
           |  #{user.email}
         
-      if user.addresses && user.addresses.length > 0
-        .address-selection
-          h2 Shipping Address
-          each address, index in user.addresses
-            .address-item
-              if user.shipping_address 
-                if user.shipping_address._id==address.id 
-                  p.mt-3(style="color: #007d99;") Current Shipping Address is  >> 
-                else if user.shipping_address._id!=address.id
-                  input.ms-2.me-2#shipping_address(type='checkbox',hx-get="/user/set"  hx-trigger="change"  hx-target="body"  name='shipping_address',  value=address._id)
-                  p.me-3.mt-3.ms- set as Shipping address
-              else
-                input.ms-2.me-2#shipping_address(type='checkbox',hx-get="/user/set"  hx-trigger="change"  hx-target="body"  name='shipping_address',  value=address._id)
-                p.ms-2.me-3.mt-3.font-italic set as Shipping address
-              label.ms-2.me-2.text-italic(for=`address-${index}`)   #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
-        .address-selection
-          h2 Billing Address
-          each address, index in user.addresses
-            .address-item
-              if user.billing_address 
-                if user.billing_address._id ==address.id
-                  p.mt-3(style="color: #007d99;") Current Billing Address is  >>
-                else
-                  input.ms-2.me-2#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
-                  p.ms-2.me-3.mt-3.font-italic set as Billing address
-              else
-                //input#billing_address(type="checkbox" name='billing_address' value=`${address._id}`).ms-3
-                input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
-                label(for='billing_address').ms-1.me-2 Billing Address
-              label.ms-2.me-2(for=`address-${index}`)  #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
-      else
-        .address-form#checkoutAddres
+      if needsAddress || user.addresses.length==0
+        .address-form#checkoutAddress
           h2 Shipping Information
           form#shipping(action='/user/address/new', method='post', enctype='application/x-www-form-urlencoded')
             label(for='address') Address:
-            input(type='text', id='address', name='address', oninput='validateAddress()' )
+            input(type='text', id='address', name='address', oninput='validateAddress()' required)
             span.mt-5#addressError
             label(for='country') Country:
-            select(name='country', id='country' data-country=countries)
+            select(name='country', id='country' data-country=countries required)
               option(value='') Please select a Country
               each country in countries
                 option(value=country.name)= country.name
@@ -71,39 +41,41 @@ html(lang='en')
               option(value='') Please select a region, state or province.
             span#stateError
             label(for='city') City:
-            input(type='text', id='city', name='city',oninput='validateCity()' required)
+            input(type='text', id='city', name='city', oninput='validateCity()' required)
             span#cityError
             label(for='zip_code') Zip Code:
-            input(type='text',oninput='validateZip()' id='zip', name='zip_code', required)
+            input(type='text', oninput='validateZip()' id='zip', name='zip_code', required)
             span#zipError
             button#saveAddress(type='submit') Save Address
-
-
-
-
-          script.
-            const countrySelect = document.getElementById('country');
-            const stateSelect = document.getElementById('state');
-            const countryData = countrySelect.getAttribute('data-country');
-            const countries = JSON.parse(countryData);
-
-            countrySelect.addEventListener('change', () => {
-              stateSelect.innerHTML = '';
-              const selectedCountry = countrySelect.value;
-              const states = countries.find(country => country.name === selectedCountry).states;
-              states.forEach(state => {
-                const option = document.createElement('option');
-                option.value = state;
-                option.textContent = state;
-                stateSelect.appendChild(option);
-              });
-            });
-
-            const empty = document.createElement('option');
-            empty.value = ''
-            empty.textContent = 'Select a Country'
-            countrySelect.appendChild(empty);
-
+      else if user.addresses[0] && user.addresses.length > 0
+        .address-selection
+          h2 Shipping Address
+          each address, index in user.addresses
+            .address-item
+              if user.shipping_address 
+                if user.shipping_address._id == address.id 
+                  p.mt-3(style="color: #007d99;") Current Shipping Address is  >> 
+                else if user.shipping_address._id != address.id
+                  input.ms-2.me-2#shipping_address(type='checkbox', hx-get="/user/set", hx-trigger="change", hx-target="body", name='shipping_address', value=address._id)
+                  p.me-3.mt-3.ms- set as Shipping address
+              else
+                input.ms-2.me-2#shipping_address(type='checkbox', hx-get="/user/set", hx-trigger="change", hx-target="body", name='shipping_address', value=address._id)
+                p.ms-2.me-3.mt-3.font-italic set as Shipping address
+              label.ms-2.me-2.text-italic(for=`address-${index}`)   #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
+        .address-selection
+          h2 Billing Address
+          each address, index in user.addresses
+            .address-item
+              if user.billing_address 
+                if user.billing_address._id == address.id
+                  p.mt-3(style="color: #007d99;") Current Billing Address is  >>
+                else
+                  input.ms-2.me-2#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`)
+                  p.ms-2.me-3.mt-3.font-italic set as Billing address
+              else
+                input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
+                label(for='billing_address').ms-1.me-2 Billing Address
+              label.ms-2.me-2(for=`address-${index}`)  #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
 
       .payment-method-inline
         h3 Select Payment Method
@@ -113,19 +85,19 @@ html(lang='en')
           |
           small#codMsg
         label
-          if walletBalance < (cart.billTotal + (0.05 * cart.billTotal) + shippingTotal).toFixed(2)
-           input( type='radio', name='payment-inline', value='wallet' disabled )
-           small(style='color:grey;') Wallet balance is low
-           small.ms-2(style='color:grey;')
-            | ( $#{walletBalance} )
-           small.ms-2(style='color:grey;')
-            | you need $#{(totalAmount - walletBalance).toFixed(2)} more
+          if walletBalance < totalAmount
+            input(type='radio', name='payment-inline', value='wallet' disabled)
+            small(style='color:grey;') Wallet balance is low
+            small.ms-2(style='color:grey;')
+              | ( $#{walletBalance} )
+            small.ms-2(style='color:grey;')
+              | you need $#{(totalAmount - walletBalance).toFixed(2)} more
           else
-           input(type='radio', name='payment-inline', value='wallet' )
-           |  Wallet
+            input(type='radio', name='payment-inline', value='wallet')
+            |  Wallet
         label
-           input(type='radio', name='payment-inline', value='razorpay')
-           |   razorpay 
+          input(type='radio', name='payment-inline', value='razorpay')
+          |   razorpay 
 
         #wallet_details(style='display: none;')
           p Pay from Wallet.
@@ -134,7 +106,7 @@ html(lang='en')
         #cod_details(style='display: none;')
           p Pay with cash upon delivery.
         #razorpay_details(style='display: none;')
-          p paywith razorpay
+          p Pay with razorpay
         #paymentError.text-warning.ms-2
           
     .right
@@ -167,33 +139,40 @@ html(lang='en')
                   | $#{shippingTotal.toFixed(2)}
             tr
               td(colspan='3', align='right') Tax:
-              - const tax=(0.05 * cart.billTotal).toFixed(2)
+              - const tax = (0.05 * cart.billTotal).toFixed(2)
               td $#{tax}
-            tr
-              td(colspan='3', align='right') Discount:
-              td#discountAmount $0.00
             tr
               td(colspan='3', align='right') Total:
               td#totalAmount $#{totalAmount.toFixed(2)}
-        .coupon-section
-          h2 Apply Coupon
-          .coupon-input-group
-            .d-flex
-              input#couponCode(type='text' placeholder='Enter coupon code')
-              H1#applyCouponBtn.text-success.mt-2.bi.bi-check(type='button')
-              H1#removeCouponBtn.text-danger.mt-2.bi.bi-x(type='button')
-              H1#clearCouponBtn.text-warning.mt-2.bi.bi-dash(type='button' )
-          .coupon-display
-            span#appliedCoupon
+
+      .coupon-section
+        h2 Apply Coupon
+        .coupon-input-group
+          input#couponCode(type='text', placeholder='Enter coupon code')
+          button#applyCouponBtn.btn.btn-apply
+            i.bi.bi-tag-fill
+            |  Apply
+          button#removeCouponBtn.btn.btn-remove
+            i.bi.bi-x-circle-fill
+            |  Remove
+          button#clearCouponBtn.btn.btn-clear
+            i.bi.bi-eraser-fill
+            |  Clear
+        .coupon-display
+          span#appliedCoupon
           span#couponError
+        .coupon-summary
+          .summary-item
+            span Discount:
+            span#discountAmount $0.00
 
       .checkout-actions
-        form.checkoutForm(action='', )
+        form.checkoutForm(action='')
           input#userInput(type='hidden', name='user', value=user)
           input#CART(type='hidden', name='cart', value=cart)
           input#ID(type='hidden', name='cart', value=CLIENT_ID)
-          input#couponData(type='hidden', name='couponData',)
-          input#totalAmountInput(type='hidden', name='total_amount', value=(cart.billTotal + (0.05 * cart.billTotal) + shippingTotal).toFixed(2))
+          input#couponData(type='hidden', name='couponData')
+          input#totalAmountInput(type='hidden', name='total_amount', value=totalAmount.toFixed(2))
           button.btn.btn-primary#placeOrderBtn(type='submit') Place Order
         a.btn.btn-secondary(href='/cart') Back to Cart
         span#payment_method_Error
@@ -204,23 +183,61 @@ html(lang='en')
   script(src='https://checkout.razorpay.com/v1/checkout.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js')
   script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js')
-  //- script(src='../script/user/confirmLogout.js')
   script(src="../../script/user/addAddress.js")
   script(defer src='https://unpkg.com/htmx.org@2.0.0', integrity='sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw', crossorigin='anonymous')
   script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL", crossorigin="anonymous")
   script(src='../script/user/checkoutG.js')
-  script(src='https://cdnjs.clouflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js')
   script.
-    let address = document.getElementById('userInput').value.addresses;
-    let shipping = document.getElementById('userInput').value;
-    shipping=JSON.parse(shipping)
-   console.log(`shipinni is ${shipping}`) 
-    if (shipping.shipping_address === undefined) {
-     console.log(`is undefined`) 
-        document.getElementById('placeOrderBtn').disabled = true;
-    }
-    
     document.addEventListener('DOMContentLoaded', () => {
+      const needsAddress = #{needsAddress};
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
       
-      })
+      if (needsAddress) {
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.title = 'Please add a shipping address before placing the order';
+      } else {
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.title = '';
+      }
 
+      // Add event listener for address form submission
+      const shippingForm = document.getElementById('shipping');
+      if (shippingForm) {
+        shippingForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const formData = new FormData(shippingForm);
+          try {
+            const response = await fetch('/user/address/new', {
+              method: 'POST',
+              body: formData
+            });
+            if (response.ok) {
+              window.location.reload(); // Reload the page to show updated address info
+            } else {
+              throw new Error('Failed to save address');
+            }
+          } catch (error) {
+            console.error('Error saving address:', error);
+            alert('Failed to save address. Please try again.');
+          }
+        });
+      }
+
+      // Country and state selection logic
+      const countrySelect = document.getElementById('country');
+      const stateSelect = document.getElementById('state');
+      const countryData = JSON.parse(countrySelect.getAttribute('data-country'));
+
+      countrySelect.addEventListener('change', () => {
+        stateSelect.innerHTML = '';
+        const selectedCountry = countrySelect.value;
+        const states = countryData.find(country => country.name === selectedCountry)?.states || [];
+        states.forEach(state => {
+          const option = document.createElement('option');
+          option.value = state;
+          option.textContent = state;
+          stateSelect.appendChild(option);
+        });
+      });
+    });

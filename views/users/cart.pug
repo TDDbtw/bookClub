@@ -43,7 +43,7 @@ include ../partials/navbar
           ul
             li
               span Subtotal:
-              span.price= (cart.billTotal).toFixed(2)
+              span.price= ((cart.billTotal || 0).toFixed(2))
             li
               span Tax (5%):
               span.price= (0.05 * cart.billTotal).toFixed(2)
