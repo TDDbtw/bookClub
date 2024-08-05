@@ -76,10 +76,14 @@ app.use("/order", order)
 app.get(
   "/",
   asyncHandler(async (req, res, next) => {
-    const products = await Products.find()
+   let  products = await Products.find()
       .populate("category")
       .populate("subcategories")
       .exec()
+products.forEach((item,index)=>{
+item.discountedPrice=getDiscountedPrice(item)
+})
+console.log(`${products[0]}`)
     let user = ""
     console.log(req.cookies)
     if (req.cookies.jwt) {
@@ -89,10 +93,28 @@ app.get(
       // }
       // console.log(typeof products[0].image[0])
       // console.log(`in home ---> ${user}`)
-      res.render("./users/home", { products, user })
+
+      res.render("./users/home", { products, user, })
     } else {
-      res.render("./users/home", { products, user })
+      res.render("./users/home", { products, user, })
     }
+async function getDiscountedPrice(product) {
+  let discountedPrice = product.price;
+
+  if (product.offer) {
+    try {
+      const offer = await Offer.findById(product.offer._id);
+      if (offer && offer.isActive()) {
+        discountedPrice = offer.applyDiscount(product.price);
+        console.log(`Discounted Price: ${discountedPrice}`.cyan);
+        return discountedPrice
+      }
+    } catch (error) {
+      console.error(`Error applying discount: ${error.message}`.red);
+    }
+  }
+
+}
   })
 )
 
