@@ -162,27 +162,29 @@ include ../partials/mixins
                   th total Amount
                   th Shipping
                   th Action
-              tbody#recentOrdersTable
-                each product in order
-                  tr
-                    td #{product._id}
-                    td 
-                      small #{formatDate(product.created_at)}
-                    td #{product.user.name}
-                    td
-                      if product.items.length < 2
-                        = product.items[0].name
-                        | (#{product.items[0].quantity} nos)
-                      else if product.items.length == 2
-                        | #{product.items[0].name} (#{product.items[0].quantity} nos),
-                        | #{product.items[1].name } (#{product.items[0].quantity} nos)
-                      else
-                        | #{product.items[0].name} (#{product.items[0].quantity} nos), #{product.items[1].name} (#{product.items[0].quantity} nos)
-                        - let len = product.items.length - 2
-                        |  and #{len} more.. 
-                    td #{product.totalAmount}
-                    td #{product.status} 
-                    td 
+              if order.length > 0
+                tbody#recentOrdersTable
+                  each product in order
+                    tr
+                      td #{product._id}
+                      td 
+                        small #{formatDate(product.created_at)}
+                      td #{product.user.name}
+                      td
+                        if product.items.length < 2
+                          = product.items[0].name
+                          | (#{product.items[0].quantity} nos)
+                        else if product.items.length == 2
+                          | #{product.items[0].name} (#{product.items[0].quantity} nos),
+                          | #{product.items[1].name } (#{product.items[0].quantity} nos)
+                        else
+                          | #{product.items[0].name} (#{product.items[0].quantity} nos), #{product.items[1].name} (#{product.items[0].quantity} nos)
+                          - let len = product.items.length - 2
+                          |  and #{len} more.. 
+                      td #{product.totalAmount}
+                      td #{product.status} 
+              else
+                p No Orders yet
         #loadMoreBtn
         .pagination
           if currentPage > 1
