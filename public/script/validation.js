@@ -169,6 +169,7 @@ document.getElementById("formButton").addEventListener("click", (event) => {
   // Validate the form fields
   const nameError = document.getElementById("nameError")
   const name = document.getElementById("name").value
+  const referralCode =document.getElementById("referralCode").value
   const email = document.getElementById("email").value
   const password = document.getElementById("password").value
   const confirmPassword = document.getElementById("confirmPassword").value
@@ -195,7 +196,7 @@ document.getElementById("formButton").addEventListener("click", (event) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: email }),
+      body: JSON.stringify({ email: email,referralCode: referralCode}),
     })
       .then(function (response) {
         return response.json()
