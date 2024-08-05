@@ -45,14 +45,9 @@ const loadOtp = asyncHandler(async (req, res, next) => {
   res.render("./auth/user/otpVerification")
 })
 
-const loadForgot = asyncHandler(async (req, res, next) => {
-  // res.render("signUpForm")
-  res.render("signup")
-})
-
 // @desc    POST Register user
 // @routes  post//
-// @access  public
+  // @access  public
 
 const register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body
@@ -67,11 +62,20 @@ const register = asyncHandler(async (req, res, next) => {
 // check if email exists
 
 const isEmailExist = asyncHandler(async (req, res, next) => {
-  const { email } = req.body
+  const { email , referralCode} = req.body
   console.log(JSON.stringify(email))
   const existingUser = await Users.findOne({ email })
-  console.log(existingUser)
+  if(referralCode.length!=0){
+    if(referralCode.length!=6) return next(new ErrorResponse("invalid referral code", 401))
+    else{
+      const referrer = await Users.findOne({ referralCode: referralCode });
+      if(!referrer) return next(new ErrorResponse("Refferal code does not Exist", 401))
+      console.log(referrer)
+    }
+
+  }
   req.session.user = existingUser
+
   if (!existingUser) res.json({ success: true })
   else return next(new ErrorResponse("Email already exists", 401))
 })
@@ -87,10 +91,9 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
 const resetOtp = asyncHandler(async (req, res, next) => {
   req.session.userData = req.body
-  console.log(`reset otp ${req.session.email}`)
-  console.log(req.body.email)
   const email = req.session.email
   const existingUser = await Users.findOne({ email })
+  if(!existingUser) return next(new ErrorResponse("Email  doesnt exist", 401))
   const name = existingUser.name
   const { otp } = generateOTP()
   const userEmail = email
@@ -121,24 +124,34 @@ let tempData = 2
 const tempSave = asyncHandler(async (req, res, next) => {
   req.session.userData = req.body
   console.log(` ${req.body}`)
-  const email = req.body.email
-  const name = req.body.name
+  const{ email,name}= req.body
   const { otp } = generateOTP()
   const userEmail = email
 
   sendOTPEmail(userEmail, otp, name)
   tempData = req.session.userData
-  console.log(req.session.userData)
-  console.log(tempData)
   res.redirect("/auth/otp")
 })
 
 const createUser = asyncHandler(async (req, res, next) => {
-  console.log(`one create user ${req.body}`)
-  const users = await Users.create(req.session.userData)
-  if (users){
-  createWallet(users)
+  console.log(`one create user ${req.body}`.red)
+  const { referralCode, ...others } = req.session.userData;
+  const newUser = new Users(others)
+  const user =  await newUser.save()
+  if(referralCode.length!=0){
+    const refferer=await Users.findOne({referralCode:referralCode})
+    refferer.userReferred.push(user._id)
+    user.referredBy=refferer._id
+    const wallet = await Wallet.findOrCreate(refferer._id);
+    const userWallet = await Wallet.findOrCreate(user._id);
+    wallet.addTransaction('credit', 5, `referrer Bonus`);
+    userWallet.addTransaction('credit', 5, `login Bonus`);
+    refferer.save()
+    await userWallet.save()
+    await wallet.save()
+
   }
+
   res.redirect("/auth/login")
 })
 
@@ -157,6 +170,7 @@ const saveResetPassword = asyncHandler(async (req, res, next) => {
 
 const otpVerify = asyncHandler(async (req, res, next) => {
   const userOtp = await req.body.otp
+
   if (verifyOTP(userOtp)) {
     // Send a success response
     res.json({ success: true, message: "OTP verification successful!" })
@@ -186,7 +200,7 @@ const userLogin = asyncHandler(async (req, res, next) => {
   if (user.status === false) {
     return next(new ErrorResponse("This account has been blocked", 403));
   }
-  
+
   const isMatch = await user.matchPassword(password);
   if (!isMatch) {
     return next(new ErrorResponse("Invalid credentials", 401));
@@ -246,67 +260,10 @@ const logoutUser = asyncHandler(async (req, res, next) => {
 
   res.status(200).send({
     success: true,
-    message: "User logged out",
+    message: "User logged out"
   })
 })
 
-// const logoutUser = asyncHandler(async (req, res, next) => {
-//   res.setHeader(
-//     "Cache-Control",
-//     "no-store, no-cache, must-revalidate, private, max-age=0"
-//   )
-//   res.cookie("jwt", "", {
-//     httponly: true,
-//     express: new Date(0),
-//   })
-//   res.redirect("/")
-// })
-async function createWallet(data){
- let wallet = new Wallet({
-        user: data._id,
-        balance: 0,
-        transactions: []
-      });
-
- // Handle referral if applicable
-      if (data.referralCode) {
-        // Add referral bonus to new user's wallet
-        wallet.balance += 50;
-        wallet.transactions.push({
-          type: 'credit',
-          amount: 50,
-          description: 'Signup referral bonus'
-        });
-
-        // Handle referrer's bonus
-        const referrer = await Users.findOne({
-          referralCode: data.referralCode,
-        });
-        if (referrer) {
-          referrer.userReferred.push(newUserSave.email);
-          await referrer.save();
-
-          let referrerWallet = await Wallet.findOne({ user: referrer._id });
-          if (!referrerWallet) {
-            referrerWallet = new Wallet({
-              user: referrer._id,
-              balance: 0,
-              transactions: []
-            });
-          }
-          referrerWallet.balance += 100;
-          referrerWallet.transactions.push({
-            type: 'credit',
-            amount: 100,
-            description: 'Referral reward'
-          });
-          await referrerWallet.save();
-        }
-        delete data.referralCode;
-      }
-
-await wallet.save();
-}
 module.exports = {
   // verifySignup,
   getSignup,
