@@ -13,9 +13,9 @@ let a =path.join(__dirname, '../views/partials/sales-report.pug')
     try {
         const html = await fs.readFile(a, 'utf-8');
         // Render the template with the order and user data
-        const reportTemplate = pug.compile(html);
-        const renderedReport = reportTemplate({salesData:data });
-        return renderedReport; // Return the rendered HTML
+        const invoiceTemplate = pug.compile(html);
+        const renderedInvoice = invoiceTemplate({salesData:data });
+        return renderedInvoice; // Return the rendered HTML
     } catch (error) {
         console.error('Error generating sales report:', error);
         throw new Error('Could not generate sales report');
@@ -46,7 +46,6 @@ console.log(`${item}`.red)
       totalRevenue: item.totalRevenue.toFixed(2),
       totalDiscount: item.totalDiscount.toFixed(2),
       netRevenue: item.netRevenue.toFixed(2),
-      offerDetails: `${item.offerDetails.name} - Discount: ${item.offerDetails.discountPercentage}%`
     });
   });
 
