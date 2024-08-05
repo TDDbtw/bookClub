@@ -45,4 +45,16 @@ walletSchema.statics.findOrCreate = async function(userId) {
   }
   return wallet;
 };
+
+walletSchema.statics.addReferralBonus = async function(userId, amount, description) {
+  const wallet = await this.findOne({ user: userId });
+  if (wallet) {
+    wallet.addTransaction('credit', amount, description);
+    await wallet.save();
+    return wallet;
+  }
+  return null;
+};
+
+
 module.exports = mongoose.model('Wallet', walletSchema);

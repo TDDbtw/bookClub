@@ -76,25 +76,30 @@ const UserSchema = new mongoose.Schema({
     default: true,
     required: false,
   },
+
   referralCode: {
     type: String,
     default: generateRefCode,
     unique: true, 
-},
-userReferred: [{
-    type: String,
-
-}],
+  },
+  userReferred: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 })
 UserSchema.pre("save", async function (next) {
-if (!this.isModified("password")) {
+  if (!this.isModified("password")) {
     return next();
   }
-console.log(`hashed`.red)
+  console.log(`hashed`.red)
   const salt = await bcrypt.genSalt(10)
   this.password = await bcrypt.hash(this.password, salt)
 })
@@ -111,6 +116,8 @@ function generateRefCode() {
   }
   return result;
 }
+
+
 // JwT
 
 const User = mongoose.model("User", UserSchema)
