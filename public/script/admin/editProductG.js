@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const subCategorySelect = document.querySelector('#category');
   const fileInput = document.querySelector('#file-input');
   const productValInput = document.querySelector('#productVal');
+  const offerSelect=document.querySelector('.offerSelect')
 
   function getFormData() {
     const formData = new FormData();
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     formData.append('stockCount', stockCountInput.value? stockCountInput.value: stockCountInput.placeholder);
     formData.append('category', categorySelect.value? categorySelect.value: categorySelect.placeholder);
     formData.append('subcategory', subCategorySelect.value? subCategorySelect.value: subCategorySelect.placeholder);
+    formData.append('offer', offerSelect.value =='No Offer' || offerSelect.value =='Remove Offer' ? 'none': offerSelect.value);
 
     // Add images if any
 

@@ -1,44 +1,7 @@
 include ../partials/sidemenu
+include ../partials/mixins
++resources("panel")
 #content-wrapper
-  link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
-  //- link(rel="stylesheet", href="../../stylesheet/admin/table.css")
-  script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js' defer)
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js'  defer)
-  script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js'  defer)
-  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous" defer)
-  //- script(defer src="../../script/admin/panel.js") 
-  script(src='https://cdn.jsdelivr.net/npm/toastify-js' defer)
-  script(src='https://unpkg.com/htmx.org@2.0.0', integrity='sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw', crossorigin='anonymous' defer)   link(rel='stylesheet', type='text/css', href='https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css' defer)   
-  script( src='../script/confirmationModal.js' defer)
-  script(src='../script/toast.js' defer)
-  script(src='../../script/admin/Chart.js/Chart.min.js' defer)
-  script(src='../../script/admin/index.js' defer)
-  style.
-    .card{
-      color:grey;
-      }
-    .dropdown-menu {
-      color:white;
-      background:linear-gradient(50deg, #185540, #0a1e16);
-      }
-    .dropdown-item:hover,.dropdown-menu:hover {
-      background:#18513a59;
-      color:white;
-      }
-    .dropdown-item{
-      color:white;
-      }
-    select,option{
-      background:linear-gradient(50deg, #185540, #0a1e16);
-      color:white;
-      border-radius:22px;
-      height:32px;
-      padding-left:5px;
-      }
-    select:hover,option:hover{
-      background:#18513a59;
-      }
-    
   .container-fluid#containerFluid
     .card.mt-3
       .card-content
@@ -52,7 +15,7 @@ include ../partials/sidemenu
               .progress.my-3(style='height:3px;')
                 .progress-bar(style='width:55%')
               p.mb-0.text-white.small-font
-                | Total Orders 
+                | Total Orders  
                 span.float-right
                   | +4.2% 
                   i.zmdi.zmdi-long-arrow-up
@@ -104,8 +67,15 @@ include ../partials/sidemenu
               select#dataSelect
                 option(selected) Yearly
                 option Monthly
-                option Weekly
-                option select Date
+                //option Weekly
+                option daily
+                option Custom Date Range
+              .form-group#date-range-group(style="display: none;")
+                label(for='startDate') Start Date
+                input(type='date', id='startDate', name='startDate')
+                label(for='endDate') End Date
+                input(type='date', id='endDate', name='endDate')
+                li.fa.fa-search#applyDateRange
           .card-body
             ul.list-inline
               li.list-inline-item
@@ -152,7 +122,19 @@ include ../partials/sidemenu
                 option Subcategory
           .card-body
             .chart-container-2
+              style.
+                .product-name{
+                height:fixed;
+                  }
+
               canvas#chart2
+
+            .paginationChart
+              if currentChart > 1
+                a.pagination-chart-link.bi.bi-arrow-left(href=`/admin?Chart2=${currentChart - 1}`) aa
+              span Page #{currentChart} of #{totalChart}
+              if currentChart < totalChart
+                a.pagination-chart-link.bi.bi-arrow-right(href=`/admin?chart2=${currentChart + 1}`) bb
           .table-responsive
             table.table.align-items-center
               tbody#bestSellingSubcategories
@@ -178,27 +160,90 @@ include ../partials/sidemenu
               thead
                 tr
                   th Id
-                  th Photo
-                  th Product ID
-                  th Amount
-                  th Date
+                  th orderd At
+                  th user
+                  th items
+                  th total Amount
                   th Shipping
-              tbody
+                  th Action
+              tbody#recentOrdersTable
                 each product in order
                   tr
-                    td #{order._id}
-                    td #{order.user}
-                    td #{order.totalAmount}
-                    td= formatDate(order.created_at)
-    //- // End Row
-    //- // End Dashboard Content
-    //- // start overlay
-    .overlay.toggle-menu
-//-     // end overlay
-//-     // End container-fluid
-//- // End content-wrapper
-//- // Start Back To Top Button
-a.back-to-top(href='javaScript:void();')
-  i.fa.fa-angle-double-up
-//- // End Back To Top Button
-//- // Start footer
+                    td #{product._id}
+                    td 
+                      small #{formatDate(product.created_at)}
+                    td #{product.user.name}
+                    td
+                      if product.items.length < 2
+                        = product.items[0].name
+                        | (#{product.items[0].quantity} nos)
+                      else if product.items.length == 2
+                        | #{product.items[0].name} (#{product.items[0].quantity} nos),
+                        | #{product.items[1].name } (#{product.items[0].quantity} nos)
+                      else
+                        | #{product.items[0].name} (#{product.items[0].quantity} nos), #{product.items[1].name} (#{product.items[0].quantity} nos)
+                        - let len = product.items.length - 2
+                        |  and #{len} more.. 
+                    td #{product.totalAmount}
+                    td #{product.status} 
+                    td 
+        #loadMoreBtn
+        .pagination
+          if currentPage > 1
+            a.pagination-link(href=`/admin?page=${currentPage - 1}`) Previous
+          span Page #{currentPage} of #{totalPages}
+          if currentPage < totalPages
+            a.pagination-link(href=`/admin?page=${currentPage + 1}`) Next
+style.
+  .card{
+    color:grey;
+    }
+  .dropdown-menu {
+    color:white;
+    background:linear-gradient(50deg, #185540, #0a1e16);
+    }
+  .dropdown-item:hover,.dropdown-menu:hover {
+    background:#18513a59;
+    color:white;
+    }
+  .dropdown-item{
+    color:white;
+    }
+  select,option,#date-range-group input{
+    background:linear-gradient(50deg, #185540, #0a1e16);
+    background:linear-gradient(137deg, #034d33, #475751);
+    color:white;
+    border-radius:22px;
+    height:32px;
+    padding-left:5px;
+    }
+  select:hover,option:hover{
+    background:#18513a59;
+    }
+  .table-container{
+    width:inherit:
+    }
+
+  .pagination {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .pagination a {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #000;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    margin: 0 5px;
+  }
+
+  .pagination a:hover {
+    background-color: #ddd;
+  }
+
+  .pagination span {
+    display: inline-block;
+    padding: 8px 16px;
+  }

@@ -89,26 +89,39 @@ async function handleCancelProduct(orderId, productId) {
     }
   }}
 
+
 async function handleInvoice(orderId) {
-  const result = await window.confirmationModal.show('generate invoice Product', 'Are you sure you want to generate invoice of this order?t');
-  
+ const result = await window.confirmationModal.show('Generate Invoice', 'Are you sure you want to generate the invoice for this order?');
+
   if (result.isConfirmed) {
     try {
-      const response = await axios.get(`/order/${orderId}/invoice`, {}, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await axios.get(`/order/${orderId}/invoice`, {
+        responseType: 'blob', // Expecting a Blob response
       });
-      
-      if (response.data.success) {
-        window.toast.success('invoice generate successfully');
-        location.reload();
+
+      if (response.status === 200) {
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `invoice_${orderId}.pdf`; // Set the file name
+
+        document.body.appendChild(link);
+        link.click(); // Start the download
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        window.toast.success('Invoice generated successfully');
       } else {
-        window.toast.error(response.data.message || 'Failed to cancel product');
+        window.toast.error('Invoice generation failed');
       }
     } catch (error) {
       console.error('Error:', error);
-      errorToast(error);
+      window.toast.error('An error occurred while generating the invoice');
     }
   }
 }
+
+

@@ -182,3 +182,11 @@ background-color:#9a6868;
 height:50px;
 color:white;
 }
+.words {
+--start: calc(var(--i) * var(--pxPerWord));
+--end: calc((var(--i) + 1) * var(--pxPerWord));
+animation: fx;
+animation-timeline: --section;
+animation-range: var(--start) var(--end);
+}
+@​keyframes fx { 0% { filter: blur(20px); opacity: 0; }}

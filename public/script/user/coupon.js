@@ -6,6 +6,7 @@ const applyCouponBtn = document.getElementById('applyCouponBtn');
 const couponCodeInput = document.getElementById('couponCode');
 const userInput = document.getElementById('userInput');
 const totalAmountInput = document.getElementById('totalAmountInput');
+const tA = document.getElementById('totalAmount');
 const discountAmount = document.getElementById('discountAmount');
 const couponError = document.getElementById('couponError');
 
@@ -17,8 +18,8 @@ const couponResult = {};
 const updateDisplay = (discount, newTotal, message, messageColor, showApplyBtn, showClearBtn, showRemoveBtn) => {
   if (discount !== undefined) discountAmount.innerHTML = `$${discount.toFixed(2)}`;
   if (newTotal !== undefined) {
-    totalAmount.innerHTML = `$${newTotal.toFixed(2)}`;
-    totalAmountInput.value = newTotal.toFixed(2);
+    tA.innerHTML = `$${newTotal.toFixed(2)}`;
+    totalAmount.value = newTotal.toFixed(2);
   }
   if (message !== undefined) {
     couponError.textContent = message;

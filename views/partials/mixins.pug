@@ -2,11 +2,73 @@ mixin resources(pageType)
   // Core Styles (Always included)
   link(rel='stylesheet', href='../../../stylesheet/admin/dashboard.css')
   link(rel="stylesheet" href="../../../stylesheet/admin/sidemenu.css")
+  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css')
   // Page-Specific Styles 
   if pageType === "coupons"
     link(rel="stylesheet" href="../../../stylesheet/admin/couponsAdd.css")
   if pageType === "addCoupons"
     link(rel='stylesheet', href='../../stylesheet/admin/couponsAdd.css')
+  if pageType === "couponList"
+    link(rel='stylesheet', href='../../stylesheet/admin/couponList.css')
+  if pageType === "productList"
+    link(rel='stylesheet', href='../../stylesheet/admin/productList.css')
+    link(rel="stylesheet", href="../../stylesheet/user/sortTable.css")
+  if pageType === "offerList"
+    link(rel='stylesheet', href='../../stylesheet/admin/offerList.css')
+  if pageType === "createOffer" 
+    link(rel='stylesheet', href='../../stylesheet/admin/offer.css')
+    style.
+      input, select, textarea {
+      margin-top: 5px;
+      padding: 8px;
+      border: 1px solid #2d6a4f;
+      background-color: #15694a !important;
+      color: #d8f3dc;
+      border-radius: 3px;
+        }
+
+  if pageType === "panel" 
+    style.
+      #itemCarousel {
+        margin-top: 20px;
+      }
+
+      #itemCarousel .carousel-control-prev,
+      #itemCarousel .carousel-control-next {
+        background-color: rgba(0,0,0,0.5);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      #itemCarousel .carousel-control-prev {
+        left: -15px;
+      }
+
+      #itemCarousel .carousel-control-next {
+        right: -15px;
+      }
+
+      #itemCarousel .carousel-control-prev-icon,
+      #itemCarousel .carousel-control-next-icon {
+        width: 20px;
+        height: 20px;
+      
+
+
+  if pageType ===  "offerEdit"
+    link(rel='stylesheet', href='../../stylesheet/admin/offer.css')
+    style.
+      input, select, textarea {
+      margin-top: 5px;
+      padding: 8px;
+      border: 1px solid #2d6a4f;
+      background-color: #15694a !important;
+      color: #d8f3dc;
+      border-radius: 3px;
+        }
   // CDN-Hosted Libraries 
   link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css")
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css")
@@ -19,11 +81,13 @@ mixin resources(pageType)
   link(href='https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap', rel='stylesheet')
 
   // Core Scripts (Always included)
-  script(defer, src="../../../script/admin/sidemenu.js")
-  script(defer, src="../../../script/toast.js")
-  script(defer, src="../../../script/confirmationModal.js")
-  script(defer, src="../../../script/admin/confirmLogout.js") 
+  script( src="../../../script/toast.js" defer)
+  script( src="../../../script/confirmationModal.js" defer)
+  script( src="../../../script/admin/confirmLogout.js" defer) 
 
+  script(src="../../script/admin/pagination.js" defer)
+  script(src="../../script/admin/categoryList.js" defer)
+  script(src="../../script/admin/adminSearch.js" defer)
 
   // Page-Specific Scripts
 
@@ -31,15 +95,24 @@ mixin resources(pageType)
   if pageType === "coupons"
     script( src="./script/admin/coupon.js" defer) 
   if pageType === "addCoupons"
-      script(src='../../../../script/admin/couponValidation.js' defer) 
+    script(src='../../../../script/admin/couponValidation.js' defer) 
 
+  if pageType === "couponList"
+    script(src="../../script/admin/pagination.js" defer)
+    script(src="../../script/admin/categoryList.js" defer)
+    script(src="../../script/admin/adminSearch.js" defer)
+  if pageType === "productList"
+    script(src="../../script/admin/adminSearch.js" defer)
+    script(src="../../script/user/sortTable.js" defer)
+  if pageType === "panel"
+    script(src='../../script/admin/Chart.js/Chart.min.js' defer)
+    script(src='../../script/admin/index.js' defer)
+  if pageType === "createOffer"
+    script(src='../../script/admin/offer.js' defer)
+  if pageType === "offerEdit"
+    script(src='../../../script/admin/offerEdit.js' defer)
 
-
-
-
-
-
-
+categoryEdit
   // CDN-Hosted Scripts 
   script(src="https://code.jquery.com/jquery-3.6.4.min.js") 
   script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")

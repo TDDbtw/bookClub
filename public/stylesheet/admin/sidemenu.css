@@ -1,4 +1,7 @@
 @import url("./table.css");
+body{
+background-color:red;
+}
 
 #sidemenu {
   font-family: "Poppins", sans-serif;

@@ -1,246 +1,42 @@
 doctype html
+include ../partials/mixins.pug 
 html
   head
     meta(charset='UTF-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title Your Page Title
-
-    link(rel='stylesheet', href='../../../stylesheet/admin/dashboard.css')
-    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css')
-    link(rel='stylesheet', href='../../../stylesheet/admin/sidemenu.css')
-    link(rel='stylesheet', href='../../../stylesheet/admin/offer.css')
-    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
-    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css')
-    link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200')
-    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css', integrity='sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN', crossorigin='anonymous')
-    link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap')
-    link(rel='preconnect', href='https://fonts.googleapis.com')
-    link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin='')
-
-    script(src='../../../script/admin/sidemenu.js' defer)
-    script(src='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js' defer)
-    script(src='../../../script/admin/confirmLogout.js' defer)
-    script(src='../../../script/admin/offer.js' defer)
-    //script(src='https://code.jquery.com/jquery-3.6.4.min.js' defer)
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js' )
-    script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js' defer)
-    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js', integrity='sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL', crossorigin='anonymous' defer)
-    script(src='https://unpkg.com/htmx.org@1.9.10', integrity='sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC', crossorigin='anonymous' defer)
-    script(src='https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js' defer)
-    script(src='../../../script/confirmationModal.js' defer)
-    script(src='../../../script/toast.js' defer)
-  body
-    header#header
-      #nav-icon3.menu-button
-        span
-        span
-        span
-        span
-      #top-bar.d-flex
-        h3.display-5 #{name}
-        ul.list-unstyled
-          li.nav-item
-            form.search-bar.mt-3#searchBar(name="searchBar")
-              input#adminSearch.form-control(type='text' placeholder='Enter keywords' name="seachInput")
-              a(href='javascript:void();')
-                i.icon-magnifier
-    nav#sidemenu
-      .main-menu
-        ul.main-menu
-          li.link-active
-            a.ms-1.mt-2.icon(href='/admin')
-              svg.icon.ms-2.icon-tabler.icon-tabler-home-2(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M5 12l-2 0l9 -9l9 9l-2 0')
-                path(d='M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7')
-                path(d='M10 12h4v4h-4z')
-              span.ms-3 Home
-          li.link-active
-            a.ms-1.icon#productList(href="/admin/products")
-              svg.icon.ms-2.icon-tabler.icon-tabler-shopping-bag(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z')
-                path(d='M9 11v-5a3 3 0 0 1 6 0v5')
-              span.ms-3 Products
-          li.link-active
-            a.ms-1.mt-2.icon#userList(href="/admin/users")
-              svg.icon.ms-2.icon-tabler.icon-tabler-users-group(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0')
-                path(d='M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1')
-                path(d='M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0')
-                path(d='M17 10h2a2 2 0 0 1 2 2v1')
-                path(d='M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0')
-                path(d='M3 13v-1a2 2 0 0 1 2 -2h2')
-              span.ms-3 Customers
-          li.link-active
-            a.ms-1.mt-2.icon#categoryList(href='/admin/category')
-              svg.icon.ms-2.icon-tabler.icon-tabler-category(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M4 4h6v6h-6z')
-                path(d='M14 4h6v6h-6z')
-                path(d='M4 14h6v6h-6z')
-                path(d='M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0')
-              span.ms-3 Categories
-          li.link-active
-            a.ms-1.mt-2.icon#orderList(href='/admin/orders')
-              svg.icon.ms-2.icon-tabler.icon-tabler-truck-delivery(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0')
-                path(d='M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0')
-                path(d='M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5')
-                path(d='M3 9l4 0')
-              span.ms-3 Orders
-          li.link-active#transactionList
-            a.ms-1.mt-2.icon(href='/admin/transactions')
-              svg.icon.ms-2.icon-tabler.icon-tabler-coin(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0')
-                path(d='M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1')
-                path(d='M12 7v10')
-              span.ms-3 Transactions
-          li.link-active
-            a.ms-1.mt-2.icon(href='#')
-              svg.icon.ms-2.icon-tabler.icon-tabler-photo-edit(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M15 8h.01')
-                path(d='M11 20h-4a3 3 0 0 1 -3 -3v-10a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v4')
-                path(d='M4 15l4 -4c.928 -.893 2.072 -.893 3 0l3 3')
-                path(d='M14 14l1 -1c.31 -.298 .644 -.497 .987 -.596')
-                path(d='M18.42 15.61a2.1 2.1 0 0 1 2.97 2.97l-3.39 3.42h-3v-3l3.42 -3.39z')
-              span.ms-3 Banner
-          li.link-active#couponList
-            a.ms-1.mt-2.icon(href='/admin/coupons')
-              svg.icon.ms-2.icon-tabler.icon-tabler-ticket(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M15 5l0 2')
-                path(d='M15 11l0 2')
-                path(d='M15 17l0 2')
-                path(d='M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2')
-              span.ms-3 Coupons
-          li.link-active#salesList
-            a.ms-1.mt-2.icon(href='/admin/sales-report')
-              svg.icon.ms-2.icon-tabler.icon-tabler-report-money(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2')
-                path(d='M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z')
-                path(d='M14 11h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5')
-                path(d='M12 17v1m0 -8v1')
-              span.ms-3 Sales Report
-        ul.main-menu.bottom
-          li
-            a.ms-1.mt-2.icon(href="javascript:history.back()")
-              svg.icon.ms-2.icon-tabler.icon-tabler-arrow-back-up(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M9 14l-4 -4l4 -4')
-                path(d='M5 10h11a4 4 0 1 1 0 8h-1')
-              span.ms-3 Back
-          li
-            a.ms-1.mt-2.icon(href='/')
-              svg.ms-2.icon.icon-tabler.icon-tabler-home(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M5 12l-2 0l9 -9l9 9l-2 0')
-                path(d='M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7')
-                path(d='M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6')
-              span.ms-3 home
-          li
-            a.ms-1.mt-2.icon#navLogout(href='/auth/logout')
-              svg.icon.ms-2.icon-tabler.icon-tabler-user(xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' stroke-width='1.5' stroke='#ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round')
-                path(stroke='none' d='M0 0h24v24H0z' fill='none')
-                path(d='M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0')
-                path(d='M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2')
-              span.ms-3 Logout
-    .container-fluid
-      h1 Edit Offer
-      form#offerForm(method='post' action='/your-action-url')
-        .form-group
-          label(for='offerName') Offer Name
-          input#offerName(type='text', name='offerName', placeholder= item.offerName value= item.offerName )
-          #offerNameError
-        .form-group
-          label(for='discountType') Discount Type
-          select#discountType(name='discountType' placeholder= item.discountType value= item.discountType) 
-            option(value=item.discoutType, disabled='', selected= item.discoutType) Select discount type
-            option(value='Percentage') Percentage
-            option(value='Amount') Amount
-          #discountTypeError
-        .form-group
-          label(for='discountValue') Discount
-          input#discountValue(type='text', name='discountValue', placeholder= item.discountValue )
-          #discountValueError
-        .form-group
-          label(for='maximumAmount') Maximum Amount
-          input#maximumAmount(type='text', name='maximumAmount', placeholder= item.maximumAmount )
-          #maximumAmountError
-        .form-group
-          label(for='discountOn') Discount On
-          select#discountOn(name='discountOn' placeholder= item.product|| item.category)
-            option(value= offerType,selected) #{offerType}
-            option(value='product') Product
-            option(value='category') Category
-          #discountOnError
-        .form-group#categorySelect(style='display: none;')
-          label(for='discountedCategory') Category
-          select#category(name='discountedCategory')
-            option(value='', selected disabled) Select a category
-            if category && category.length > 0
-              each categoryData in category
-                if categoryData.status==true
-                  option(value=categoryData._id) #{categoryData.name}
-            else
-              option(value='' disabled) No categories available
-          .error-message(style='color: red;' id='categorySelect-error')
-        .form-group#productSelect(style='display: none;')
-          label(for='discountedProduct') Product
-          select#product(name='discountedProduct' onchange='this.size=1;' onfocus='this.size=4;')
-            option(value='', selected disabled) Select a product
-            if product && product.length > 0
-              each productData in product
-                if productData.status
-                  option(value=productData._id) #{productData.name}
-            else
-              option(value='' disabled) No products available
-          .error-message(style='color: red;' id='productSelect-error')
-        .form-group
-          label(for='startDate') Start Date
-          input#startDate(type='date', name='startDate' placeholder= item.startDate value= item.startDate )
-          #startDateError
-        .form-group
-          label(for='expiryDate') Expiry Date
-          input#expiryDate(type='date', name='expiryDate' placeholder= item.expiryDate value= item.expiryDate)
-          #expiryDateError
-        button.btn.btn-primary(type='submit') Submit
-
-    script.
-      document.addEventListener("DOMContentLoaded", function() {
-          const discountOn = document.getElementById("discountOn");
-          const categorySelect = document.getElementById("categorySelect");
-          const productSelect = document.getElementById("productSelect");
-
-              const value = discountOn.value;
-              if (value == "Category"||"category") {
-                  categorySelect.style.display = "block";
-                  productSelect.style.display = "none";
-              } else if (value == "Product" ||"product" ) {
-                  categorySelect.style.display = "none";
-                  productSelect.style.display = "block";
-              } else {
-                  categorySelect.style.display = "none";
-                  productSelect.style.display = "none";
-              }
-          // Show/Hide the category or product select based on the discountOn value
-          discountOn.addEventListener("change", function() {
-              const value = discountOn.value;
-              if (value === "category") {
-                  categorySelect.style.display = "block";
-                  productSelect.style.display = "none";
-              } else if (value === "product") {
-                  categorySelect.style.display = "none";
-                  productSelect.style.display = "block";
-              } else {
-                  categorySelect.style.display = "none";
-                  productSelect.style.display = "none";
-              }
-          });
-
-      });
+    +resources("offerEdit")
+    .container-fluid.form-container#form-container.mt-5
+      h1.text-center.mb-4.text-white Edit Offer
+      form#offerEditForm(data-offer-id=offer._id)
+        .mb-3
+          label.form-label(for='name') Offer Name
+          input#name.form-control(type='text', name='name' value=offer.name )
+          div#nameError.text-danger 
+        .mb-3
+          label.form-label(for='description') Description
+          input#description.form-control(type='text', name='description' value=offer.description)
+          div#descriptionError.text-danger 
+        .mb-3
+          label.form-label(for='discountPercentage') Discount Percentage
+          input#discountPercentage.form-control(type='text', name='discountPercentage' value=offer.discountPercentage)
+          div#discountPercentageError.text-danger 
+        .mb-3
+          label.form-label(for='startDate') Start Date
+          input#startDate.form-control(type='date', name='startDate' value=offer.startDate.toISOString().substr(0, 10))
+          div#startDateError.text-danger 
+        .mb-3
+          label.form-label(for='endDate') End Date
+          input#endDate.form-control(type='date', name='endDate' value=offer.endDate.toISOString().substr(0, 10))
+          div#endDateError.text-danger 
+        .mb-3
+          label.form-label(for='maxAmt') Maximum Amount
+          input#maxAmt.form-control(type='text', name='maxAmt' value=offer.maxAmt)
+          div#maxAmtError.text-danger 
+        .mb-3
+          label.form-label(for='minAmt') Minimum Amount
+          input#minAmt.form-control(type='text', name='minAmt' value=offer.minAmt)
+          div#minAmtError.text-danger 
+        .mb-3
+          button.btn.btn-primary(type='submit') Save Changes
+      //- Bootstrap JS (optional if you need JavaScript features from Bootstrap)

@@ -1,0 +1,163 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Invoice
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+      
+      body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7fa;
+        color: #333;
+      }
+      .container {
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: white;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .header {
+        background-color: #3498db;
+        color: white;
+        padding: 20px;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header img {
+        max-width: 150px;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .content {
+        padding: 30px;
+      }
+      .section {
+        margin-bottom: 30px;
+      }
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #3498db;
+      }
+      .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      .details-item {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .details-label {
+        font-size: 12px;
+        color: #777;
+      }
+      .details-value {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      th {
+        background-color: #f4f7fa;
+        font-weight: 600;
+        color: #3498db;
+      }
+      .total-section {
+        margin-top: 20px;
+        text-align: right;
+      }
+      .total-row {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .grand-total {
+        font-size: 20px;
+        color: #3498db;
+      }
+      .footer {
+        background-color: #3498db;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+  body
+    .container
+      .header
+        img(src="https://see.fontimg.com/api/renderfont4/9Y2DK/eyJyIjoiZnMiLCJoIjo2NSwidyI6MTAwMCwiZnMiOjY1LCJmZ2MiOiIjODA1MzFGIiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/Ym9va0NsdWI/nature-beauty-personal-use.png",  alt="Company Logo")
+        h1 Invoice
+      .content
+        .section
+          .section-title Order Details
+          .details-grid
+            .details-item
+              .details-label Order ID
+              .details-value #{order._id}
+            .details-item
+              .details-label Order Date
+              .details-value #{order.created_at.toISOString().split('T')[0]}
+            .details-item
+              .details-label Delivery Date
+              .details-value #{order.deliveryDate.toISOString().split('T')[0]}
+            .details-item
+              .details-label Payment Method
+              .details-value #{order.payment_method}
+        
+        .section
+          .section-title Customer Details
+          .details-grid
+            .details-item
+              .details-label Name
+              .details-value #{user.name}
+            .details-item
+              .details-label Address
+              .details-value #{order.billing_address.address}, #{order.billing_address.city}, #{order.billing_address.state}, #{order.billing_address.zip_code}, #{order.billing_address.country}
+        
+        .section
+          .section-title Order Items
+          table
+            thead
+              tr
+                th Item
+                th Quantity
+                th Unit Price
+                th Total Price
+            tbody
+              each item in order.items
+                tr
+                  td= item.name
+                  td= item.quantity
+                  td $#{item.price.toFixed(2)}
+                  td $#{(item.price * item.quantity).toFixed(2)}
+        
+        .total-section
+          .total-row Subtotal: $#{order.items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}
+          .total-row Discount: -$#{order.couponDiscount.toFixed(2)}
+          .total-row Offer Discount: -$#{order.offerDiscount.toFixed(2)}
+          .total-row.grand-total Total Amount: $#{order.totalAmount.toFixed(2)}
+      
+      .footer
+        | Thank you for choosing bookClub :) 

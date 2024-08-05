@@ -1,20 +1,21 @@
-function editCatVal () {
-  // event.preventDefault();
+function editCatVal() {
 
+  const offerSelect=document.querySelector('.offerSelect')
   const catId = document.getElementById('catId').value;
   const name = document.getElementById('cName').value.trim();
-  const des = document.getElementById('dName').value.trim() || document.getElementById('dName').placeholder.trim()
+  const des = document.getElementById('dName').value.trim();
   const image = document.getElementById('file-input').files[0];
-  const imageSrc = document.getElementById('catImg').src || ''
-  const sub = document.querySelectorAll('.subcategory-list input[type="text"]');
-  const cancelButton = document.querySelector('.buttons .cancel');
+  const sub = document.querySelectorAll('#subcategory-list input[type="text"]');
+  const cancelButton = document.querySelector('.btn-secondary');
   const fileInput = document.querySelector('#file-input');
+  const offer =  offerSelect.value? offerSelect.value: offerSelect.placeholder;
   // Validation flags
   let isValid = true;
 
   // Clear previous error messages
   document.getElementById('nameError').innerText = '';
   document.getElementById('descriptionError').innerText = '';
+  document.getElementById('subcategoryError').innerText = '';
 
   // Validate category name
   if (name.length === 0) {
@@ -23,50 +24,40 @@ function editCatVal () {
   }
 
   // Validate description
-console.log(`description is ${des}`)
   if (des.length === 0) {
     document.getElementById('descriptionError').innerText = 'Description is required.';
     isValid = false;
   }
 
   // Validate image upload
-  if (!image && imageSrc==null) {
-    window.toast.warning('Please upload an image.');
+  if (!image && !document.getElementById('catImg').src) {
+    document.getElementById('subcategoryError').innerText = 'Please upload an image.';
     isValid = false;
   }
 
-  // Validate subcategory inputs (optional)
+  // Validate subcategory inputs
+  let hasEmptySubcategory = false;
   sub.forEach(input => {
     if (input.value.trim().length === 0) {
-     window.toast.warning('Please enter a subcategory name.');
-      isValid = false;
+      hasEmptySubcategory = true;
     }
   });
+  if (hasEmptySubcategory) {
+    document.getElementById('subcategoryError').innerText = 'Please enter a name for all subcategories or remove empty ones.';
+    isValid = false;
+  }
 
-  // If all validations pass, you can submit the form via Ajax or perform further actions
+  // If all validations pass, submit the form
   if (isValid) {
-
-    // gather category name and description
-    const categoryName = document.getElementById('cName').value?document.getElementById('cName').value:document.getElementById('cName').placeholder
-
-    const description = document.getElementById('dName').value;
-
     // Gather subcategory data
-    const subcategoryInputs = document.querySelectorAll(
-      'input[name="subcategories[]"]'
-    );
-    const subcategories = [];
-    subcategoryInputs.forEach((input) => {
-      if (input.value.trim() !== "") {
-        subcategories.push(input.value.trim());
-      }
-    });
+    const subcategories = Array.from(sub).map(input => input.value.trim()).filter(value => value !== "");
 
     // Create FormData object
     const formData = new FormData();
-    formData.append("name", categoryName);
-    formData.append("description", description);
-    formData.append("subcategories", JSON.stringify(subcategories)); // Add subcategories
+    formData.append("name", name);
+    formData.append("description", des);
+    formData.append("subcategories", JSON.stringify(subcategories));
+    formData.append("offer", offer);
 
     // Append image file if selected
     if (fileInput.files.length > 0) {
@@ -75,25 +66,26 @@ console.log(`description is ${des}`)
 
     // Send Axios request
     axios.patch(`/admin/category/${catId}/edit`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
       .then((response) => {
-        window.toast.success("Category added successfully:", response.data);
-        console.log("Category added successfully:", response.data);
-        // Reset form and image container
+        window.toast.success("Category updated successfully");
+        console.log("Category updated successfully:", response.data);
         window.location = "/admin/category"; // Redirect after success
       })
       .catch((error) => {
-        document.getElementById('error').innerHTML=""
-        document.getElementById('error').style.color="red"
-        window.toast.errorMessage(`Error adding category: ${error.response.data.error}` );
-        console.log(error);
-        document.getElementById('error').innerHTML=error.response.data.error
-        // Handle errors appropriately (e.g., display error message to the user)
+        window.toast.error(error);
+        console.error("Error updating category:", error);
       });
   }
-  // Cancel Button Logic
 }
 
+// Add event listener to the form
+document.getElementById('categoryForm').addEventListener('submit', editCatVal);
+
+// Cancel button logic
+document.querySelector('.btn-secondary').addEventListener('click', () => {
+  window.location = "/admin/category"; // Redirect to category list
+});

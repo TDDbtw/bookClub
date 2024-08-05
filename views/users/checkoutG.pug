@@ -25,7 +25,7 @@ html(lang='en')
         
       if user.addresses && user.addresses.length > 0
         .address-selection
-          h2 Select Shipping Address
+          h2 Shipping Address
           each address, index in user.addresses
             .address-item
               if user.shipping_address 
@@ -39,7 +39,7 @@ html(lang='en')
                 p.ms-2.me-3.mt-3.font-italic set as Shipping address
               label.ms-2.me-2.text-italic(for=`address-${index}`)   #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
         .address-selection
-          h2 Select Billing Address
+          h2 Billing Address
           each address, index in user.addresses
             .address-item
               if user.billing_address 

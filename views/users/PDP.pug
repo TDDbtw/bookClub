@@ -13,18 +13,13 @@ link(rel='stylesheet' href='../stylesheet/user/hover.css')
     #hover-tile(data-scale='1.6' data-image=product.image[0])
   .product_details
     h2.display-5 #{product.name}
-    .price.d-flex.align-items-center
-      if product.discountPercentage > 0
-        h3.text-danger(style='text-decoration: line-through;') $#{product.price}
-      if product.discountPercentage == 0
-        h3 $#{product.price}
-      if product.discountPercentage > 0
-        h3.ms-3 $#{product.finalPrice}
-        small.ms-2.mb-2 #{product.discountPercentage}%
-    if product.bestOffer
-      span Best Offer
-      small= product.bestOffer.offerName
-      p Remaining Time: #{product.bestOffer.remainingTime}
+    if product.price != discountedPrice
+      .d-flex
+        h3.fs-2 #{discountedPrice.toFixed(2)}$
+        h6.ms-2.mt-2.text-decoration-line-through.fs-5.text-bold #{product.price}$
+        h6.mt-3.ms-3.fs-9 (#{product.offer.discountPercentage}% OFF)
+    else
+      h3 #{product.price}$
     .about
       p
         | Availability : 
@@ -45,12 +40,11 @@ link(rel='stylesheet' href='../stylesheet/user/hover.css')
         span #{product.category.name} | 
         | Subcategory :
         span  #{product.subcategories[0].name}  
-    p | Description : 
+    p.words | Description : 
       | #{product.description}
-    small= product._id
     .cta
       form(action=`/cart/add`, method="POST")
-        input(type="hidden", name="productId", value=product._id)
+        input(type="hidden", name="productId", value=product.id)
         input#productD(type="hidden", name="productD", value=product)
         input( type="hidden", name="image", value=product.image[0])
         input(type="hidden", name="name", value=product.name)
@@ -68,7 +62,7 @@ link(rel='stylesheet' href='../stylesheet/user/hover.css')
             i.fa-sharp.fa-solid.fa-heart.fa-2xl#wishlistIcon(style='color: #ff2929; color: #FF0000; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);')
           else
             i.fa-sharp.fa-solid.fa-heart.fa-2xl#wishlistIcon(style='color:#fff;')
- 
+   
 
 script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js", integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+", crossorigin="anonymous")
 script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js' integrity='sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==' crossorigin='anonymous' referrerpolicy='no-referrer')
@@ -124,5 +118,5 @@ script.
         }
       } catch (error) {
         console.error('Error adding item to cart:', error);
-        window.toast.error(error.response.data)
+        window.toast.error(error)
     }}

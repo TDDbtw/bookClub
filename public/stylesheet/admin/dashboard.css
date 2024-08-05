@@ -2028,6 +2028,7 @@ table.grid td {
   color: #fff;
   background-color: #14abef;
   border-color: #14abef;
+
 }
 
 .table .thead-secondary th {
@@ -4103,7 +4104,7 @@ thead{
   /* display: none; */
 }
 small {
-  color: white !important;
+  color: #cac5c5;
 }
 h5 {
   color: white !important;
@@ -4111,3 +4112,4 @@ h5 {
 .card-header {
   color: white !important;
 }
+

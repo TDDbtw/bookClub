@@ -1,147 +1,174 @@
 include ../partials/sidemenu
-#content-wrapper
+
+#content-wrapper.bg-dark-green
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
   link(rel="stylesheet", href="../../../stylesheet/admin/sidemenu.css")
   link(rel="stylesheet", href="../../../stylesheet/admin/editPage.css")
   link(rel="stylesheet", href="../../../stylesheet/admin/orderEdit.css")
   link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', integrity='sha384-Zosz5nF2B9ObwFRdEQnBA6ZshGzP86BBdCCs89BJRsyc11TkI8qIbFmIpxqY5Ndj', crossorigin='anonymous')
-  script( src='../../../script/admin/sidemenu.js' defer)
+  
+  style.
+    body {
+      background-color: #081c15;
+      color: #d8f3dc;
+    }
+    .bg-dark-green {
+      background-color: #1b4332;
+    }
+    .card {
+      background-color: #2d6a4f;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      background-color: #40916c;
+      color: #d8f3dc;
+      font-weight: bold;
+    }
+    .table {
+      color: #d8f3dc;
+    }
+    .table thead th {
+      background-color: #40916c;
+      background-color: #2d6a4f
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(64, 145, 108, 0.1);
+    }
+    .status {
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    .status.pending { background-color: #ffd166; color: #081c15; }
+    .status.processing { background-color: #118ab2; color: #d8f3dc; }
+    .status.shipped { background-color: #06d6a0; color: #081c15; }
+    .status.delivered { background-color: #52b788; color: #081c15; }
+    .status.cancelled { background-color: #ef476f; color: #d8f3dc; }
+    .status.return { background-color: #ffd166; color: #081c15; }
+    .btn-primary {
+      background-color: #118ab2;
+      border-color: #118ab2;
+    }
+    .btn-primary:hover {
+      background-color: #0e7a9d;
+      border-color: #0e7a9d;
+    }
+    th, td {
+        padding: 15px;
+        color: #fff;
+    }
+
+  .container-fluid.py-4
+    .row
+      .col-md-8
+        .card.mb-4
+          .card-header Order Details
+          .card-body
+            .row
+              .col-md-4
+                h6.text-muted Order Created
+                p.mb-0 #{createdDate}
+              .col-md-4
+                h6.text-muted Customer Name
+                p.mb-0 #{user.name}
+              .col-md-4
+                h6.text-muted Customer Email
+                p.mb-0 #{user.email}
+
+        .card.mb-4
+          .card-header Product Information
+          .card-body
+            table.table.table-striped
+              thead
+                tr
+                  th Product
+                  th Unit Price
+                  th Quantity
+                  th Total
+                  th Status
+                  th Actions
+              tbody
+                each product in order.items
+                  - const hasPendingRequest = product.request.type != null
+                  tr
+                    td #{product.name}
+                    td $#{product.price.toFixed(2)}
+                    td #{product.quantity}
+                    td $#{(product.quantity * product.price).toFixed(2)}
+                    td
+                      if order.status == "cancelled"
+                        span.status.cancelled Order Cancelled
+                      else if order.returnRequest.status == 'pending' && product.request.status != 'accepted'
+                        span.status.return Return Requested
+                      else if order.returnRequest.status == 'accepted'
+                        span.status.return Return Approved
+                      else if product.request.type == 'return'
+                        if product.request.status == 'pending'
+                          span.status.return Return Requested
+                        else if product.request.status == 'accepted'
+                          span.status.return Return Accepted
+                      else if order.status != 'cancelled' && product.request.type == "cancel"
+                        span.status.cancelled Cancelled
+                      else
+                        span(class=`status ${order.status}`)= order.status.charAt(0).toUpperCase() + order.status.slice(1)
+                    td
+                      if product.request.type == 'return' && product.request.status == 'pending'
+                        button.btn.btn-sm.btn-primary.return-button(data-id=product.productId) Accept Return
+                        button#productReturn(type='hidden' value=order._id)
+
+      .col-md-4
+        .card.mb-4
+          .card-header Order Status
+          .card-body
+            h6.text-muted Order ID
+            p.mb-3 #{order._id}
+            h6.text-muted Status
+            if order.status == 'cancelled'
+              p.mb-0 Customer cancelled the order
+            else if order.returnRequest.status === 'pending'
+              p.mb-3 Customer requested for return
+              button.btn.btn-primary#orderReturnBtn(data-id=order._id) Issue order return
+            else if order.status === 'delivered' && order.returnRequest.status == null
+              p.mb-0 Order is delivered to the customer
+            else if order.returnRequest.status === 'accepted'
+              p.mb-0 Order returned
+            else
+              select#statusSelect.form-select.mb-3(name="status" data-id=order._id)
+                option(value="pending" selected=order.status === 'pending') Pending
+                option(value="processing" selected=order.status === 'processing') Processing
+                option(value="shipped" selected=order.status === 'shipped') Shipped
+                option(value="delivered" selected=order.status === 'delivered') Delivered
+              button.btn.btn-primary#statusSave Save
+
+        .card.mb-4
+          .card-header Delivery Address
+          .card-body
+            p.mb-1 #{order.shipping_address.address}
+            p.mb-1 #{order.shipping_address.city}, #{order.shipping_address.state} #{order.shipping_address.zip_code}
+            p.mb-0 #{order.shipping_address.country}
+
+        .card.mb-4
+          .card-header Billing Address
+          .card-body
+            p.mb-1 #{order.billing_address.address}
+            p.mb-1 #{order.billing_address.city}, #{order.billing_address.state} #{order.billing_address.zip_code}
+            p.mb-0 #{order.billing_address.country}
+
+        .card
+          .card-header Order Summary
+          .card-body
+            p.mb-1 Total Items: #{order.items.length}
+            p.mb-1 Subtotal: $#{order.totalAmount.toFixed(2)}
+            p.mb-0 Total: $#{order.totalAmount.toFixed(2)}
+
   script(src='https://cdn.jsdelivr.net/npm/sweetalert2@11')
   script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH00kS58PrEW3hmvZFEMg9Supu4T9jwmg/UplcUJOua9e+06TIzrkOnQ", crossorigin="anonymous")
   script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns", crossorigin="anonymous")
   script(src='https://cdn.jsdelivr.net/npm/toastify-js' defer)
-  script(src='https://unpkg.com/htmx.org@2.0.0', integrity='sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw', crossorigin='anonymous' defer)   link(rel='stylesheet', type='text/css', href='https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css')   
-  script( src='../../script/confirmationModal.js' defer)
+  script(src='https://unpkg.com/htmx.org@2.0.0', integrity='sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw', crossorigin='anonymous' defer)
+  script(src='../../../script/admin/sidemenu.js' defer)
+  script(src='../../script/confirmationModal.js' defer)
   script(src='../../script/toast.js' defer)
-  .container-fluid#containerFluid.row.mt-4(style="margin-bottom:4rem;")
-    .order.topColumns.col-4
-      h5.ms-2.mt-2 Order created at
-      p.ms-2(style="font-size:16px;font-weight:400;") #{createdDate}
-    .order.topColumns.col-4
-      h5.ms-2.mt-2  Name 
-      p.ms-2(style="font-size:16px;font-weight:400;") #{user.name}
-    .order.topColumns.col-4
-      h5.ms-2.mt-2  Email
-      p.ms-2(style="font-size:16px;font-weight:400;") #{user.email}
-    .order.topColumns.col-4
-      h5.ms-2.mt-2  Country 
-      p.ms-2(style="font-size:16px;font-weight:400;") #{order.shipping_address.country}
-  #secRow.row.mt-4.gap-2(style=" margin-bottom:3rem; background: #0c241b5b; padding:1rem;  ")
-    .delivery-address.col-4(style="background:rgba(12, 37, 28, 0.1);")
-      .address-title
-        h2 Delivery Address
-      .address-details
-        span Address:
-        span #{order.shipping_address.address}
-      .address-details
-        span City:
-        span #{order.shipping_address.city}
-      .address-details
-        span State:
-        span #{order.shipping_address.state}
-      .address-details
-        span Zip Code:
-        span #{order.shipping_address.zip_code}
-      .address-details
-        span Country:
-        span #{order.shipping_address.country}
-    .billing-address.col-4(style="background:rgba(12, 37, 28, 0.1);")
-      .address-title
-        h2 Billing Address
-      .address-details
-        span Address:
-        span #{order.billing_address.address}
-      .address-details
-        span City:
-        span #{order.billing_address.city}
-      .address-details
-        span State:
-        span #{order.billing_address.state}
-      .address-details
-        span Zip Code:
-        span #{order.billing_address.zip_code}
-      .address-details
-        span Country:
-        span #{order.billing_address.country}
-  #thirdRow.mb-5
-    .product-info.row
-      .info-section.col-6
-        table
-          h2.ms-4 Product Info
-          thead
-            tr
-              th Product
-              th Unit Price
-              th Quantity
-              th Total
-              th Status
-              th Info
-              th Actions
-          tbody
-            each product in order.items
-              - const hasPendingRequest =product.request.type!=null  
-              tr
-                td #{product.name}
-                td #{product.price}
-                td #{product.quantity}
-                td $#{product.quantity * product.price}
-                td
-                  if order.status=="cancelled"
-                    span.status.cancelled Order Cancelled
-                  if order.returnRequest.status=='pending' && product.request.status!='accepted'
-                    span.status.return Order return requested
-                  if order.returnRequest.status=='accepted'
-                    span.status.return Order return approved
-                  else if product.request.type=='return'
-                    if product.request.status=='pending'
-                      small.status.return Return requested 
-                      td
-                        small.text-wrap= product.request.reason
-                    if product.request.status=='accepted'
-                       small.status.return Return Accepted 
-                  if order.status!='cancelled' && product.request.type=="cancel"
-                    span.status.cancelled.text-danger Cancelled
-                  else
-                    if order.status === 'pending'
-                      span.status.pending  pending 
-                    else if order.status === 'processing'
-                      span.status.processing Processing
-                    else if order.status === 'shipped'
-                      span.status.shipped Shipped
-                    else if order.status === 'delivered' && order.returnRequest.status==null && product.request.type!='return'
-                      span.status.delivered Delivered #{order.returnRequest.status}
-                td
-                  if product.request.type=='return' && product.request.status=='pending'
-                    button.return-button(data-id=product.productId  ) Accept Return
-                    button#productReturn(type='hidden' value=order._id)
-      .orderStatus.col-4(style="margin-top:3rem;")
-        h3 Order Status
-        .details(style="background:rgba(255, 255, 255, 0.1);")
-          .orderId.ms-1 Order ID
-          p.ms-1= order._id
-          .status.ms-1 Order Status
-            if order.status=='cancelled'
-              p customer cancelled the order
-            else if order.returnRequest.status === 'pending'
-              p customer requested for return
-              .btn#orderReturnBtn(data-id=order._id) Issue order return
-            else if order.status === 'delivered' &&  order.returnRequest.status == null
-              span  order is deliverd to the customer
-            else if order.returnRequest.status === 'accepted'
-              span order returned 
-            else
-              select#statusSelect(name="status" style='width: 50%; margin-left:2rem;' data-id=order._id)
-                option(value="pending" selected=order.status === 'pending') pending
-                option(value="processing" selected=order.status === 'processing') processing
-                option(value="shipped" selected=order.status === 'shipped') shipped
-                option(value="delivered" selected=order.status === 'delivered') delivered
-              a.btn.text-primary.border-primary#statusSave(href='#' style="margin-bottom:5px; margin-left:2rem;") Save
-
-  .order-summary.mt-4
-    h2 Order Summary
-    p Total Items: #{order.items.length}
-    p Subtotal: $#{order.totalAmount.toFixed(2)}
-    // Add tax and shipping if available
-    p Total: $#{order.totalAmount.toFixed(2)}
   script(src="../../script/admin/updateOrder.js")
-  

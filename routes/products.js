@@ -1,10 +1,8 @@
 const express = require("express")
 const router = express.Router()
 const {
-  getProducts,
   getProduct,
   loadproducts,
-  uploadImages,
   onetwo,
 } = require("../controllers/user/products")
 

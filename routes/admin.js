@@ -11,10 +11,13 @@ const couponController = require("../controllers/admin/coupons");
 const offerController = require("../controllers/admin/offer");
 const orderController = require("../controllers/admin/order");
 const userProductController = require("../controllers/user/products");
-const { getAllAdminData  } = require("../controllers/admin/adminData")
+const { getAllAdminData,getRecentOrders,getSalesDatas, getBestSellingData} = require("../controllers/admin/adminData")
 // Admin routes
 router.get("/", protect, admin, adminController.getAdmin);
 router.get("/all", protect, admin, getAllAdminData);
+router.get('/orderItems', getRecentOrders);
+router.get('/sales-data', getSalesDatas);
+router.get('/best-selling', getBestSellingData)
 router.get("/data", protect, admin, adminController.getAdminData);
 
 // User management routes
@@ -72,4 +75,6 @@ router.route("/offers/create").get(protect, admin, offerController.renderCreateO
 router.get("/offers/list", protect, admin, offerController.getOfferList);
 router.route("/offers/:id/edit").get(protect, admin, offerController.renderEditOffer).patch(protect, admin, offerController.updateOffer);
 
+
+router.get("/transactions", protect, admin, orderController.renderTransactionsList);
 module.exports = router;

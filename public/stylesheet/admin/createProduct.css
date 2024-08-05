@@ -77,14 +77,14 @@ background:rgba(45, 106, 79, 0.49);
     width: 30%;
 }
 
-.general-info, .media, .pricing, .inventory, .category, .status {
+.general-info, .media, .pricing, .inventory, .category, .status, .offer{
     background: #1a322a;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
 }
 
-.general-info h2, .media h2, .pricing h2, .inventory h2, .category h2, .status h2 {
+.general-info h2, .media h2, .pricing h2, .inventory h2, .category h2, .status h2, .offer h2 {
     margin-top: 0;
 }
 

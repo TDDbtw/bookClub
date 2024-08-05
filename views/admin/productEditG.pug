@@ -65,9 +65,26 @@ html(lang='en')
             h2  Subcategory 
             label(for=`subcategory`)
               | 
-              select.subcatSelect.category(id=`category`, name="subcategories" value=product.subcategories[0].name )
-                option(selected="selected" textContent=product.subcategories[0].name value=product.subcategories[0]._id)= product.subcategories[0].name 
+              if (product.subcategories && product.subcategories.length > 0)
+                select.subcatSelect.category(id=`category`, name="subcategories" value=product.subcategories[0].name )
+                  option(selected="selected" textContent=product.subcategories[0].name value=product.subcategories[0]._id)= product.subcategories[0].name 
+              else
+                p nosubs
               #subCategoryError
+          .offer
+            h2 Apply Offer
+            label(for=`offer`) Select Offer:
+              | 
+              select.offerSelect(id=`offer`, name="offer" )
+                if product.offer
+                  option(value= product.offer._id selected) #{product.offer.name} (#{product.offer.discountPercentage}%)  
+                else
+                  option(value=null) No Offer
+                each offer in items
+                  option(value=offer._id) #{offer.name} (#{offer.discountPercentage}%)
+                if product.offer
+                  option(value=null) Remove Offer
+              #offerError
           .buttons
             p(style="color:red;") 
             button.cancel Cancel

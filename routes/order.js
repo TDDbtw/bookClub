@@ -21,9 +21,8 @@ router.route("/").get(protect, getUserOrder).post(createOrder)
 router.route('/wallet')
 router.route("/razorpayOrder").post(protect, razorpayOrder)
 router.route(`/success`).get(protect,getOrderSuccess)
-router.route(`/test`).post(protect, createOrder)
-router.route(`/test`).get(protect, getAccessToken)
-router.post("/:id/change", protect, cancelOrReturnOrder);
+router.route(`/test`).get(protect, getAccessToken).post(protect, createOrder)
+router.post("/:id/change", protect,cancelOrReturnOrder);
 router.route("/applyCoupon").post(couponController.applyCoupon)
 router.route("/removeCoupon").post(couponController.removeCoupon)
 // edit

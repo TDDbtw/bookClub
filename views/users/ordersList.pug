@@ -56,6 +56,7 @@ style.
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     padding: 30px;
+    height:64vh;
   }
   .order-table {
     width: 100%;
@@ -119,6 +120,29 @@ style.
   .shop-button:hover {
     background-color: #52b788;
   }
+    .pagination {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .pagination a {
+      display: inline-block;
+      padding: 8px 16px;
+      text-decoration: none;
+      color: #000;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      margin: 0 5px;
+    }
+
+    .pagination a:hover {
+      background-color: #ddd;
+    }
+
+    .pagination span {
+      display: inline-block;
+      padding: 8px 16px;
+    }
 
 link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap')
 link(rel='stylesheet', href='../../stylesheet/navbar.css')
@@ -163,7 +187,14 @@ link(rel='stylesheet', href='../../stylesheet/navbar.css')
                 td= order.payment_method
                 td= order.returnRequest.status ? `Return ${order.returnRequest.status}` : order.status
                 td 
-                  a.order-details-btn(href=`/user/order/${order._id}`) View Details
+                  a.order-details-btn.d-flex(href=`/user/order/${order._id}`) View Details
+
+        .pagination
+          if currentPage > 1
+            a.pagination-link(href=`/user/order?page=${currentPage - 1}`) Previous
+          span Page #{currentPage} of #{totalPages}
+          if currentPage < totalPages
+            a.pagination-link(href=`/user/order?page=${currentPage + 1}`) Next
       else
         .order-empty
           p.no-order You haven't ordered any items yet!
@@ -190,4 +221,52 @@ script.
       });
       element.textContent = formattedDate;
     });
+
+
+    const transactionTable = document.querySelector('.order-table.table-sortable');
+    
+    function attachPaginationListeners() {
+      const paginationLinks = document.querySelectorAll('.pagination-link');
+      paginationLinks.forEach(link => {
+        link.addEventListener('click', handlePaginationClick);
+      });
+    }
+
+    function handlePaginationClick(e) {
+      e.preventDefault();
+      const url = this.getAttribute('href');
+      
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newTransactions = doc.querySelector('.order-table.table-sortable');
+          const newPagination = doc.querySelector('.pagination');
+          
+          if (newTransactions) {
+            transactionTable.innerHTML = newTransactions.innerHTML;
+          } else {
+            transactionTable.innerHTML = '<tr><td colspan="4">No transactions on this page.</td></tr>';
+          }
+          
+          // Check if pagination container exists before updating
+          const paginationContainer = document.querySelector('.pagination');
+          if (paginationContainer && newPagination) {
+            paginationContainer.outerHTML = newPagination.outerHTML;
+          } else if (newPagination) {
+            // If pagination container doesn't exist, but new pagination does, append it
+            transactionTable.parentNode.insertAdjacentHTML('beforeend', newPagination.outerHTML);
+          }
+          
+          // Update the URL without reloading the page
+          history.pushState(null, '', url);
+          
+          // Reattach event listeners to new pagination links
+          attachPaginationListeners();
+        });
+    }
+
+    // Initial attachment of event listeners
+    attachPaginationListeners();
   });

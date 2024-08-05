@@ -1,75 +1,218 @@
+
 include ../partials/sidemenu
 link(rel='stylesheet', href='../stylesheet/admin/dashboard.css')
 link(rel='stylesheet', href='../../../stylesheet/admin/sidemenu.css')
 link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
-link(rel="stylesheet", href="../../../stylesheet/admin/category.css")
+link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css")
 
-#content-wrapper
-  .container
-    .breadcrumb
-      a(href='#') Dashboard
-      |  &gt;
-      a(href='#') Categories
-      |  &gt;
-      span Add Category
+style.
+  body {
+    background-color: #081c15;
+    color: #e9ecef;
+  }
+  .content-wrapper {
+    width: 90%;
+    margin: 2rem auto;
+    background-color: #1b4332;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    padding: 2rem;
+  }
+  .breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 2rem;
+  }
+  .breadcrumb-item a {
+    color: #74c69d;
+  }
+  .breadcrumb-item.active {
+    color: #b7e4c7;
+  }
+  .thumbnail {
+    border: 2px dashed #40916c;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  #image-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 5px;
+    background-color: #2d6a4f;
+  }
+  #catImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .removeImg {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255,255,255,0.2);
+    color: #e9ecef;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .form-control, .form-select {
+    background-color: #2d6a4f;
+    border-color: #52b788;
+    color: #e9ecef;
+  }
+  .form-control:focus, .form-select:focus {
+    background-color: #2d6a4f;
+    border-color: #74c69d;
+    color: #e9ecef;
+    box-shadow: 0 0 0 0.25rem rgba(116, 198, 157, 0.25);
+  }
+  .subcategory-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .subcategory-item input {
+    flex-grow: 1;
+    margin-right: 0.5rem;
+  }
+  .buttons {
+    margin-top: 2rem;
+  }
+  .btn-primary {
+    background-color: #52b788;
+    border-color: #52b788;
+  }
+  .btn-primary:hover, .btn-primary:focus {
+    background-color: #40916c;
+    border-color: #40916c;
+  }
+  .btn-secondary {
+    background-color: #2d6a4f;
+    border-color: #2d6a4f;
+  }
+  .btn-secondary:hover, .btn-secondary:focus {
+    background-color: #1b4332;
+    border-color: #1b4332;
+  }
+  .btn-outline-danger {
+    color: #d8f3dc;
+    border-color: #d8f3dc;
+  }
+  .btn-outline-danger:hover {
+    background-color: #d8f3dc;
+    color: #081c15;
+  }
 
-    .main-content.row
+.content-wrapper
+  nav(aria-label="breadcrumb")
+    ol.breadcrumb
+      li.breadcrumb-item
+        a(href="/") Dashboard
+      li.breadcrumb-item
+        a(href="#") Categories
+      li.breadcrumb-item.active(aria-current="page") Edit Category
+
+  form#categoryForm
+    .row
       .col-md-6
         .thumbnail
-          label(for='upload')
-          input(type='file' id='file-input' name='image')
-          #image-container(style='height:90px; display:flex; ')
-            .removeImg remove
-            img#catImg(src=`${category.image.substring(2)}`)
-
+          label.btn.btn-outline-light.mb-2(for="file-input")
+            i.fas.fa-upload.me-2
+            | Upload Image
+          input#file-input.d-none(type="file", name="image")
+          #image-container
+            img#catImg(src=`${category.image.substring(2)}`, alt="Category Image")
+            span.removeImg.btn.btn-sm.btn-light
+              i.fas.fa-times
       .col-md-6
-        .general-info
-          label Category Name
-          input#cName(type='text' name='name' value=`${category.name}` required)
-          span#nameError
-          label Description
-          textarea#dName(type='text' name='description' placeholder=`${category.description}` value=`${category.description}` required)
-          input#catId(type="hidden" value=category._id)
-          span#descriptionError
+        .mb-3
+          label.form-label(for="cName") Category Name
+          input#cName.form-control(type="text", name="name", value=`${category.name}`, required)
+          #nameError.form-text.text-danger
 
-    .subcategories
-      label.text-white Subcategories:
+        .mb-3
+          label.form-label(for="dName") Description
+          textarea#dName.form-control(name="description", rows="3", required)= category.description
+          #descriptionError.form-text.text-danger
+
+        .mb-3
+          label.form-label(for="offerSelect") Select Offer
+          select#offerSelect.offerSelect.form-select(name="offer", required)
+            if category.offer
+              option(value= category.offer._id selected) #{category.offer.name} (#{category.offer.discountPercentage}%)
+            else
+              option(value='') No Offer
+            each offer in items
+              option(value=offer._id) #{offer.name} (#{offer.discountPercentage}%)
+            if category.offer
+              option(value=null) Remove offer
+          #couponError.form-text.text-danger
+
+        input#catId(type="hidden", value=category._id)
+
+    .mt-4
+      h5 Subcategories
       #subcategory-list
         each subcategory in subcategories
           if subcategory.category.id == category.id
-            .subcategory-item#subItem
-              input(type='text', name='subcategories[]', value=`${subcategory.name}`, required='')
-              button.remove-subcategory(type='button', onclick=`removeSubcategory(this.value)` value=subcategory.id) Remove
-      button.add-subcategory(type='button', onclick='addSubcategory()') Add Subcategory
-      span#subcategoryError
+            .subcategory-item
+              input.form-control(type="text", name="subcategories[]", value=subcategory.name, required)
+              button.btn.btn-outline-danger.ms-2(type="button", onclick=`removeSubcategory('${subcategory.id}')`)
+                i.fas.fa-trash-alt
+
+      button.btn.btn-outline-light.mt-2(type="button", onclick="addSubcategory()")
+        i.fas.fa-plus.me-2
+        | Add Subcategory
+      #subcategoryError.form-text.text-danger
 
     .buttons
-      button.btn.btn-secondary.cancel Cancel
-      button.btn.btn-primary.add-category Save Changes
-    #error
+      button.btn.btn-secondary.me-2(type="button") Cancel
+      button.btn.btn-primary.save-changes(type="submit") Save Changes
+
+script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")
 script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
-script( src="../../../script/admin/editCategory.js")
-script( src="../../../script/admin/editCatVal.js")
+script(src="../../../script/admin/editCategory.js")
+script(src="../../../script/admin/editCatVal.js")
 script(src="../../../script/admin/subCat.js")
-script(src="../../../script/toast.js")
+script(src="../../../script/toast.js" defer)
+script(src="../../../script/confirmationModal.js" defer)
 script.
-  const subcategoryList = document.getElementById("subItem");
-  const addSubcategoryButton = document.querySelector(".add-subcategory");
+  function addSubcategory() {
+    const subcategoryList = document.getElementById('subcategory-list');
+    const newSubcategoryItem = document.createElement('div');
+    newSubcategoryItem.classList.add('subcategory-item');
+    newSubcategoryItem.innerHTML = `
+      <input type="text" class="form-control" name="subcategories[]" placeholder="Enter subcategory name" required>
+      <button type="button" class="btn btn-outline-danger ms-2" onclick="this.parentElement.remove()">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    `;
+    subcategoryList.appendChild(newSubcategoryItem);
+  }
 
-  addSubcategoryButton.addEventListener("click", () => {
-  const newSubcategoryItem = document.createElement("div");
-  newSubcategoryItem.classList.add("subcategory-item");
-  newSubcategoryItem.innerHTML = `
-    <input type='text' name='subcategories[]' placeholder='Enter subcategory name'>
-    <button type='button' class='remove-subcategory'>Remove</button> 
-  `;
-  subcategoryList.appendChild(newSubcategoryItem);
 
-  // Add event listener to the new "Remove" button
-  newSubcategoryItem
-    .querySelector(".remove-subcategory")
-    .addEventListener("click", () => {
-      subcategoryList.removeChild(newSubcategoryItem);
-    });
+  document.getElementById('file-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('catImg').src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
   });
 
+  document.querySelector('.removeImg').addEventListener('click', function() {
+    document.getElementById('catImg').src = '';
+    document.getElementById('file-input').value = '';
+  });
+
+  document.getElementById('categoryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Implement form submission logic here
+    console.log('Form submitted');
+  });

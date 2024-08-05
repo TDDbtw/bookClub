@@ -29,36 +29,20 @@ const ProductSchema = new mongoose.Schema(
         type: String,
       },
     ],
-
-    // Discount Information
-    discountPrice: {
-      type: Number,
-    },
-    discountStatus: {
-      type: Boolean,
-      default: false,
-    },
-
-    // Stock Information
     stockCount: {
       type: Number,
       required: true,
       min: 0,
     },
-
-    // Book-Specific Attributes
-    format: {
-      type: String,
-      enum: ["Hardcover", "Paperback", "eBook", "Audiobook"],
+    offer: { 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Offer' 
     },
 
-    // Listing Status
     status: {
       type: Boolean,
       default: true,
     },
-
-    // Category and Subcategory References
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -74,5 +58,14 @@ const ProductSchema = new mongoose.Schema(
   },
   { timestamps: true } // Automatically manages createdAt and updatedAt timestamps
 );
+
+ProductSchema.virtual('discountedPrice').get(function() {
+  if (this.offer && this.offer.isActive && this.offer.isActive()) {
+    return this.offer.applyDiscount(this.price);
+  }
+  return this.price;
+});
+
+
 
 module.exports = mongoose.model("Product", ProductSchema);

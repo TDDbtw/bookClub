@@ -41,4 +41,20 @@ const formatDate = function (timestamp) {
 
   return formattedDateTime
 }
-module.exports = { formatDate }
+
+const formatDateISO = function (timestamp) {
+  // Create a new Date object from the timestamp
+  const date = new Date(timestamp);
+
+  // Extract date components
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based, so we add 1
+  const day = date.getDate().toString().padStart(2, '0');
+
+  // Construct the formatted date
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+}
+
+module.exports = { formatDate, formatDateISO }

@@ -7,7 +7,255 @@ include ../partials/sidemenu
   //- script(defer src="../../script/admin/panel.js") 
   script(defer src="../../script/user/sortTable.js") 
   .container-fluid#containerFluid
+    .container-fluid#containerFluid
+      section.dashboard-overview
+        h2 Overview
+        .metric-grid
+          .metric-card
+            i.fas.fa-list-alt(aria-hidden="true")
+            .metric-data
+              h2#totalCategoriesCount
+              h3  totalCategories 
+              p Orders Delivered                
+          .metric-card
+            i.fas.fa-shopping-cart(aria-hidden="true")
+            .metric-data
+              h3= orders.length
+              p Total Orders
+          .metric-card
+            i.fas.fa-users(aria-hidden="true")
+            .metric-data
+              h3  newUsers 
+              p New Users This Month
+    h1.text-center.text-light.my-5 #{name}
+    table#my-table.table-sortable
+      thead#contentThead
+        tr#contentTheadTr
+          th Order ID
+          th User
+          th Total Amount
+          th Order Date
+          th Delivery Date
+          th Status
+          th Actions
+      tbody#contentTbody
+        each order in orders
+          tr#contentTbodyTr
+            td #{order._id}
+            td #{order.user.name}
+            td #{order.totalAmount}
+            td= formatDate(order.created_at)
+            td= formatDate(order.deliveryDate)
+            td
+              if order.status === 'pending'
+                span.status.pending Pending
+              else if order.status === 'processing'
+                span.status.processing Processing
+              else if order.status === 'shipped'
+                span.status.shipped Shipped
+              else if order.status === 'delivered' && order.returnRequest.status==null 
+                span.status.delivered Delivered
+              else if order.status === 'delivered' && order.returnRequest.status=='pending' 
+                span.status.returned Return requested
+              else if order.returnRequest.status== 'accepted'
+                span.status.return-approved Return approved
+              else if order.status === 'cancelled'
+                span.status.cancelled Cancelled
+            td
+              if order.status === 'cancelled'
+                .editD.text-center.border.border-info
+                  a(href=`/admin/orders/${order._id}`) view
+              else
+                .editD.border.border-info
+                  a(href=`/admin/orders/${order._id}`) update
+              //a(href='/orders/#{order._id}/delete') Delete
+
+    .pagination
+      if currentPage > 1
+        a.pagination-link(href=`/admin/orders?page=${currentPage - 1}`) Previous
+      span Page #{currentPage} of #{totalPages}
+      if currentPage < totalPages
+        a.pagination-link(href=`/admin/orders?page=${currentPage + 1}`) Next
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        const transactionTable = document.querySelector('#my-table');
+        
+        function attachPaginationListeners() {
+          const paginationLinks = document.querySelectorAll('.pagination-link');
+          paginationLinks.forEach(link => {
+            link.addEventListener('click', handlePaginationClick);
+          });
+        }
+
+        function handlePaginationClick(e) {
+          e.preventDefault();
+          const url = this.getAttribute('href');
+          
+          fetch(url)
+            .then(response => response.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              const newTransactions = doc.querySelector('#my-table');
+              const newPagination = doc.querySelector('.pagination');
+              
+              if (newTransactions) {
+                transactionTable.innerHTML = newTransactions.innerHTML;
+              } else {
+                transactionTable.innerHTML = '<tr><td colspan="4">No transactions on this page.</td></tr>';
+              }
+              
+              // Check if pagination container exists before updating
+              const paginationContainer = document.querySelector('.pagination');
+              if (paginationContainer && newPagination) {
+                paginationContainer.outerHTML = newPagination.outerHTML;
+              } else if (newPagination) {
+                // If pagination container doesn't exist, but new pagination does, append it
+                transactionTable.parentNode.insertAdjacentHTML('beforeend', newPagination.outerHTML);
+              }
+              
+              // Update the URL without reloading the page
+              history.pushState(null, '', url);
+              
+              // Reattach event listeners to new pagination links
+              attachPaginationListeners();
+            });
+        }
+        attachPaginationListeners();
+      });
     style.
+      body {
+          font-family: Arial, sans-serif;
+      }
+      
+      h1 {
+          font-size: 24px;
+          margin-bottom: 20px;
+      }
+      
+      table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+      
+      th,
+      td {
+          border: 1px solid #ccc;
+          padding: 5px;
+          text-align: center;
+      }
+      
+      th {
+          //- background-color: #f2f2f2;
+      }
+      
+      .status {
+          padding: 5px 10px;
+          border-radius: 3px;
+      }
+      
+      .status.pending {
+          background-color: #ffc0cb;
+          color: #d9534f;
+      }
+      
+      .status.processing {
+          background-color: #ffecb3;
+          color: #f0ad4e;
+      }
+      
+      .status.shipped {
+          background-color: #b2dfdb;
+          color: #4caf50;
+      }
+      
+      .status.delivered {
+          background-color: #c8e6c9;
+          color: #2e7d32;
+      }
+      
+      .status.cancelled {
+          background-color: #f44336;
+          color: #ffffff;
+      }
+
+      .status.returned {
+      background-color: #d1c4e9; 
+      color: #673ab7; 
+      }
+
+      .status.return-approved {
+      background-color: #ffcc80; 
+      color: #e65100; 
+      }
+      a {
+          text-decoration: none;
+          color: #3f51b5;
+      }
+      
+      a:hover {
+          color: #2d387a;
+      }
+        .editD.text-center.border.border-info {
+            background-color: #f8d7da; 
+            border-color: #f5c6cb; 
+            color: #721c24; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            display: inline-block; 
+            text-align: center; 
+            }
+
+        .editD.text-center.border.border-info:hover {
+            background-color: #f1b0b7; 
+            border-color: #ee9c9f; 
+            color: #491217; 
+            text-decoration: none; 
+            }
+
+        .editD.border.border-info {
+            background-color: #d1ecf1; 
+            border-color: #17a2b8; 
+            color: #0c5460; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            display: inline-block; 
+            }
+
+        .editD.border.border-info:hover {
+            background-color: #bee5eb; 
+            border-color: #138496; 
+            color: #0b3c4b; 
+            text-decoration: none; 
+            }
+
+        .pagination {
+          margin-top: 20px;
+          text-align: center;
+          color:white;
+        }
+
+        .pagination a {
+          display: inline-block;
+          padding: 8px 16px;
+          text-decoration: none;
+          color: #000;
+          background-color: #f1f1f1;
+          border-radius: 5px;
+          margin: 0 5px;
+        }
+
+        .pagination a:hover {
+          background-color: #ddd;
+        }
+
+        .pagination span {
+          display: inline-block;
+          padding: 8px 16px;
+        }
+
        .pagination {
         background-color: #0a1e1615;
 
@@ -218,174 +466,3 @@ include ../partials/sidemenu
         font-size: 2rem;
         margin-bottom: 0.5rem;
       }
-
-    .container-fluid#containerFluid
-      section.dashboard-overview
-        h2 Overview
-        .metric-grid
-          .metric-card
-            i.fas.fa-list-alt(aria-hidden="true")
-            .metric-data
-              h2#totalCategoriesCount
-              h3  totalCategories 
-              p Orders Delivered                
-          .metric-card
-            i.fas.fa-shopping-cart(aria-hidden="true")
-            .metric-data
-              h3= orders.length
-              p Total Orders
-          .metric-card
-            i.fas.fa-users(aria-hidden="true")
-            .metric-data
-              h3  newUsers 
-              p New Users This Month
-    h1.text-center.text-light.my-5 #{name}
-    table#my-table.table-sortable
-      thead#contentThead
-        tr#contentTheadTr
-          th Order ID
-          th User
-          th Total Amount
-          th Order Date
-          th Delivery Date
-          th Status
-          th Actions
-      tbody#contentTbody
-        each order in orders
-          tr#contentTbodyTr
-            td #{order._id}
-            td #{order.user.name}
-            td #{order.totalAmount}
-            td= formatDate(order.created_at)
-            td= formatDate(order.deliveryDate)
-            td
-              if order.status === 'pending'
-                span.status.pending Pending
-              else if order.status === 'processing'
-                span.status.processing Processing
-              else if order.status === 'shipped'
-                span.status.shipped Shipped
-              else if order.status === 'delivered' && order.returnRequest.status==null 
-                span.status.delivered Delivered
-              else if order.status === 'delivered' && order.returnRequest.status=='pending' 
-                span.status.returned Return requested
-              else if order.returnRequest.status== 'accepted'
-                span.status.return-approved Return approved
-              else if order.status === 'cancelled'
-                span.status.cancelled Cancelled
-            td
-              if order.status === 'cancelled'
-                .editD.text-center.border.border-info
-                  a(href=`/admin/orders/${order._id}`) view
-              else
-                .editD.border.border-info
-                  a(href=`/admin/orders/${order._id}`) update
-              //a(href='/orders/#{order._id}/delete') Delete
-
-    style.
-      body {
-          font-family: Arial, sans-serif;
-      }
-      
-      h1 {
-          font-size: 24px;
-          margin-bottom: 20px;
-      }
-      
-      table {
-          width: 100%;
-          border-collapse: collapse;
-      }
-      
-      th,
-      td {
-          border: 1px solid #ccc;
-          padding: 5px;
-          text-align: center;
-      }
-      
-      th {
-          //- background-color: #f2f2f2;
-      }
-      
-      .status {
-          padding: 5px 10px;
-          border-radius: 3px;
-      }
-      
-      .status.pending {
-          background-color: #ffc0cb;
-          color: #d9534f;
-      }
-      
-      .status.processing {
-          background-color: #ffecb3;
-          color: #f0ad4e;
-      }
-      
-      .status.shipped {
-          background-color: #b2dfdb;
-          color: #4caf50;
-      }
-      
-      .status.delivered {
-          background-color: #c8e6c9;
-          color: #2e7d32;
-      }
-      
-      .status.cancelled {
-          background-color: #f44336;
-          color: #ffffff;
-      }
-
-      .status.returned {
-      background-color: #d1c4e9; 
-      color: #673ab7; 
-      }
-
-      .status.return-approved {
-      background-color: #ffcc80; 
-      color: #e65100; 
-      }
-      a {
-          text-decoration: none;
-          color: #3f51b5;
-      }
-      
-      a:hover {
-          color: #2d387a;
-      }
-        .editD.text-center.border.border-info {
-            background-color: #f8d7da; 
-            border-color: #f5c6cb; 
-            color: #721c24; 
-            padding: 8px 12px; 
-            border-radius: 4px; 
-            text-decoration: none; 
-            display: inline-block; 
-            text-align: center; 
-            }
-
-        .editD.text-center.border.border-info:hover {
-            background-color: #f1b0b7; 
-            border-color: #ee9c9f; 
-            color: #491217; 
-            text-decoration: none; 
-            }
-
-        .editD.border.border-info {
-            background-color: #d1ecf1; 
-            border-color: #17a2b8; 
-            color: #0c5460; 
-            padding: 8px 12px; 
-            border-radius: 4px; 
-            text-decoration: none; 
-            display: inline-block; 
-            }
-
-        .editD.border.border-info:hover {
-            background-color: #bee5eb; 
-            border-color: #138496; 
-            color: #0b3c4b; 
-            text-decoration: none; 
-            }

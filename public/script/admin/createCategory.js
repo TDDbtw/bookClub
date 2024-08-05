@@ -6,40 +6,39 @@ document.addEventListener("DOMContentLoaded", function () {
   const imageContainer = document.getElementById("image-container");
   const addSubcategoryButton = document.querySelector(".add-subcategory");
   const subcategoryList = document.querySelector(".subcategory-list");
+const imagePlaceholder = document.getElementById('image-placeholder');
 
-  // Image Preview
-  fileInput.addEventListener("change", function () {
-    imageContainer.innerHTML = "";
-    if (this.files && this.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.className = "uploaded-image";
-        img.style.width = "92px";
-        imageContainer.appendChild(img);
-      };
-      reader.readAsDataURL(this.files[0]);
+fileInput.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imagePlaceholder.style.display = 'none';
+      const img = document.createElement('img');
+      img.id = 'catImg';
+      img.src = e.target.result;
+      img.style.maxWidth = '100%';
+      img.style.maxHeight = '100%';
+      imageContainer.appendChild(img);
     }
-  });
-
+    reader.readAsDataURL(file);
+  }
+});
   // Add Subcategory Input Field
-  addSubcategoryButton.addEventListener("click", () => {
-    const newSubcategoryItem = document.createElement("div");
-    newSubcategoryItem.classList.add("subcategory-item");
-    newSubcategoryItem.innerHTML = `
-      <input type='text' name='subcategories[]' placeholder='Enter subcategory name'>
-      <button type='button' class='remove-subcategory'>Remove</button> 
-    `;
-    subcategoryList.appendChild(newSubcategoryItem);
 
-    // Add event listener to the new "Remove" button
-    newSubcategoryItem
-      .querySelector(".remove-subcategory")
-      .addEventListener("click", () => {
-        subcategoryList.removeChild(newSubcategoryItem);
-      });
-  });
+document.querySelector('.add-subcategory').addEventListener('click', function() {
+  const subcategoryList = document.getElementById('subcategory-list');
+  const newSubcategoryItem = document.createElement('div');
+  newSubcategoryItem.classList.add('subcategory-item');
+  newSubcategoryItem.innerHTML = `
+    <input type="text" class="form-control" name="subcategories[]" placeholder="Enter subcategory name">
+    <button type="button" class="btn btn-outline-danger ms-2" onclick="this.parentElement.remove()">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+  `;
+  subcategoryList.appendChild(newSubcategoryItem);
+});
+
 
   // Category Form Submission
   addButton.addEventListener("click", function (event) {
@@ -90,8 +89,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isValid) {
 
     // gather category name and description
+    const offerSelect=document.querySelector('.offerSelect')
     const categoryName = document.getElementById('cName').value;
     const description = document.getElementById('dName').value;
+    const offer =  offerSelect.value? offerSelect.value: offerSelect.placeholder;
 
     // Gather subcategory data
     const subcategoryInputs = document.querySelectorAll(
@@ -109,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("name", categoryName);
     formData.append("description", description);
     formData.append("subcategories", JSON.stringify(subcategories)); // Add subcategories
-
+    formData.append("offer", offer);
     // Append image file if selected
     if (fileInput.files.length > 0) {
       formData.append("image", fileInput.files[0]);

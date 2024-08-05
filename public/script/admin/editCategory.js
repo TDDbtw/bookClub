@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.querySelector('.main-content');
   const cancelButton = document.querySelector('.buttons .cancel');
-  const addButton = document.querySelector('.add-category');
+  const addButton = document.querySelector('.save-changes');
   const fileInput = document.querySelector('#file-input');
   const imageContainer = document.getElementById('image-container');
   const catId = document.getElementById('catId').value;

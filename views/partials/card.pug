@@ -10,7 +10,7 @@
     //- Assuming product is a variable in your template
     p#productId(type="hidden", value=product.id)
     p.author.mx-5 #{product.author}
-    p.card-price.mx-5 $#{product.price}
+    p.card-price.mx-5 $#{product.price} ththet 
     //ul
       each spec in product.specifications
         li.mx-4= `${spec.name}: ${spec.value}`

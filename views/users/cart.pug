@@ -29,7 +29,7 @@ include ../partials/navbar
                   .product-info
                     img.productImg(src=item.image , alt= item.name, data-productId=item._id)
                     span= item.name
-                td $#{item.productPrice.toFixed(2)}
+                td $#{item.productPrice.toFixed(2)} 
                 td
                   .quantity-controls
                     button.decrement.decrement-button -
@@ -47,6 +47,10 @@ include ../partials/navbar
             li
               span Tax (5%):
               span.price= (0.05 * cart.billTotal).toFixed(2)
+            if totalDiscount
+              li
+                span Discount:
+                span -#{totalDiscount}
             li
               span Shipping:
               span Calculated at next step

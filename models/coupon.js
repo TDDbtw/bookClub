@@ -4,17 +4,16 @@ const couponSchema = new mongoose.Schema({
   code: {
     type: String,
     required: true,
-    unique: [true,"Coupon code already exists"]
+    unique: [true, "Coupon code already exists"]
   },
   discount: {
     type: Number,
-    required: [true,"You need to add the discount amount"],
+    required: [true, "You need to add the discount amount"],
   },
   limit: {
     type: Number,
     required: true,
   },
-
   expiry: {
     type: Date,
     required: true,
@@ -27,7 +26,6 @@ const couponSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-
   claimedBy: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,12 +36,45 @@ const couponSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  
   createdDate: {
     type: Date,
     default: Date.now,
   },
 });
 
+// Check if the coupon is valid for the given user and order amount
+couponSchema.methods.isValid = function(userId, orderAmount) {
+  const now = new Date();
+  return (
+    this.status &&
+    now <= this.expiry &&
+    this.limit > 0 &&
+    orderAmount >= this.minAmt &&
+    orderAmount <= this.maxAmt &&
+    !this.claimedBy.includes(userId)
+  );
+};
+
+// Apply the coupon discount to the given amount
+couponSchema.methods.applyDiscount = function(amount) {
+  let discountedAmount = amount - this.discount;
+  if (discountedAmount < 0) discountedAmount = 0;
+  return {
+    discountedAmount,
+    discountApplied: amount - discountedAmount
+  };
+};
+
+// Update the coupon after it has been used
+couponSchema.methods.use = function(userId) {
+  this.claimedBy.push(userId);
+  this.limit -= 1;
+  return this.save();
+};
+
 module.exports = mongoose.model('Coupon', couponSchema);
+
+
+
+
 

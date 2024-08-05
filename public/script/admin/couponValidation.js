@@ -257,7 +257,7 @@ async function sendRequest() {
   } catch (error) {
     console.error('Error:', error);
     window.toast.errorMessage(error.message);
-
+    window.location.href('/admin/coupons')
     // If you want to display the error in a specific element:
     const errorElement = document.getElementById('error-message');
     if (errorElement) {

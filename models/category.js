@@ -13,7 +13,10 @@ const CategorySchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    // required: true,
+  },
+  offer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Offer'
   },
   status: {
     type: Boolean,

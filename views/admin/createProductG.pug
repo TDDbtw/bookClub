@@ -63,6 +63,15 @@ html(lang='en')
               | 
               select.subcatSelect.category(id=`category`, name="subcategories")
               #subCategoryError
+          .offer
+            h2 Apply Offer
+            label(for=`offer`) Select Offer:
+              | 
+              select.offerSelect(id=`offer`, name="offer" )
+                option(value='') No Offer
+                each offer in items
+                  option(value=offer._id) #{offer.name} (#{offer.discountPercentage}%)
+              #offerError
           .buttons
             button.cancel Cancel
             button#save-product Save Product

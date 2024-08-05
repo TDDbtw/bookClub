@@ -1,3 +1,4 @@
+console.log('coupon running well and')
 const form = document.getElementById('couponForm');
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -42,7 +43,7 @@ document.getElementById('couponForm').addEventListener('submit', async (event) =
   try {
     const response = await axios.patch(url, couponData);
     if (response.status === 200) {
-      successToast('Coupon updated successfully!');
+      window.toast.success('Coupon updated successfully!');
 
       window.location.href='/admin/coupons'
     } else {
@@ -50,7 +51,7 @@ document.getElementById('couponForm').addEventListener('submit', async (event) =
     }
   } catch (error) {
     console.error('Error updating coupon:', error);
-    errorToast(error)
+    window.toast.error(error)
   }
 });
 

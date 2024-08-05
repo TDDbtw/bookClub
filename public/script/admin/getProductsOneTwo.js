@@ -47,9 +47,9 @@ if(searchValue==null&&sortValue==null&&filterValue==null){
       currentPage =response.data.page ;  // Current page (start on page 1)
       totalPages = Math.ceil(total/limit) // Will be updated from the backend response
       console.log(`total pages are  ${totalPages}`) 
+      renderPagination()
       const item = response.data.products;
       renderCards(item)
-      renderPagination()
     })
     .catch(error => {
       console.error('There was an error fetching the products!', error);
@@ -245,33 +245,14 @@ function renderCards(products){
     productAuthor.className = "author mx-5"
     productAuthor.textContent = `${product.author}`
 
+
     const productPrice = document.createElement("p")
     productPrice.className = "card-price mx-5"
-    productPrice.style.color = 'gold'
-    productPrice.style.fontSize = '18px'
-    productPrice.style.fontWeight = 'bold'
 
-    const originalPrice = document.createElement("p")
-    originalPrice.className = "original-price mx-5"
-    originalPrice.style.color = 'gray'
-    originalPrice.style.fontSize = '16px'
-    originalPrice.style.textDecoration = 'line-through'
-
-    if (product.offer && product.offer.isValid()) {
-      const discountedPrice = product.offer.calculateDiscountedPrice(product.price)
-      productPrice.textContent = `$${discountedPrice.toFixed(2)}`
-      originalPrice.textContent = `$${product.price.toFixed(2)}`
-      
-      const priceContainer = document.createElement("div")
-      priceContainer.className = "price-container mx-5"
-      priceContainer.appendChild(originalPrice)
-      priceContainer.appendChild(productPrice)
-      
-      productCard.appendChild(priceContainer)
-    } else {
-      productPrice.textContent = `$${product.price.toFixed(2)}`
-      productCard.appendChild(productPrice)
-    }
+    productPrice.style.color='gold' /* Gold text color */
+      productPrice.style.fontSize='18px' /* Adjust font size as needed */
+      productPrice.style.fontWeight='bold' /* Make the text bold for emphasis */
+      productPrice.textContent = `$${product.price}`
 
 
     const addToCartForm = document.createElement("form")

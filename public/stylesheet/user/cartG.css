@@ -229,3 +229,13 @@ h1 {
 text-decoration: none;
 color:white;
 }
+.original-price {
+  text-decoration: line-through;
+  color: #888;
+  font-size:15px;
+  margin-right: 5px;
+}
+
+.current-price {
+  font-weight: bold;
+}

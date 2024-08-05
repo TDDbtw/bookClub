@@ -44,7 +44,7 @@ const orderSchema = new mongoose.Schema({
           default: 'pending',
         },
         reason: String,
-             } ,
+      },
     },
   ],
   totalAmount: {
@@ -61,7 +61,7 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "processing", "shipped", "delivered", "cancelled","returned"],
+    enum: ["pending", "processing", "shipped", "delivered", "cancelled","returned","Failed"],
     default: "pending",
   },
   created_at: {
@@ -77,17 +77,29 @@ const orderSchema = new mongoose.Schema({
   deliveryDate: {
     type: Date,
   },
- returnRequest: {
+  returnRequest: {
     status: { 
       type: String,
       enum: ['pending', 'accepted'], 
       default: null 
     },
     reason: String, 
-   requestDate: {
+    requestDate: {
       type: Date,
     }
-  }
+  },
+  coupon: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coupon'
+  },
+  couponDiscount: {
+    type: Number,
+    default: 0
+  },
+  offerDiscount: {
+    type: Number,
+    default: 0
+  },
 })
 function generateShortOrderId() {
   const characters = "0123456789";
@@ -120,7 +132,7 @@ orderSchema.methods.calculateTotalAmount = function() {
 orderSchema.methods.isReturnable = function() {
   const returnPeriod = 7; // 7 days return policy
   return this.status === 'delivered' && 
-         moment().diff(this.deliveryDate, 'days') <= returnPeriod;
+    moment().diff(this.deliveryDate, 'days') <= returnPeriod;
 };
 
 orderSchema.methods.getOrderSummary = function() {
@@ -147,19 +159,34 @@ orderSchema.methods.calculateRefundAmount = function() {
   return refundableAmount;
 };
 // orderSchema.pre("save", function (next) {
-  //   const currentDate = new Date()
+//     const currentDate = new Date()
 
-  //   if (!this.created_at) {
-    //     this.created_at = currentDate
-    //   }
+//     if (!this.created_at) {
+//         this.created_at = currentDate
+//       }
 
-  //   const deliveryDate = new Date(currentDate)
-  //   deliveryDate.setDate(deliveryDate.getDate() + 5)
+//     const deliveryDate = new Date(currentDate)
+//     deliveryDate.setDate(deliveryDate.getDate() + 5)
 
-  //   // Set the deliveryDate field
-  //   this.deliveryDate = deliveryDate
+//     // Set the deliveryDate field
+//     this.deliveryDate = deliveryDate
 
-  //   next()
-  // })
+//     next()
+//   })
 
+orderSchema.pre("save", function (next) {
+    const currentDate = new Date();
+
+    if (!this.created_at) {
+        this.created_at = currentDate;
+    }
+
+    const deliveryDate = new Date(currentDate);
+    deliveryDate.setMinutes(deliveryDate.getMinutes() + 2);
+
+    // Set the deliveryDate field
+    this.deliveryDate = deliveryDate;
+
+    next();
+});
 module.exports = mongoose.model("Order", orderSchema)

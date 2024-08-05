@@ -1,3 +1,4 @@
+console.log(`sidemenu   running`)
 $("#header>.menu-button").click(function () {
   $("#sidemenu").toggleClass("open")
   $(".copyright").toggleClass("show")

@@ -1,0 +1,126 @@
+include ../partials/sidemenu
+style.
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #081c15;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container-fluid  {
+    width: 90% !important;
+    background-color: #1b4332;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    padding: 2rem;
+    position: absolute;
+    top: 20%;
+    margin-left: 4%;
+  }
+  h1 {
+    text-align: center;
+    color: #74c69d;
+  }
+  .transaction-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  .transaction-item {
+    background-color: #2d6a4f;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .transaction-info {
+    flex-grow: 1;
+  }
+  .transaction-amount {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  .transaction-date {
+    font-size: 0.9em;
+    color: #b7e4c7;
+  }
+  .transaction-status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    text-transform: uppercase;
+  }
+  .status-completed {
+    background-color: #40916c;
+  }
+  .status-pending {
+    background-color: #d8f3dc;
+    color: #081c15;
+  }
+  .status-failed {
+    background-color: #d62828;
+  }
+
+  .summary-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  .summary-item {
+    background-color: #2d6a4f;
+    border-radius: 4px;
+    padding: 15px;
+    width: 300px;
+    margin-bottom: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .summary-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  .summary-label {
+    font-size: 0.9em;
+    color: #b7e4c7;
+    display: block;
+    margin-bottom: 5px;
+  }
+  .summary-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e0e0e0;
+  }
+
+#content-wrapper
+  .container-fluid
+    h1 Transactions Summary
+    .summary-container
+      each paymentMethod in transactions
+        .summary-item
+          h2= paymentMethod._id
+          .summary-label Total Transactions:
+          .summary-value= paymentMethod.totalTransactions
+          .summary-label Total Revenue:
+          .summary-value= '$' + paymentMethod.totalRevenue.toFixed(2)
+          .summary-label Average Order Value:
+          .summary-value= '$' + paymentMethod.averageOrderValue.toFixed(2)
+          .summary-label Total Items Sold:
+          .summary-value= paymentMethod.totalItems
+          .summary-label Min Order Value:
+          .summary-value= '$' + paymentMethod.minOrderValue.toFixed(2)
+          .summary-label Max Order Value:
+          .summary-value= '$' + paymentMethod.maxOrderValue.toFixed(2)
+    h1 Transactions List
+    ul.transaction-list
+      each order in orders 
+        li.transaction-item
+          .transaction-info
+            .transaction-amount $#{order.totalAmount}
+            .transaction-date #{formatDateISO(order.created_at)}
+          .transaction-status.status-completed Completed
+      // Add more list items for additional transactions

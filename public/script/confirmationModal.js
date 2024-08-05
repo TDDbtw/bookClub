@@ -1,5 +1,5 @@
 // public/javascripts/confirmationModal.js
-
+console.log(`swal modal running `)
 class ConfirmationModal {
   constructor(options = {}) {
     this.defaultOptions = {
