@@ -63,12 +63,11 @@
         return res.json();
       }).then(function(orderData) {
         console.log('Capture result', orderData);
-        if(window.toast.success('added money to the wallet')){
-          window.location.href('goolgle.com')
-        }
-
+        window.toast.success(`added $${document.getElementById('amount').value} to the wallet `)
         document.getElementById('amount').innerHTML=""
-   
+       setTimeout(() => {
+          window.location.href = "/user/wallet";
+        }, 1000);
       });
     }
   }).render('#paypal-button-container');

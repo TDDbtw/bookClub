@@ -220,7 +220,7 @@ function validateCountry() {
       country.length == 0
     ) {
       // Show an error message
-      window.toast.info("Please fill all the required fields")
+      window.toast.errorMessage("Please fill all the required fields")
     } else {
       let response = fetch(`/user/address/new`, {
         method: "POST",

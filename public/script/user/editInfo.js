@@ -1,22 +1,56 @@
 const editPwd = document.querySelector('#editPwd');
 const pwdGroup = document.querySelectorAll('.pwdGroup'); 
-pwdGroup.forEach((item)=>{
-item.style.display='none'
-})
+pwdGroup.forEach((item) => {
+  item.style.display = 'none';
+});
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.querySelector('.editInfo-form');
   const formButton = document.getElementById('formButton');
 
+  function validateForm() {
+    let isValid = true;
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    // Name validation
+    if (name.length < 2) {
+      isValid = false;
+      window.toast.error('Name must be at least 2 characters long');
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      isValid = false;
+      window.toast.errorMessage('Please enter a valid email address');
+    }
+
+    // Password validation (only if password fields are visible)
+    if (editPwd.checked) {
+      if (password.length < 8) {
+        isValid = false;
+        window.toast.errorMessage('Password must be at least 8 characters long');
+      }
+      if (password !== confirmPassword) {
+        isValid = false;
+        window.toast.errorMessage('Passwords do not match');
+      }
+    }
+
+    return isValid;
+  }
+
   form.addEventListener('submit', function(event) {
     event.preventDefault();
 
+    if (!validateForm()) {
+      return; // Stop form submission if validation fails
+    }
+
     // Gather form data
     const formData = new FormData(form);
-
-    // Debugging: Print out formData content
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
 
     // Make the Axios request
     axios.patch('/user/profile/update', formData, {
@@ -26,17 +60,16 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(response => {
       console.log('Profile updated successfully:', response.data);
-      alert('Profile updated successfully');
-window.location = "/user/profile"
-      // Optionally, you can redirect the user or update the UI to reflect the changes
+      window.toast.success('Profile updated successfully');
+      setTimeout(() => {
+        window.location.href = "/user/profile";
+      }, 1000);
     })
     .catch(error => {
       console.error('There was an error updating the profile:', error);
-      alert('There was an error updating the profile');
-      // Optionally, handle the error, e.g., display an error message
+      window.toast.error(error);
     });
   });
-
   // jQuery code for highlighting the current menu item
   $(document).ready(function() {
     // Get the current URL

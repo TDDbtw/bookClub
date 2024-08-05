@@ -6,9 +6,14 @@ const totalAmount = document.querySelector('[name=total_amount]').value;
 let user = document.getElementById('userInput').value;
 let selectedPayment = '';
 let paymentMethod = '';
-if (paymentMethod === "") {
+if (paymentMethod === "" ) {
   document.getElementById('placeOrderBtn').disabled = true;
   document.getElementById("paymentError").innerHTML = "Please select a Payment option";
+}
+if (!JSON.parse(user).billing_address|| !JSON.parse(user).shipping_address) {
+
+  document.getElementById('placeOrderBtn').disabled = true;
+  document.getElementById("addressError").innerHTML = "Add / Select Shipping && Billing Address";
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -184,13 +189,14 @@ function handleRazorpayFailure(orderDetails) {
     },
   })
     .then(response => {
-      if (response.data.success) {
+      if (response.data.success==false) {
         Swal.fire({
           title: 'Payment Failed',
           text: 'Your payment failed. Please try again later.',
           icon: 'error',
           confirmButtonText: 'OK'
         });
+              window.location.href = '/order';
       } else {
         console.error("Error in handling failed order:", response.data.error);
       }

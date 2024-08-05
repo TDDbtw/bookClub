@@ -46,8 +46,11 @@ document.getElementById('input1').addEventListener('change', function (event) {
         })
           .then(response => {
             if (response.ok) {
-              alert("photo updated successfully")
+
+          window.toast.success("photo updated successfully");
+           setTimeout(() => {
               window.location.reload();
+            }, 1000);
               
             } else {
               console.error('Failed to submit cropped image.');

@@ -23,6 +23,9 @@
       .then(function(response) {
         console.log('Address updated successfully:', response.data.message || response.data.error);
         window.toast.success('Address updated successfully')
+       setTimeout(() => {
+          window.location.href = "/user/address/new";
+        }, 1000);
       })
       .catch(function(error) {
         console.error('Error updating address:', error);
