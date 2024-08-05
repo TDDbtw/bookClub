@@ -20,9 +20,7 @@ const renderUserCouponList = asyncHandler(async (req, res, next) => {
 const applyCoupon = asyncHandler(async (req, res, next) => {
   let { couponCode, user, cart } = req.body;
   user = await User.findById(req.body.user);
-  console.log(`user is ${user}`.red);
-
-  const coupon = await Coupon.findOne({ code: couponCode });
+const coupon = await Coupon.findOne({ code: new RegExp(`^${couponCode}$`, 'i') });
 
   if (!coupon) {
     return res.status(400).json({ success: false, message: 'Invalid coupon code' });
@@ -88,7 +86,6 @@ const applyCouponFun = async (couponCode, userId, totalAmount) => {
   if (coupon.limit <= 0) {
     throw new Error("Coupon usage limit reached");
   }
-
   if (totalAmount < coupon.minAmt) {
     throw new Error(`Minimum order amount for this coupon is ${coupon.minAmt}`);
   }
@@ -107,8 +104,7 @@ const removeCoupon = asyncHandler(async (req, res, next) => {
   let { couponCode, user } = req.body;
   user = await User.findById(user);
 
-  const coupon = await Coupon.findOne({ code: couponCode });
-
+const coupon = await Coupon.findOne({ code: new RegExp(`^${couponCode}$`, 'i') });
   if (!coupon) {
     return res.status(400).json({ success: false, message: 'Invalid coupon code' });
   }
@@ -131,6 +127,6 @@ const removeCoupon = asyncHandler(async (req, res, next) => {
 module.exports = {
   applyCoupon,
   renderUserCouponList,
-  applyCouponFun,
+  // applyCouponFun,
   removeCoupon,
 };

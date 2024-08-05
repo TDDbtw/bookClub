@@ -30,7 +30,8 @@ console.log(`${productId}`.yellow)
       await wishlist.save();
     return res.status(200).send('Item added to wishlist');
     } else {
-      return res.status(400).send('Item already in wishlist');
+
+    next(new ErrorResponse("Item already in wishlist", 400));
     }
   } catch (error) {
     console.error(error);

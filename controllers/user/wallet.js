@@ -6,11 +6,6 @@ const { formatDate } = require("../../utils/date")
 const colors = require("colors")
 const paypal = require('@paypal/checkout-server-sdk')
 
-// Ensure environment variables are set
-// if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
-//   console.error('PayPal credentials are not set in environment variables.'.red);
-//   process.exit(1);
-// }
 
 const environment = new paypal.core.SandboxEnvironment(
   process.env.PAYPAL_CLIENT_ID,
@@ -20,7 +15,7 @@ let client = new paypal.core.PayPalHttpClient(environment);
 
 const getWallet = asyncHandler(async (req, res, next) => {
   const ID = process.env.PAYPAL_CLIENT_ID;
-  const PAGE_SIZE = 2; // Number of transactions per page
+  const PAGE_SIZE = 4; // Number of transactions per page
   const page = parseInt(req.query.page) || 1;
   const skip = (page - 1) * PAGE_SIZE;
 

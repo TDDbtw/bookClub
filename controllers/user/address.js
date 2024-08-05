@@ -122,10 +122,6 @@ console.log(`${req.body.user}`.cyan)
   })
 
 const test = asyncHandler(async (req, res, next) => {
-  // const countryName = req.query.country
-  // const country = countriesData.countries.find(
-    //   (country) => country.name === countryName
-    // )
   let addressId = ""
   if (req.query.billing_address) {
     console.log(`billing address is${req.query.billing_address}`)
@@ -146,18 +142,6 @@ const test = asyncHandler(async (req, res, next) => {
   console.log(user)
 
   res.status(200)
-
-  // if (country) {
-    //   state = country.states
-    //   res.send(state)
-    // }
-  // console.log(`billing address: ${billing_address}`)
-  // // user.billing_address._id = billing_address
-  // user.billing_address = address
-  // // user.shipping_address = address
-  // // res.json(user)
-  // // console.log(`user is ${user}`)
-  // console.log(address)
 })
 
 module.exports = {

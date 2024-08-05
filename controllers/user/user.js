@@ -67,29 +67,86 @@ const total = asyncHandler(async (req, res, next) => {
 
 // Update profile
 const updateProfile = asyncHandler(async (req, res) => {
-console.log(`${JSON.stringify(req.body.form)}`)
-   const userId = req.user._id;
+  console.log(`Request body: ${JSON.stringify(req.body)}`);
+  
+  const userId = req.user._id;
   const { name, email, password } = req.body;
-  const user = await User.findById(userId);
 
+  // Find the user
+  const user = await User.findById(userId);
   if (!user) {
-    res.status(404).json({ error: 'User not found' });
-    return;
+    return res.status(404).json({ error: 'User not found' });
   }
 
-  user.name = name || user.name;
-  user.email = email || user.email;
+  // Validate and update name
+  if (name) {
+    if (name.length < 2 || name.length > 50) {
+      return res.status(400).json({ error: 'Name must be between 2 and 50 characters' });
+    }
+    user.name = name.trim();
+  }
+
+  // Validate and update email
+  if (email && email !== user.email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({ error: 'Email already in use' });
+    }
+    user.email = email.toLowerCase();
+  }
+
+  // Update password if provided
   if (password) {
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
     user.password = password;
   }
+
+  // Update avatar if file is provided
   if (req.file) {
-    
     user.avatar = req.file.path.substring(6);
   }
 
+  // Save the updated user
   await user.save();
-  res.json({ success: true, user });
+
+  // Return the updated user without sensitive information
+  const updatedUser = user.toObject();
+  delete updatedUser.password;
+
+  res.json({ success: true, user: updatedUser });
 });
+
+
+// const updateProfile = asyncHandler(async (req, res) => {
+// console.log(`${JSON.stringify(req.body.form)}`)
+//    const userId = req.user._id;
+//   const { name, email, password } = req.body;
+//   const user = await User.findById(userId);
+
+//   if (!user) {
+//     res.status(404).json({ error: 'User not found' });
+//     return;
+//   }
+
+//   user.name = name || user.name;
+//   user.email = email || user.email;
+//   if (password) {
+//     user.password = password;
+//   }
+//   if (req.file) {
+    
+//     user.avatar = req.file.path.substring(6);
+//   }
+
+//   await user.save();
+//   res.json({ success: true, user });
+// });
 
 module.exports = {
   updateUsers,
