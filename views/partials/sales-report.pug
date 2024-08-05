@@ -1,0 +1,105 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Sales Report
+  body
+    .container
+      header
+        h1 Sales Report
+        p.date Generated on #{new Date().toLocaleDateString()}
+
+      table
+        thead
+          tr
+            th Product Name
+            th Total Sales
+            th Total Revenue
+            th Total Discount
+            th Net Revenue
+            th Cancelled Orders
+            th Returned Orders
+        tbody
+          each item in salesData
+            tr
+              td= item.productDetails.name
+              td= item.totalSales
+              td $#{item.totalRevenue.toFixed(2)}
+              td $#{item.totalDiscount.toFixed(2)}
+              td $#{item.netRevenue.toFixed(2)}
+              td #{item.cancelledOrders} (#{item.cancelledQuantity} items)
+              td #{item.returnedOrders} (#{item.returnedQuantity} items)
+        tfoot
+          tr.total-row
+            td Total
+            td= salesData.reduce((sum, item) => sum + item.totalSales, 0)
+            td $#{salesData.reduce((sum, item) => sum + item.totalRevenue, 0).toFixed(2)}
+            td $#{salesData.reduce((sum, item) => sum + item.totalDiscount, 0).toFixed(2)}
+            td $#{salesData.reduce((sum, item) => sum + item.netRevenue, 0).toFixed(2)}
+            td #{salesData.reduce((sum, item) => sum + item.cancelledOrders, 0)} (#{salesData.reduce((sum, item) => sum + item.cancelledQuantity, 0)} items)
+            td #{salesData.reduce((sum, item) => sum + item.returnedOrders, 0)} (#{salesData.reduce((sum, item) => sum + item.returnedQuantity, 0)} items)
+
+      footer
+        p © #{new Date().getFullYear()} Your Company Name. All rights reserved.
+
+  style.
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    header {
+      background-color: #2c3e50;
+      color: #ffffff;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .date {
+      font-style: italic;
+      margin-top: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #ffffff;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #3498db;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .total-row {
+      font-weight: bold;
+      background-color: #e6f3ff;
+    }
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #777;
+    }
