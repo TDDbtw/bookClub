@@ -1,0 +1,150 @@
+  .main-content {
+    flex: 1;
+    background: #0f2a20;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 30px;
+    height: auto; /* Changed from fixed height */
+    min-height: 64vh;
+  }
+
+  .order-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .order-table th, .order-table td {
+    padding: 15px;
+    text-align: left;
+    background-color: #1a4734;
+  }
+
+  .order-table th {
+    background-color: #143c2b;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .order-table tr {
+    transition: all 0.3s ease;
+  }
+
+  .order-table tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  .order-table tr td:first-child, .order-table tr th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+
+  .order-table tr td:last-child, .order-table tr th:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  .order-details-btn {
+    background-color: #2d6a4f;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .order-details-btn:hover {
+    background-color: #40916c;
+  }
+  /* Responsive styles */
+  @media screen and (max-width: 1024px) {
+    .main-content {
+      padding: 20px;
+    }
+    
+    .order-table th, .order-table td {
+      padding: 12px;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    .order-table {
+      font-size: 14px;
+    }
+    
+    .order-details-btn {
+      padding: 6px 12px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .order-table, .order-table tbody, .order-table tr, .order-table td {
+      display: block;
+      width: 100%;
+    }
+    
+    .order-table tr {
+      margin-bottom: 15px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .order-table td {
+      text-align: right;
+      padding-left: 50%;
+      position: relative;
+    }
+    
+    .order-table td:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 6px;
+      width: 45%;
+      padding-right: 10px;
+      white-space: nowrap;
+      text-align: left;
+      font-weight: bold;
+    }
+    
+    .order-table thead {
+      display: none;
+    }
+    
+    .order-table tr td:first-child,
+    .order-table tr td:last-child {
+      border-radius: 0;
+    }
+    
+    .order-details-btn {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .main-content {
+      padding: 15px;
+    }
+    
+    .order-table td {
+      padding: 10px;
+      padding-left: 45%;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .order-table td {
+      font-size: 13px;
+    }
+    
+    .order-table td:before {
+      font-size: 11px;
+    }
+    
+    .order-details-btn {
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+  }

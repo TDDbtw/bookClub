@@ -1,107 +1,10 @@
 include ../partials/navbar
 link(rel='stylesheet', href='../../stylesheet/user/profile.css')
-title My Orders
-
-style.
-  .main-content {
-    flex: 1;
-    background: #0f2a20;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    padding: 30px;
-    height:64vh;
-  }
-  .order-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-  }
-  .order-table th, .order-table td {
-    padding: 15px;
-    text-align: left;
-    background-color: #1a4734;
-  }
-  .order-table th {
-    background-color: #143c2b;
-    font-weight: 600;
-    color: #ffffff;
-  }
-  .order-table tr {
-    transition: all 0.3s ease;
-  }
-  .order-table tr:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  }
-  .order-table tr td:first-child, .order-table tr th:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-  }
-  .order-table tr td:last-child, .order-table tr th:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
-  .order-details-btn {
-    background-color: #2d6a4f;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-  .order-details-btn:hover {
-    background-color: #40916c;
-  }
-  .order-empty {
-    text-align: center;
-    padding: 50px 0;
-  }
-  .no-order {
-    font-size: 1.5rem;
-    color: #95d5b2;
-    margin-bottom: 20px;
-  }
-  .shop-button {
-    display: inline-block;
-    background-color: #40916c;
-    color: white;
-    padding: 12px 25px;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-  .shop-button:hover {
-    background-color: #52b788;
-  }
-    .pagination {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .pagination a {
-      display: inline-block;
-      padding: 8px 16px;
-      text-decoration: none;
-      color: #000;
-      background-color: #f1f1f1;
-      border-radius: 5px;
-      margin: 0 5px;
-    }
-
-    .pagination a:hover {
-      background-color: #ddd;
-    }
-
-    .pagination span {
-      display: inline-block;
-      padding: 8px 16px;
-    }
-
+link(rel='stylesheet', href='../../stylesheet/user/orderList.css')
 link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap')
-
+title My Orders
 .container
   h1.page-title My Orders
-
   .account-layout
     .account-menu
       ul
@@ -124,6 +27,22 @@ link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:wgh
               th Status
               th Actions
           tbody
+            each order in orders
+              tr
+                td(data-label="Order ID")= order._id
+                td#createdDate(data-label="Order Date" data-orderdate=order.created_at)= moment(order.created_at).format('MM/DD/YYYY')
+                td(data-label="Product(s)")
+                  if order.items.length < 2
+                    = order.items[0].name
+                  else
+                    | #{order.items[0].name}, #{order.items[1].name} 
+                    - let len = order.items.length - 2
+                    | and #{len} more..
+                td(data-label="Total") $#{order.totalAmount.toFixed(2)}
+                td(data-label="Payment Method")= order.payment_method
+                td(data-label="Status")= order.returnRequest.status ? `Return ${order.returnRequest.status}` : order.status
+                td(data-label="Actions")
+                  a.order-details-btn.d-flex(href=`/user/order/${order._id}`) View Details
             each order in orders
               tr
                 td= order._id
