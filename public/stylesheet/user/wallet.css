@@ -1,139 +1,168 @@
-  body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #081c15;
-    color: #e0e0e0;
-    line-height: 1.6;
-  }
-  .container {
-    max-width: 90vw;
-    margin: 40px auto;
-    padding: 0 20px;
-  }
-  .page-title {
-    font-size: 2rem;
-    color: #ffffff;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  .account-layout {
-    display: flex;
-    gap: 30px;
-  }
-  .account-menu {
-    flex: 0 0 250px;
-    background: #0f2a20;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    padding: 20px;
-  }
-  .account-menu ul {
-    list-style: none;
-    padding: 0;
-  }
-  .account-menu li {
-    margin-bottom: 10px;
-  }
-  .account-menu a {
-    display: block;
-    padding: 10px 15px;
-    color: #b8c9c5;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  .account-menu a:hover, .account-menu a.active {
-    background-color: #1a4734;
-    color: #ffffff;
-  }
-  .main-content {
-    flex: 1;
-    background: #0f2a20;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    padding: 30px;
-  }
-  .wallet-balance, .wallet-actions, .transaction-history {
-    background: #1a4734;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  .wallet-balance h2, .wallet-actions h2, .transaction-history h2 {
-    color: #ffffff;
-    margin-bottom: 15px;
-  }
-  .balance {
-    font-size: 2rem;
-    color: #52b788;
-  }
-  .add-funds-form {
-    display: flex;
-    gap: 10px;
-  }
-  #amount {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background: #2d6a4f;
-    color: #ffffff;
-  }
-  #amount::placeholder {
-    color: #b8c9c5;
-  }
-  #paypal-button-container {
-    background-color: none;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  #paypal-button-container:hover {
-    background-color: #52b788;
-  }
-  #amountError {
-    color: #e74c3c;
-    font-size: 0.9rem;
-    margin-top: 5px;
-  }
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-  }
-  th, td {
-    padding: 15px;
-    text-align: left;
-    background-color: #2d6a4f;
-  }
-  th {
-    background-color: #1a4734;
-    font-weight: 600;
-    color: #ffffff;
-  }
-  tr {
-    transition: all 0.3s ease;
-  }
-  tr:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  }
-  tr td:first-child, tr th:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-  }
-  tr td:last-child, tr th:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
-  .credit {
-    color: #52b788;
-  }
-  .debit {
-    color: #e74c3c;
-  }
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #081c15;
+  color: #e0e0e0;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 90%;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.page-title {
+  font-size: 2rem;
+  color: #ffffff;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.account-layout {
+  display: flex;
+  gap: 30px;
+}
+
+.account-menu {
+  flex: 0 0 250px;
+  background: #0f2a20;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  padding: 20px;
+}
+
+.account-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.account-menu li {
+  margin-bottom: 10px;
+}
+
+.account-menu a {
+  display: block;
+  padding: 10px 15px;
+  color: #b8c9c5;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.account-menu a:hover, .account-menu a.active {
+  background-color: #1a4734;
+  color: #ffffff;
+}
+
+.main-content {
+  flex: 1;
+  background: #0f2a20;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  padding: 30px;
+  height: auto;
+  min-height: 64vh;
+}
+
+.wallet-balance, .wallet-actions, .transaction-history {
+  background: #1a4734;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.wallet-balance h2, .wallet-actions h2, .transaction-history h2 {
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.balance {
+  font-size: 2rem;
+  color: #52b788;
+}
+
+.add-funds-form {
+  display: flex;
+  gap: 10px;
+}
+
+#amount {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #2d6a4f;
+  color: #ffffff;
+}
+
+#amount::placeholder {
+  color: #b8c9c5;
+}
+
+#paypal-button-container {
+  background-color: #2d6a4f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#paypal-button-container:hover {
+  background-color: #40916c;
+}
+
+#amountError {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+table th, table td {
+  padding: 15px;
+  text-align: left;
+  background-color: #1a4734;
+}
+
+table th {
+  background-color: #143c2b;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+table tr {
+  transition: all 0.3s ease;
+}
+
+table tr:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+table tr td:first-child, table tr th:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+table tr td:last-child, table tr th:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.credit {
+  color: #52b788;
+}
+
+.debit {
+  color: #e74c3c;
+}
 
 .pagination {
   margin-top: 20px;
@@ -144,55 +173,128 @@
   display: inline-block;
   padding: 8px 16px;
   text-decoration: none;
-  color: #000;
-  background-color: #f1f1f1;
+  color: #e0e0e0;
+  background-color: #1a4734;
   border-radius: 5px;
   margin: 0 5px;
 }
 
 .pagination a:hover {
-  background-color: #ddd;
+  background-color: #2d6a4f;
 }
 
 .pagination span {
   display: inline-block;
   padding: 8px 16px;
-}
-.container {
-  max-width: 100%;
-  padding: 20px;
+  color: #e0e0e0;
 }
 
-.account-layout {
-  flex-direction: column;
-}
-
-.account-menu {
-  flex: 0 0 100%;
-  margin-bottom: 20px;
-}
-
-.main-content {
-  flex: 1;
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 90vw;
-    margin: 40px auto;
+/* Responsive styles */
+@media screen and (max-width: 1024px) {
+  .main-content {
+    padding: 20px;
   }
+  
+  table th, table td {
+    padding: 12px;
+  }
+}
 
+@media screen and (max-width: 900px) {
+  table {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
   .account-layout {
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .account-menu {
-    flex: 0 0 250px;
+    flex: 0 0 100%;
+    margin-bottom: 20px;
+  }
+
+  table, table tbody, table tr, table td {
+    display: block;
+    width: 100%;
+  }
+  
+  table tr {
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+  
+  table td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  table thead {
+    display: none;
+  }
+  
+  table tr td:first-child,
+  table tr td:last-child {
+    border-radius: 0;
   }
 }
-@media (min-width: 576px) {
-  .container {
-    max-width: 540px;
-    margin: 30px auto;
+
+@media screen and (max-width: 600px) {
+  .main-content {
+    padding: 15px;
+  }
+  
+  table td {
+    padding: 10px;
+    padding-left: 45%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .wallet-balance h2, .wallet-actions h2, .transaction-history h2 {
+    font-size: 1.2rem;
+  }
+
+  .balance {
+    font-size: 1.5rem;
+  }
+
+  table td {
+    font-size: 13px;
+  }
+  
+  table td:before {
+    font-size: 11px;
+  }
+
+  .add-funds-form {
+    flex-direction: column;
+  }
+
+  #amount {
+    margin-bottom: 10px;
+  }
+
+  #paypal-button-container {
+    width: 100%;
   }
 }
