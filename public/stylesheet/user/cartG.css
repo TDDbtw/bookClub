@@ -7,83 +7,8 @@ body {
     padding: 0;
 }
 
-/* /1* Header Styles *1/ */
-/* header { */
-/*     background-color: #142821; */
-/*     padding: 1.5rem 0; */
-/*     text-align: center; */
-/* } */
-
-/* .container { */
-/*     max-width: 1200px; */
-/*     margin: 0 auto; */
-/*     padding: 0 1rem; */
-/*     display: flex; */
-/*     justify-content: space-between; */
-/*     align-items: center; */
-/* } */
-
-/* .logo { */
-/*     color: #fff; */
-/*     font-size: 2rem; */
-/*     font-weight: bold; */
-/*     text-decoration: none; */
-/* } */
-
-/* nav ul { */
-/*     list-style: none; */
-/*     margin: 0; */
-/*     padding: 0; */
-/*     display: flex; */
-/* } */
-
-/* nav li { */
-/*     margin: 0 1rem; */
-/* } */
-
-/* nav a { */
-/*     color: #fff; */
-/*     text-decoration: none; */
-/*     font-size: 1.1rem; */
-/* } */
-
-/* .user-actions { */
-/*     display: flex; */
-/*     align-items: center; */
-/* } */
-
-/* .search { */
-/*     display: flex; */
-/*     margin-right: 1rem; */
-/* } */
-
-/* .search input { */
-/*     background-color: #142821; */
-/*     border: 1px solid #3d4a43; */
-/*     border-radius: 5px 0 0 5px; */
-/*     padding: 0.5rem; */
-/*     color: #fff; */
-/*     margin-right: -1px; /1* Adjust spacing between input and button *1/ */
-/* } */
-
-/* .search button { */
-/*     background-color: #212f2a; */
-/*     border: 1px solid #3d4a43; */
-/*     border-radius: 0 5px 5px 0; */
-/*     color: #fff; */
-/*     padding: 0.5rem 0.8rem; */
-/*     cursor: pointer; */
-/* } */
-
-/* .user-icon { */
-/*     color: #fff; */
-/*     font-size: 1.5rem; */
-/*     margin-left: 1rem; */
-/* } */
-
-/* Main Content Styles */
 main {
-    padding:5px; 
+    padding: 5px; 
 }
 
 h1 {
@@ -96,7 +21,7 @@ h1 {
     display: flex;
     flex-direction: column; 
     align-items: center; 
-    padding:2rem;
+    padding: 2rem;
 }
 
 .cart-content {
@@ -105,7 +30,6 @@ h1 {
     align-items: flex-start; 
     width: 100%;
     gap: 2rem;
-    /* background-color:red; */ 
 }
 
 .cart-table {
@@ -208,34 +132,106 @@ h1 {
     width: 100%;
 }
 
-/* Responsive Design: Adjust layout for smaller screens */
-@media (max-width: 900px) {
+.productRef {
+    text-decoration: none;
+    color: white;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #888;
+    font-size: 15px;
+    margin-right: 5px;
+}
+
+.current-price {
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .cart-table {
+        max-width: 65%;
+    }
+    .summary {
+        max-width: 35%;
+    }
+}
+
+@media (max-width: 992px) {
     .cart-content {
-        flex-direction: column; 
+        flex-direction: column;
         align-items: center;
     }
-
-    .cart-table {
-        max-width: 100%; 
+    .cart-table, .summary {
+        max-width: 100%;
     }
-
     .summary {
-        max-width: 100%; 
         margin-top: 2rem;
     }
 }
 
-.productRef{
-text-decoration: none;
-color:white;
-}
-.original-price {
-  text-decoration: line-through;
-  color: #888;
-  font-size:15px;
-  margin-right: 5px;
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    .cart-container {
+        padding: 1rem;
+    }
+    .cart-table th, .cart-table td {
+        padding: 0.75rem;
+    }
 }
 
-.current-price {
-  font-weight: bold;
+@media (max-width: 576px) {
+    .cart-table {
+        font-size: 0.9rem;
+    }
+    .cart-table img {
+        max-width: 60px;
+        max-height: 60px;
+    }
+    .quantity-controls input {
+        width: 30px;
+    }
+    .remove-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    .checkout-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.75rem;
+    }
+    .cart-table {
+        font-size: 0.8rem;
+    }
+    .cart-table th, .cart-table td {
+        padding: 0.5rem;
+    }
+    .cart-table img {
+        max-width: 50px;
+        max-height: 50px;
+        margin-right: 0.5rem;
+    }
+    .product-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .quantity-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .quantity-controls input {
+        margin: 0.3rem 0;
+    }
+    .remove-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
 }
