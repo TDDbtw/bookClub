@@ -29,6 +29,11 @@ link(rel='stylesheet' href='../stylesheet/cropper.css')
                 p
                   strong Email: 
                   | #{user.email}
+
+                p
+                  strong Referral ID: 
+                  | #{user.referralCode}
+                  small (Invite People with this referral code and get $5 )
                 .mt-3
                   a.btn.btn-sm.btn-primary(href='/user/profile/edit') Edit
                   a.btn.btn-sm.btn-secondary.ms-2(href='/user/profile/edit') Change Password
