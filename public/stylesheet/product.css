@@ -232,3 +232,30 @@ body {
     color: #FFF;
     margin-bottom: 10px;
 }
+.two {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 0 20px;
+}
+
+#productCard {
+  width: 100%;
+  max-width: 410px;
+  height: auto;
+  margin: 0 auto 20px;
+}
+
+.card-button {
+  width: 100%;
+  max-width: 371.562px;
+}
+
+@media (min-width: 768px) {
+  .two {
+    margin-top: 4rem;
+  }
+
+  #productCard {
+    margin: 0 0 20px;
+  }
+}
