@@ -33,7 +33,8 @@ const createOrder = async (amount) => {
     'intent': 'CAPTURE',
     'purchase_units': [{
       'amount': {
-        'currency_code': 'USD',
+        // 'currency_code': 'USD',
+        'currency_code': 'INR',
         'value': amount
       }
     }]
