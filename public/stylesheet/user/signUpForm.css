@@ -4,25 +4,27 @@ body {
   padding: 0;
   background-color: #081c15 !important;
 }
+
 .signup-form-container {
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
   align-items: center;
   width: 70%;
-  /* height: 100vh; */
   background-color: #081c15;
 }
+
 .signUp-Head {
   color: #3bbce3;
   font-family: Poppins;
   font-size: 43.732px;
   font-style: normal;
   font-weight: 700;
-  line-height: 34.986px; /* 80% */
+  line-height: 34.986px;
   margin-top: 3px;
   margin-bottom: 5rem;
 }
+
+
 .namediv {
   display: flex;
 }
@@ -81,9 +83,9 @@ input[type="checkbox"] {
   flex-shrink: 0;
   border-radius: 127.917px;
   background: linear-gradient(
-    to right,
-    rgba(15, 163, 177, 0.83),
-    rgba(102, 204, 221, 0.83)
+  to right,
+  rgba(15, 163, 177, 0.83),
+  rgba(102, 204, 221, 0.83)
   );
 }
 #loginButton {
@@ -95,9 +97,9 @@ input[type="checkbox"] {
   flex-shrink: 0;
   border-radius: 127.917px;
   background: linear-gradient(
-    to right,
-    rgba(15, 163, 177, 0.83),
-    rgba(102, 204, 221, 0.83)
+  to right,
+  rgba(15, 163, 177, 0.83),
+  rgba(102, 204, 221, 0.83)
   );
 }
 #googleButton {
@@ -114,9 +116,9 @@ input[type="checkbox"] {
 
 #formButton:hover {
   background: linear-gradient(
-    to right,
-    rgba(15, 163, 177, 0.83),
-    rgba(0, 132, 143, 0.83)
+  to right,
+  rgba(15, 163, 177, 0.83),
+  rgba(0, 132, 143, 0.83)
   );
 }
 
@@ -170,16 +172,16 @@ p {
   flex-shrink: 0;
   border-radius: 127.917px;
   background: linear-gradient(
-    to right,
-    rgba(15, 163, 177, 0.83),
-    rgba(102, 204, 221, 0.83)
+  to right,
+  rgba(15, 163, 177, 0.83),
+  rgba(102, 204, 221, 0.83)
   );
 }
 #otpButton:hover {
   background: linear-gradient(
-    to right,
-    rgba(15, 163, 177, 0.83),
-    rgba(0, 132, 143, 0.83)
+  to right,
+  rgba(15, 163, 177, 0.83),
+  rgba(0, 132, 143, 0.83)
   );
 }
 #newFormButton {
@@ -192,29 +194,123 @@ p {
   flex-shrink: 0;
   border-radius: 127.917px;
   background: linear-gradient(
-    to right,
-    rgba(15, 163, 177, 0.83),
-    rgba(102, 204, 221, 0.83)
-      /* rgba(15, 163, 177, 0.83),
-    rgba(8, 13, 14, 0.83) */
+  to right,
+  rgba(15, 163, 177, 0.83),
+  rgba(102, 204, 221, 0.83)
+  /* rgba(15, 163, 177, 0.83),
+  rgba(8, 13, 14, 0.83) */
   );
 }
 
 #newFormButton:hover {
   background: linear-gradient(
-    to right,
-    rgba(15, 163, 177, 0.83),
-    rgba(0, 132, 143, 0.83)
+  to right,
+  rgba(15, 163, 177, 0.83),
+  rgba(0, 132, 143, 0.83)
   );
 }
 
 .imgDiv{
-  width:auto%;
+  width: 80%;
+  min-height: 60%;
 } 
-img{
-width:inderit;
-}
 .sideImage{
-  width: 100%;
+  margin-left:12rem;
+  width: 74%;
   height: auto;
+}
+.mainC {
+  display: grid;
+  align-items:center;
+}
+@media only screen and (min-width: 1201px) {
+  .mainC {
+    display: flex;
+    align-items:center;
+  }
+  .imgDiv {
+    flex: 1;
+  }
+  .signup-form-container {
+    flex: 1;
+  }
+}
+
+/* Medium devices (tablets, less than 1200px) */
+@media only screen and (max-width: 1200px) {
+  .mainC {
+    grid-template-columns: 1fr 1fr;
+    align-items:center;
+  }
+  .sideImage {
+    max-width: 100%;
+    /* object-fit: cover; */
+  }
+  .signup-form-container {
+    width: 100%;
+  }
+}
+
+/* Small devices (landscape tablets, less than 1024px) */
+@media only screen and (max-width: 1024px) {
+  .mainC {
+    grid-template-columns: 1fr;
+  }
+  .imgDiv {
+    display: none;
+  }
+  .signup-form-container {
+    width: 100vw;
+  }
+  #formButton,
+  #loginButton,
+  #googleButton {
+    height: 50px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Extra small devices (portrait tablets and large phones, less than 768px) */
+@media only screen and (max-width: 768px) {
+  .signup-form-container {
+    width: 100%;
+  }
+  .signUp-Head {
+    font-size: 36px;
+    margin-bottom: 4rem;
+  }
+  .signUpForm {
+    width: 90%;
+  }
+  #formButton,
+  #loginButton,
+  #googleButton {
+    height: 50px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Extra extra small devices (phones, less than 480px) */
+@media only screen and (max-width: 480px) {
+  .signup-form-container {
+    width: 95%;
+  }
+  .signUp-Head {
+    font-size: 32px;
+    margin-bottom: 3rem;
+  }
+  .signUpForm {
+    width: 100%;
+    padding: 15px;
+  }
+  .form-input[type="text"],
+  .form-input[type="email"],
+  .form-input[type="password"] {
+    height: 45px;
+  }
+  #formButton,
+  #loginButton,
+  #googleButton {
+    height: 50px;
+  }
 }

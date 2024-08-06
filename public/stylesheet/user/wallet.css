@@ -158,3 +158,35 @@
   display: inline-block;
   padding: 8px 16px;
 }
+.container {
+  max-width: 100%;
+  padding: 20px;
+}
+
+.account-layout {
+  flex-direction: column;
+}
+
+.account-menu {
+  flex: 0 0 100%;
+  margin-bottom: 20px;
+}
+
+.main-content {
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 90vw;
+    margin: 40px auto;
+  }
+
+  .account-layout {
+    flex-direction: row;
+  }
+
+  .account-menu {
+    flex: 0 0 250px;
+  }
+}
