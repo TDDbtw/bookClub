@@ -1,4 +1,3 @@
-
 body {
     background-color: #081c15;
     color: #fff;
@@ -11,12 +10,15 @@ body {
     padding: 2rem;
     max-width: 1200px;
     margin: 2px auto;
-    margin-left:15px;
 }
-.address-item{
-  display:flex;
-  gap:1;
+
+.address-item {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
 }
+
 .account-info,
 .address-selection,
 .address-form,
@@ -80,20 +82,15 @@ button {
 }
 
 #placeOrderBtn {
-  padding:2px; 
-  margin-left:1rem;
-  padding-left:12px; 
-  padding-right:12px; 
+    padding: 0.8rem 1.5rem;
+    margin-left: 0;
 }
-.right{
-display:flex;
-position:absolute;
-top:22px; 
-right:61px;
-flex-direction:column;
-width:26%;
 
+.right {
+    width: 100%;
+    margin-top: 2rem;
 }
+
 #payment_method {
     width: 100%;
     padding: 0.5rem;
@@ -131,109 +128,259 @@ width:26%;
     font-weight: bold;
 }
 
-@media (max-width: 768px) {
-    .checkout-container {
-        padding: 1rem;
-    }
-    
-    button, .btn-secondary {
-        width: 100%;
-        margin-top: 1rem;
-    }
-}
-
-
 .payment-method-inline label {
     display: inline-block;
     margin-right: 20px;
 }
+
 .payment-method-inline input[type="radio"] {
     margin-right: 5px;
 }
 
-
 .coupon-section {
-  background-color:#1b332b;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 20px;
-  color:white;
+    background-color: #1b332b;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    color: white;
 }
 
 .coupon-section h2 {
-  margin-bottom: 15px;
-  color: #333;
-
-  color:white;
+    margin-bottom: 15px;
+    color: white;
 }
 
 .coupon-input-group {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
 }
 
 #couponCode {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
 }
 
 .btn {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .btn-apply {
-  background-color: #28a745;
-  color: white;
+    background-color: #28a745;
+    color: white;
 }
 
 .btn-remove {
-  background-color: #dc3545;
-  color: white;
+    background-color: #dc3545;
+    color: white;
 }
 
 .btn-clear {
-  background-color: #ffc107;
-  color: #212529;
+    background-color: #ffc107;
+    color: #212529;
 }
 
 .btn:hover {
-  opacity: 0.9;
+    opacity: 0.9;
 }
 
 .coupon-display {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 #appliedCoupon {
-  font-weight: bold;
-  color: #28a745;
+    font-weight: bold;
+    color: #28a745;
 }
 
 #couponError {
-  color: #dc3545;
+    color: #dc3545;
 }
 
 .coupon-summary {
-  background-color:#1b332b;
-  border-radius: 4px;
-  padding: 15px;
-  color:white;
+    background-color: #1b332b;
+    border-radius: 4px;
+    padding: 15px;
+    color: white;
 }
 
 .summary-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 .summary-item:last-child {
-  margin-bottom: 0;
-  font-weight: bold;
+    margin-bottom: 0;
+    font-weight: bold;
 }
+
+/* Responsive styles */
+@media (min-width: 768px) {
+    .checkout-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .checkout-container > div:not(.right) {
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .right {
+        width: 100%;
+    }
+
+}
+
+@media (min-width: 1024px) {
+    .checkout-container > div:not(.right) {
+        width: 62%;
+    }
+
+    .right {
+        width: 32%;
+        position: sticky;
+        top: 20px;
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 767px) {
+    .checkout-container {
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn, .btn-secondary {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .coupon-input-group {
+        flex-direction: column;
+    }
+
+    .coupon-input-group button {
+        width: 100%;
+    }
+
+    .address-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .checkout-container {
+        padding: 0.5rem;
+        width: 100%;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .account-info,
+    .address-selection,
+    .address-form,
+    .payment-section,
+    .payment-method-inline,
+    .order-summary,
+    .checkout-actions,
+    .coupon-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn, .btn-secondary {
+        width: 100%;
+        margin-top: 0.5rem;
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+    }
+
+    .coupon-input-group {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .coupon-input-group button {
+        width: 100%;
+    }
+
+    .address-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .checkout-container > div:not(.right) {
+        padding: 0;
+        width: 100%;
+    }
+
+    .right {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    label {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+        padding: 0.4rem;
+        font-size: 0.9rem;
+    }
+
+    .order-summary table {
+        font-size: 0.8rem;
+    }
+
+    .order-summary th,
+    .order-summary td {
+        padding: 0.3rem;
+    }
+
+    .payment-method-inline label {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    #wallet_details,
+    #cod_details,
+    #razorpay_details {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .coupon-section h2 {
+        font-size: 1.2rem;
+    }
+
+    #couponCode {
+        padding: 0.5rem;
+    }
+
+    .summary-item {
+        font-size: 0.9rem;
+    }
+}
+

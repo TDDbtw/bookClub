@@ -13,170 +13,171 @@ html(lang='en')
     script(src='../script/confirmationModal.js' defer)
     script(src='../script/toast.js' defer)
   body
-    .container-fluid.checkout-container
-      .account-info
-        h2 Contact Information
-        p
-          strong Name:
-          |  #{user.name}
-        p
-          strong Email:
-          |  #{user.email}
-        
-      if needsAddress || user.addresses.length==0
-        .address-form#checkoutAddress
-          h2 Shipping Information
-          form#shipping(action='/user/address/new', method='post', enctype='application/x-www-form-urlencoded')
-            label(for='address') Address:
-            input(type='text', id='address', name='address', oninput='validateAddress()' required)
-            span.mt-5#addressError
-            label(for='country') Country:
-            select(name='country', id='country' data-country=countries required)
-              option(value='') Please select a Country
-              each country in countries
-                option(value=country.name)= country.name
-            span#countryError
-            label(for='state') State:
-            select(type='text', id='state', name='state', required)
-              option(value='') Please select a region, state or province.
-            span#stateError
-            label(for='city') City:
-            input(type='text', id='city', name='city', oninput='validateCity()' required)
-            span#cityError
-            label(for='zip_code') Zip Code:
-            input(type='text', oninput='validateZip()' id='zip', name='zip_code', required)
-            span#zipError
-            button#saveAddress(type='submit') Save Address
-      else if user.addresses[0] && user.addresses.length > 0
-        .address-selection
-          h2 Shipping Address
-          each address, index in user.addresses
-            .address-item
-              if user.shipping_address 
-                if user.shipping_address._id == address.id 
-                  p.mt-3(style="color: #007d99;") Current Shipping Address is  >> 
-                else if user.shipping_address._id != address.id
-                  input.ms-2.me-2#shipping_address(type='checkbox', hx-get="/user/set", hx-trigger="change", hx-target="body", name='shipping_address', value=address._id)
-                  p.me-3.mt-3.ms- set as Shipping address
-              else
-                input.ms-2.me-2#shipping_address(type='checkbox', hx-get="/user/set", hx-trigger="change", hx-target="body", name='shipping_address', value=address._id)
-                p.ms-2.me-3.mt-3.font-italic set as Shipping address
-              label.ms-2.me-2.text-italic(for=`address-${index}`)   #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
-        .address-selection
-          h2 Billing Address
-          each address, index in user.addresses
-            .address-item
-              if user.billing_address 
-                if user.billing_address._id == address.id
-                  p.mt-3(style="color: #007d99;") Current Billing Address is  >>
-                else
-                  input.ms-2.me-2#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`)
-                  p.ms-2.me-3.mt-3.font-italic set as Billing address
-              else
-                input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
-                label(for='billing_address').ms-1.me-2 Billing Address
-              label.ms-2.me-2(for=`address-${index}`)  #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
-
-      .payment-method-inline
-        h3 Select Payment Method
-        label
-          input(type='radio', name='payment-inline', value='cod')
-          |  Cash on Delivery
-          |
-          small#codMsg
-        label
-          if walletBalance < totalAmount
-            input(type='radio', name='payment-inline', value='wallet' disabled)
-            small(style='color:grey;') Wallet balance is low
-            small.ms-2(style='color:grey;')
-              | ( $#{walletBalance} )
-            small.ms-2(style='color:grey;')
-              | you need $#{(totalAmount - walletBalance).toFixed(2)} more
-          else
-            input(type='radio', name='payment-inline', value='wallet')
-            |  Wallet
-        label
-          input(type='radio', name='payment-inline', value='razorpay')
-          |   razorpay 
-
-        #wallet_details(style='display: none;')
-          p Pay from Wallet.
-          p $#{walletBalance} left
-          #result-message
-        #cod_details(style='display: none;')
-          p Pay with cash upon delivery.
-        #razorpay_details(style='display: none;')
-          p Pay with razorpay
-        #paymentError.text-warning.ms-2
+    .checkout-container
+      .main-content
+        .account-info
+          h2 Contact Information
+          p
+            strong Name:
+            |  #{user.name}
+          p
+            strong Email:
+            |  #{user.email}
           
-    .right
-      .order-summary
-        h2 Order Summary
-        table
-          thead
-            tr
-              th Product
-              th Quantity
-              th Price
-              th Total
-          tbody
-            each product in products
-              tr
-                td= product.name
-                td= product.quantity
-                td $#{product.productPrice.toFixed(2)}
-                td $#{(product.productPrice * product.quantity).toFixed(2)}
-          tfoot
-            tr
-              td(colspan='3', align='right') Subtotal:
-              td $#{cart.billTotal.toFixed(2)}
-            tr
-              td(colspan='3', align='right') Shipping:
-              td
-                if shippingTotal == 0
-                  | Free shipping
+        if needsAddress || user.addresses.length==0
+          .address-form#checkoutAddress
+            h2 Shipping Information
+            form#shipping(action='/user/address/new', method='post', enctype='application/x-www-form-urlencoded')
+              label(for='address') Address:
+              input(type='text', id='address', name='address', oninput='validateAddress()' required)
+              span.mt-5#addressError
+              label(for='country') Country:
+              select(name='country', id='country' data-country=countries required)
+                option(value='') Please select a Country
+                each country in countries
+                  option(value=country.name)= country.name
+              span#countryError
+              label(for='state') State:
+              select(type='text', id='state', name='state', required)
+                option(value='') Please select a region, state or province.
+              span#stateError
+              label(for='city') City:
+              input(type='text', id='city', name='city', oninput='validateCity()' required)
+              span#cityError
+              label(for='zip_code') Zip Code:
+              input(type='text', oninput='validateZip()' id='zip', name='zip_code', required)
+              span#zipError
+              button#saveAddress(type='submit') Save Address
+        else if user.addresses[0] && user.addresses.length > 0
+          .address-selection
+            h2 Shipping Address
+            each address, index in user.addresses
+              .address-item
+                if user.shipping_address 
+                  if user.shipping_address._id == address.id 
+                    p.mt-3(style="color: #007d99;") Current Shipping Address is  >> 
+                  else if user.shipping_address._id != address.id
+                    input.ms-2.me-2#shipping_address(type='checkbox', hx-get="/user/set", hx-trigger="change", hx-target="body", name='shipping_address', value=address._id)
+                    p.me-3.mt-3.ms- set as Shipping address
                 else
-                  | $#{shippingTotal.toFixed(2)}
-            tr
-              td(colspan='3', align='right') Tax:
-              - const tax = (0.05 * cart.billTotal).toFixed(2)
-              td $#{tax}
-            tr
-              td(colspan='3', align='right') Total:
-              td#totalAmount $#{totalAmount.toFixed(2)}
+                  input.ms-2.me-2#shipping_address(type='checkbox', hx-get="/user/set", hx-trigger="change", hx-target="body", name='shipping_address', value=address._id)
+                  p.ms-2.me-3.mt-3.font-italic set as Shipping address
+                label.ms-2.me-2.text-italic(for=`address-${index}`)   #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
+          .address-selection
+            h2 Billing Address
+            each address, index in user.addresses
+              .address-item
+                if user.billing_address 
+                  if user.billing_address._id == address.id
+                    p.mt-3(style="color: #007d99;") Current Billing Address is  >>
+                  else
+                    input.ms-2.me-2#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`)
+                    p.ms-2.me-3.mt-3.font-italic set as Billing address
+                else
+                  input#billing_address(hx-get="/user/set" type="checkbox" hx-trigger="change" name='billing_address' hx-target="body" value=`${address._id}`).ms-3
+                  label(for='billing_address').ms-1.me-2 Billing Address
+                label.ms-2.me-2(for=`address-${index}`)  #{address.address}, #{address.city}, #{address.state}, #{address.zip_code}, #{address.country}
 
-      .coupon-section
-        h2 Apply Coupon
-        .coupon-input-group
-          input#couponCode(type='text', placeholder='Enter coupon code')
-          button#applyCouponBtn.btn.btn-apply
-            i.bi.bi-tag-fill
-            |  Apply
-          button#removeCouponBtn.btn.btn-remove
-            i.bi.bi-x-circle-fill
-            |  Remove
-          button#clearCouponBtn.btn.btn-clear
-            i.bi.bi-eraser-fill
-            |  Clear
-        .coupon-display
-          span#appliedCoupon
-          span#couponError
-        .coupon-summary
-          .summary-item
-            span Discount:
-            span#discountAmount $0.00
+        .payment-method-inline
+          h3 Select Payment Method
+          label
+            input(type='radio', name='payment-inline', value='cod')
+            |  Cash on Delivery
+            |
+            small#codMsg
+          label
+            if walletBalance < totalAmount
+              input(type='radio', name='payment-inline', value='wallet' disabled)
+              small(style='color:grey;') Wallet balance is low
+              small.ms-2(style='color:grey;')
+                | ( $#{walletBalance} )
+              small.ms-2(style='color:grey;')
+                | you need $#{(totalAmount - walletBalance).toFixed(2)} more
+            else
+              input(type='radio', name='payment-inline', value='wallet')
+              |  Wallet
+          label
+            input(type='radio', name='payment-inline', value='razorpay')
+            |   razorpay 
 
-      .checkout-actions
-        form.checkoutForm(action='')
-          input#userInput(type='hidden', name='user', value=user)
-          input#CART(type='hidden', name='cart', value=cart)
-          input#ID(type='hidden', name='cart', value=CLIENT_ID)
-          input#couponData(type='hidden', name='couponData')
-          input#totalAmountInput(type='hidden', name='total_amount', value=totalAmount.toFixed(2))
-          button.btn.btn-primary#placeOrderBtn(type='submit') Place Order
-        a.btn.btn-secondary(href='/cart') Back to Cart
-        span#payment_method_Error
-        span#alerts
+          #wallet_details(style='display: none;')
+            p Pay from Wallet.
+            p $#{walletBalance} left
+            #result-message
+          #cod_details(style='display: none;')
+            p Pay with cash upon delivery.
+          #razorpay_details(style='display: none;')
+            p Pay with razorpay
+          #paymentError.text-warning.ms-2
+          
+      .right
+        .order-summary
+          h2 Order Summary
+          table
+            thead
+              tr
+                th Product
+                th Quantity
+                th Price
+                th Total
+            tbody
+              each product in products
+                tr
+                  td= product.name
+                  td= product.quantity
+                  td $#{product.productPrice.toFixed(2)}
+                  td $#{(product.productPrice * product.quantity).toFixed(2)}
+            tfoot
+              tr
+                td(colspan='3', align='right') Subtotal:
+                td $#{cart.billTotal.toFixed(2)}
+              tr
+                td(colspan='3', align='right') Shipping:
+                td
+                  if shippingTotal == 0
+                    | Free shipping
+                  else
+                    | $#{shippingTotal.toFixed(2)}
+              tr
+                td(colspan='3', align='right') Tax:
+                - const tax = (0.05 * cart.billTotal).toFixed(2)
+                td $#{tax}
+              tr
+                td(colspan='3', align='right') Total:
+                td#totalAmount $#{totalAmount.toFixed(2)}
+
+        .coupon-section
+          h2 Apply Coupon
+          .coupon-input-group
+            input#couponCode(type='text', placeholder='Enter coupon code')
+            button#applyCouponBtn.btn.btn-apply
+              i.bi.bi-tag-fill
+              |  Apply
+            button#removeCouponBtn.btn.btn-remove
+              i.bi.bi-x-circle-fill
+              |  Remove
+            button#clearCouponBtn.btn.btn-clear
+              i.bi.bi-eraser-fill
+              |  Clear
+          .coupon-display
+            span#appliedCoupon
+            span#couponError
+          .coupon-summary
+            .summary-item
+              span Discount:
+              span#discountAmount $0.00
+
+        .checkout-actions
+          form.checkoutForm(action='')
+            input#userInput(type='hidden', name='user', value=user)
+            input#CART(type='hidden', name='cart', value=cart)
+            input#ID(type='hidden', name='cart', value=CLIENT_ID)
+            input#couponData(type='hidden', name='couponData')
+            input#totalAmountInput(type='hidden', name='total_amount', value=totalAmount.toFixed(2))
+            button.btn.btn-primary#placeOrderBtn(type='submit') Place Order
+          a.btn.btn-secondary(href='/cart') Back to Cart
+          span#payment_method_Error
+          span#alerts
 
   script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js')
   script(src='../script/user/coupon.js')
