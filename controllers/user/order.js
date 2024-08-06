@@ -5,13 +5,11 @@ const moment = require("moment")
 const puppeteer = require('puppeteer');
 const Razorpay= require('razorpay')
 const User = require("../../models/users")
-const Products = require("../../models/products")
 const Cart = require("../../models/cart")
 const Wallet = require("../../models/wallet")
 const Offer = require("../../models/offer")
 const Order = require("../../models/order")
 const Coupon= require("../../models/coupon")
-const express = require("express")
 const { generateOrderInvoice} = require('../../utils/reportGenerator');
 
 
@@ -214,7 +212,8 @@ const razorpayOrder = asyncHandler(async (req, res, next) => {
 
   const options = {
     amount: Math.round(totalAmount * 100),
-    currency: 'USD',
+    // currency: 'USD',
+    currency: 'INR',
     receipt: `order_${Date.now()}`,
     payment_capture: 1,
   };
