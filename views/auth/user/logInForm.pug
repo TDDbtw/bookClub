@@ -1,11 +1,11 @@
 include ../../partials/navbar
 block rest
-  .mainC.d-flex
+  .mainC
     .imgDiv
       img.sideImage(src="../imgs/pic.png", alt="", srcset="")
     .signup-form-container.text-white
       h2.signUp-Head Log In
-      form.signUpForm#signUpForm.px-5(action="/auth/login", method="POST")
+      form.signUpForm#signUpForm.mt-5.pb-5.px-5(action="/auth/login", method="POST")
         label(for="email") E-mail *
         input#email.form-input(type="email", name="email",oninput='validateEmail()', placeholder="Enter Your E-mail..", required)
         span#emailError

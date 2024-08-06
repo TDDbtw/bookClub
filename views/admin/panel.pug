@@ -166,11 +166,11 @@ include ../partials/mixins
                 tbody#recentOrdersTable
                   each product in order
                     tr
-                      td #{product._id}
-                      td 
+                      td(data-label="Column 1") #{product._id}
+                      td(data-label="Column 2") 
                         small #{formatDate(product.created_at)}
-                      td #{product.user.name}
-                      td
+                      td(data-label="Column 3") #{product.user.name}
+                      td(data-label="Column 4")
                         if product.items.length < 2
                           = product.items[0].name
                           | (#{product.items[0].quantity} nos)
@@ -181,8 +181,8 @@ include ../partials/mixins
                           | #{product.items[0].name} (#{product.items[0].quantity} nos), #{product.items[1].name} (#{product.items[0].quantity} nos)
                           - let len = product.items.length - 2
                           |  and #{len} more.. 
-                      td #{product.totalAmount}
-                      td #{product.status} 
+                      td(data-label="Column 5") #{product.totalAmount}
+                      td(data-label="Column 6") #{product.status} 
               else
                 p No Orders yet
         #loadMoreBtn

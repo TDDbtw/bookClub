@@ -41,13 +41,13 @@ script(src="../../script/user/wallet.js" defer)
             tbody
               each transaction in wallet.transactions
                 tr(class=transaction.type)
-                  td(data-label="Type")= transaction.type
+                  td(data-label="Column 1")= transaction.type
                   if transaction.type == 'debit'
-                    td(data-label="Amount") - $th#{transaction.amount.toFixed(2)}
+                    td(data-label="Column 2") - $th#{transaction.amount.toFixed(2)}
                   else
-                    td(data-label="Amount") $#{transaction.amount.toFixed(2)}
-                  td(data-label="Description")= transaction.description
-                  td(data-label="Date")= new Date(transaction.date).toLocaleDateString()
+                    td(data-label="Column 2") $#{transaction.amount.toFixed(2)}
+                  td(data-label="Column 3")= transaction.description
+                  td(data-label="Column 4")= new Date(transaction.date).toLocaleDateString()
           
           .pagination
             if currentPage > 1

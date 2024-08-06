@@ -34,25 +34,17 @@ head
                   span.cat-img
                     img(src="../imgs/categoryImg/2024-06-14T22-36-10.165Z-fiction.png", alt="Fictions" style="width:60px")
                   a(href="/products") Fictions 
-             
-
-          li
-            a(href="") Contact
-          //- if authelse 
           if !user
             li
-                a(href="/auth/login") Login
+              a(href="/auth/login") Login
             li
               a(href="/auth/signup") Signup
           else if user.role == "user"
             li
               a Hi #{user.name}
           else if user.role=="admin"
-           li
+            li
               a Hi ADMIN
-          
-  
-  
           li#searchBarContainer(style="display: none;")
             form
               input#navSearch(type="search", placeholder="Search...")
@@ -60,28 +52,20 @@ head
           .d-flex.iconCont
             li
               a(href="/user/wishlist")
-                svg(width="44" height="44" viewBox="0 0 44 44" fill="none")
-                  path(d="M15.151 10C11.4697 10 8.48438 12.9547 8.48438 16.6C8.48438 19.5427 9.65104 26.5267 21.135 33.5867C21.3408 33.7118 21.5769 33.778 21.8177 33.778C22.0585 33.778 22.2947 33.7118 22.5004 33.5867C33.9844 26.5267 35.151 19.5427 35.151 16.6C35.151 12.9547 32.1657 10 28.4844 10C24.803 10 21.8177 14 21.8177 14C21.8177 14 18.8324 10 15.151 10Z" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                i.bi.bi-heart(style="font-size: 1.5rem;")
             li
               a(href="/cart")
-                svg(width="44" height="44" viewBox="0 0 44 44" fill="none")
-                  path(d="M15.1497 36.6667C15.8861 36.6667 16.4831 36.0697 16.4831 35.3333C16.4831 34.597 15.8861 34 15.1497 34C14.4134 34 13.8164 34.597 13.8164 35.3333C13.8164 36.0697 14.4134 36.6667 15.1497 36.6667Z" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
-                  path(d="M33.8177 36.6667C34.5541 36.6667 35.151 36.0697 35.151 35.3333C35.151 34.597 34.5541 34 33.8177 34C33.0813 34 32.4844 34.597 32.4844 35.3333C32.4844 36.0697 33.0813 36.6667 33.8177 36.6667Z" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
-                  path(d="M4.48438 7.33398H9.81771L13.8177 30.0007H35.151" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
-                  path(d="M13.8171 22.89H34.6037C34.7579 22.8901 34.9074 22.8367 35.0266 22.739C35.1459 22.6413 35.2276 22.5053 35.2579 22.3541L37.6579 10.3541C37.6773 10.2574 37.6749 10.1575 37.651 10.0618C37.6271 9.96604 37.5822 9.8768 37.5196 9.8005C37.457 9.72421 37.3783 9.66275 37.2891 9.62058C37.1999 9.57841 37.1024 9.55657 37.0037 9.55664H11.1504" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+                i.bi.bi-cart3(style="font-size: 1.5rem;")
             li
               a.user-icon
-                svg(width="44" height="44" viewBox="0 0 44 44" fill="none")
-                  path(d="M32.4831 36.6667V33.1111C32.4831 31.2251 31.8463 29.4164 30.7127 28.0828C29.5791 26.7492 28.0417 26 26.4386 26H15.8609C14.2578 26 12.7203 26.7492 11.5868 28.0828C10.4532 29.4164 9.81641 31.2251 9.81641 33.1111V36.6667" fill="#858181")
-                  path(d="M32.4831 36.6667V33.1111C32.4831 31.2251 31.8463 29.4164 30.7127 28.0828C29.5791 26.7492 28.0417 26 26.4386 26H15.8609C14.2578 26 12.7203 26.7492 11.5868 28.0828C10.4532 29.4164 9.81641 31.2251 9.81641 33.1111V36.6667" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
-                  path(d="M22.4844 19.334C25.7981 19.334 28.4844 16.6477 28.4844 13.334C28.4844 10.0203 25.7981 7.33398 22.4844 7.33398C19.1707 7.33398 16.4844 10.0203 16.4844 13.334C16.4844 16.6477 19.1707 19.334 22.4844 19.334Z" fill="#858181" stroke="#858181" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
-                .profile-options
-                  a(href='/user/profile') Profile
-                  if user
-                    a(href="/auth/logout")#navLogout Logout
-                    a(href="/user/order")#navOrder My Orders
-                  if user&& user.role=="admin"
-                    a(href="/admin")#navAdmin Dashboard
+                i.bi.bi-person-circle(style="font-size: 1.5rem;")
+              .profile-options
+                a(href='/user/profile') Profile
+                if user
+                  a(href="/auth/logout")#navLogout Logout
+                  a(href="/user/order")#navOrder My Orders
+                if user && user.role=="admin"
+                  a(href="/admin")#navAdmin Dashboard
                   
       link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN", crossorigin="anonymous")
       //- script(src='../script/user/navbar.js')
