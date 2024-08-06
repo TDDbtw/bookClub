@@ -124,7 +124,8 @@ function placeOrder() {
           const options = {
             key: ID,
             amount: data.order.amount,
-            currency: "USD",
+            // currency: "USD",
+            currency: "INR",
             name: "bookClub",
             description: "Payment for Your Order",
             order_id: data.order.id,
