@@ -1,114 +1,121 @@
+:root {
+  --primary-color: #081c15;
+  --secondary-color: #68899a;
+  --accent-color: #9a6868;
+  --text-color: #e5e5e5;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
-  background-color: #081c15;
-  /* background-color: #237b5c; */
-    color: #ffffff;
-    font-family: Arial, sans-serif;
+  font-family: 'Lato', sans-serif;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  line-height: 1.6;
 }
-#slider {
-  width: 100%;
-  height: auto;
-  position: relative;
-}
-
-#slider img {
-  width: 100%;
-  height: auto;
-  position: relative;
-}
-#slider img:first-child {
-  z-index: 1;
-}
-
-#slider img:nth-child(2) {
-  z-index: 0;
-}
-
-#navigation-button {
-  text-align: center;
-  position: relative;
-}
-
-.dot {
-  cursor: pointer;
-  height: 15px;
-  width: 15px;
-  margin: 0 2px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.active,
-.dot:hover {
-  background-color: #717171;
-}
-
-.two {
-  margin-left: 8rem;
-}
-
-.card-button {
-  color: #010a07;
-  margin-left: auto;
-  margin-right: auto;
-  background: linear-gradient(
-    110deg,
-    rgba(0, 128, 255, 0.99) 21.02%,
-    rgba(0, 64, 128, 0.9) 73.51%
-  );
-  width: 371.562px;
-  height: 49.969px;
-  border-radius: 34.59px;
-}
-.card-button:hover {
-  background: linear-gradient(
-    200deg,
-    rgba(0, 128, 255, 0.99) 21.02%,
-    rgba(0, 64, 128, 0.9) 73.51%
-  );
-}
-#productCard:hover .card-button {
-  /* bottom: 10px; */
-}
-#productCard {
-  width: 410px;
-  height: 652.094px;
-  border-radius: 30.75px;
-  opacity: 0.71;
-  background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.2) 0%,
-      rgba(0, 0, 0, 0.2) 100%
-    ),
-    linear-gradient(155deg, #266958 3.82%, rgba(34, 44, 41, 0.2) 76.99%);
-  transition: transform 0.5s ease;
-  box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.3);
-}
-#productCard:hover {
-  z-index: 3;
-  box-shadow: 0 0 20px rgb(10, 161, 42);
-  transform: translateY(-10px);
-}
-#productCard:hover .card-image {
-  transform: scale(1.1) scaleZ(1.2);
-}
-.card-image:hover {
-  z-index: 3 !important;
-  transform: translateY(-10px);
-}
-.author {
-    font-style: italic;
-    color: #FFF;
-    margin-bottom: 10px;
-}
-
-.two {
-  margin-left: 0;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0 20px;
 }
-
-@media (min-width: 768px) {
-  .two {
-    margin-left: 8rem;
-  }
+header {
+  background-color: rgba(8, 28, 21, 0.9);
+  padding: 20px 0;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+.nav-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+.nav-links a:hover {
+  color: var(--accent-color);
+}
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(rgba(8, 28, 21, 0.7), rgba(8, 28, 21, 0.7)), url('/api/placeholder/1200/800') center/cover no-repeat;
+}
+.hero-content h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+.hero-content p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+.cta-button {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+.cta-button:hover {
+  background-color: #7a5252;
+}
+.featured-products {
+  padding: 80px 0;
+}
+.featured-products h2 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+.product-card {
+  background-color: rgba(104, 137, 154, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+}
+.product-image {
+  height: 200px;
+  background: url('/api/placeholder/250/200') center/cover no-repeat;
+}
+.product-info {
+  padding: 20px;
+}
+.product-info h3 {
+  margin-bottom: 10px;
+}
+.product-info p {
+  color: var(--secondary-color);
+  margin-bottom: 15px;
+}
+footer {
+  background-color: rgba(8, 28, 21, 0.9);
+  color: var(--text-color);
+  text-align: center;
+  padding: 20px 0;
 }
