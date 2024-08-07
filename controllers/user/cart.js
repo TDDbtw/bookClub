@@ -172,27 +172,30 @@ function logCheckoutDetails(user, products, billTotal, shippingTotal, totalAmoun
 
 
 
-// Controller for handling cart operations
 
 // Add item to cart
 const addItemToCart = asyncHandler(async (req, res, next) => {
-  let { user, productId, image, name, productPrice, quantity, offerId } = req.body
-  quantity = Number(quantity)
-  // Find the product and check stock
-  const product = await Products.findById(productId)
+  let { productId} = req.body
+  let quantity = Number(req.body.quantity)|| 1
+  let offerId=undefined 
+  const user= req.user._id
 
+  if (!user) {
+    throw new Error({success:false,Error:"You need to login"});
+  }
+  const product = await Products.findById(productId)
+  let productPrice=product.price
   if (!product || product.stockCount < quantity) {
     return res.status(400).json({ message: "Product not available in requested quantity" })
   }
 
 
-  // Apply discount if offer is valid
   let discountedPrice = productPrice
 
  const  offer = await Offer.findById(product.offer)
   if (offer && offer.isApplicable(product.price)) {
     discountedPrice = offer.applyDiscount(product.price);
-
+    offerId=offer._id
   }
 console.log(`discounted price is ${discountedPrice}`)
   let cart = await Cart.findOne({ user })
@@ -204,15 +207,13 @@ console.log(`discounted price is ${discountedPrice}`)
     (item) => item.productId.toString() === productId
   )
 
-  let billTotal
 
   if (existingItem) {
     existingItem.quantity += quantity
     existingItem.productPrice = discountedPrice // Update price in case offer changed
   } else {
-    cart.items.push({ productId, image, name, productPrice: discountedPrice, quantity, offerId })
+    cart.items.push({ productId, image:product.image[0],name:product.name, productPrice: discountedPrice, quantity, offerId })
   }
-  console.log(` discount price ${discountedPrice}`.toUpperCase().red)
   // Update product stock
   product.stockCount -= quantity
   await product.save()
@@ -316,9 +317,6 @@ const getCartDetails = asyncHandler(async (req, res, next) => {
   }
 
   res.status(200).json(cart)
-  if (error) {
-    res.status(500).json({ error: "Internal Server Error" })
-  }
 })
 
 // Mark item as selected or unselected in cart
