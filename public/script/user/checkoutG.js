@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('input[name="payment-inline"]').forEach((radio) => {
     radio.addEventListener('change', function () {
-      window.toast.success(this.value)
       paymentMethod = this.value;
 
       codDetails.style.display = 'none';
@@ -49,12 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('placeOrderBtn').disabled = false;
         document.getElementById("paymentError").innerHTML = '';
       }
+      else{
+        document.getElementById('placeOrderBtn').disabled = true;
+    }
     });
   });
 
   document.getElementById('placeOrderBtn').addEventListener('click', async (event) => {
     event.preventDefault();
-    console.log(`method is ${paymentMethod}`.yellow)
+    console.log(`method is ${paymentMethod}`)
     placeOrder()
   });
 });
@@ -224,5 +226,4 @@ function getSelectedPaymentMethod() {
       selectedValue = radio.value;
     }
   });
-  window.toast.success('Selected Payment Method: ' + selectedValue);
 }

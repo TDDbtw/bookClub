@@ -102,10 +102,13 @@ const createOrder = asyncHandler(async (req, res, next) => {
     populate: { path: 'offer' }
   });
 
+  if (!user.shipping_address.country || !user.billing_address.country) {
+    return res.status(400).json({ error: 'Yo do need to add the address' });
+  }
+
   if (!cart || cart.items.length === 0) {
     return res.status(400).json({ error: 'Cart is empty' });
   }
-
   const shippingTotal = calculateShippingTotal(user.shipping_address.country);
 
   // Process each item in the order
@@ -202,6 +205,10 @@ const razorpayOrder = asyncHandler(async (req, res, next) => {
     return res.status(400).json({ error: 'Cart is empty' });
   }
 
+  if (!user.shipping_address.country || !user.billing_address.country) {
+
+      throw new Error(`You do need to add the address`);
+  }
   const shippingTotal = calculateShippingTotal(user.shipping_address.country);
   let totalAmount = calculateTotalAmount(cart.items, shippingTotal);
 

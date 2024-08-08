@@ -1,0 +1,67 @@
+:root {
+  --primary-color: #081c15;
+  --secondary-color: #68899a;
+  --accent-color: #9a6868;
+  --text-color: #e5e5e5;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+
+/* Add these styles in your main stylesheet or in a <style> block in your HTML file */
+.product-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease-in-out;
+  background-color: var(--primary-color);
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
+
+.product-info {
+  padding: 16px;
+  text-align: center;
+}
+
+.product-info h3 {
+  margin: 0 0 8px;
+  color: #333;
+}
+
+.product-info p {
+  margin: 0;
+  color: gold;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.cta-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.cta-button:hover {
+  background-color: #218838;
+}

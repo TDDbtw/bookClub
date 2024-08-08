@@ -111,7 +111,8 @@ console.log(`${cart}`.red)
   let needsAddress = false;
   if (user.shipping_address ) {
     shippingTotal = calculateShippingTotal(user.shipping_address);
-  } else if( !user.shipping_address && user.addresses.length<0) {
+
+  } else if( typeof user.shipping_address != 'object' && user.addresses.length<0) {
     needsAddress = true;
   }
 console.log(`bill total is ${cart.billTotal}`.red)

@@ -1,3 +1,4 @@
+
 let errorList = []
 
 if(document.getElementById("checkoutAddress")){
@@ -187,6 +188,7 @@ function validateCountry() {
 }
 // if( document.getElementById("userInput").value &&  document.getElementById("userInput").value.addresses.length > 0){
   // Add a click event listener to the submit button
+  if(document.getElementById("saveAddress")!=null){
   document.getElementById("saveAddress").addEventListener("click", (event) => {
     // Prevent the form from submitting
     event.preventDefault()
@@ -240,24 +242,26 @@ function validateCountry() {
         })
         .then(function (data) {
           console.log(data)
-          window.toast.success('address added successfully')
           if (data.error) {
             document.getElementById("errorMessage").innerHTML = data.error
           } else {
-            window.location.href = "/user/profile"
+            window.toast.success('New address Saved')
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000);
           }
         })
         .catch((error) => console.error("Error:", error))
     }
   })
-
-  countrySelect.addEventListener('change', () => {
+  }
+if(countrySelect!=null)countrySelect.addEventListener('change', () => {
     validateCountry
   });
-  stateSelect.addEventListener('change', () => {
+ if(stateSelect!=null) stateSelect.addEventListener('change', () => {
     validateCountry
   });
-// }
+  // }
 
 
 
@@ -297,7 +301,7 @@ async function removeAddress() {
           window.toast.success('Address deleted successfull')
           setTimeout(() => {
             window.location.reload();
-          }, "3500");
+          }, "1000");
         } else {
           // Show SweetAlert error message
           Swal.fire({
@@ -313,4 +317,3 @@ async function removeAddress() {
     }
   });
 }
-

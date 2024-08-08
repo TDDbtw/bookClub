@@ -43,23 +43,6 @@ title My Orders
                 td(data-label="Status")= order.returnRequest.status ? `Return ${order.returnRequest.status}` : order.status
                 td(data-label="Actions")
                   a.order-details-btn.d-flex(href=`/user/order/${order._id}`) View Details
-            each order in orders
-              tr
-                td= order._id
-                td#createdDate(data-orderdate=order.created_at)= moment(order.created_at).format('MM/DD/YYYY')
-                td
-                  if order.items.length < 2
-                    = order.items[0].name
-                  else
-                    | #{order.items[0].name}, #{order.items[1].name} 
-                    - let len = order.items.length - 2
-                    | and #{len} more..
-                td $#{order.totalAmount.toFixed(2)}
-                td= order.payment_method
-                td= order.returnRequest.status ? `Return ${order.returnRequest.status}` : order.status
-                td 
-                  a.order-details-btn.d-flex(href=`/user/order/${order._id}`) View Details
-
         .pagination
           if currentPage > 1
             a.pagination-link(href=`/user/order?page=${currentPage - 1}`) Previous
