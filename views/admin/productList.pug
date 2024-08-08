@@ -65,6 +65,8 @@ include ../partials/mixins
               td#ed
                 a.btn.btn-sm.text-warning(href=`/admin/products/${product._id}/edit` style="width:5rem;") Edit
                 | &nbsp;
+                a#deleteButton.btn.btn-sm.text-danger( data-id=product.id onclick="removeProduct()" style="width:5rem;") Delete 
+                input#productId(type='hidden' value=`${product._id}`)
       .pagination
         ol#numbers
     else
@@ -79,6 +81,44 @@ include ../partials/mixins
 
   script.
        var navSearchInput = document.getElementById("adminSearch");
+    // Add an event listener to the input element for the input event
+    navSearchInput.addEventListener("input", function() {
+      // Log the value of the input to the console
+      let searchValue=navSearchInput.value;
+      //- console.log("Input value:", searchValue);
+      getSearchProducts(searchValue)
+
+    });
+    
+    const buttons = document.querySelectorAll('a[data-id]');
+    
+     buttons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        console.log(e.target.dataset.id);
+        removeProduct(e.target.dataset.id)
+      });
+    });
+    async function removeProduct(productId) {
+
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+    try {
+      const response = await fetch(`/admin/products/${productId}/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId: productId}),
+      });
   
       const data = await response.json();
   

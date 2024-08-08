@@ -374,7 +374,7 @@ const onetwo = asyncHandler(async (req, res, next) => {
     const subCategories = subCat === "All" ? subCatOptions : subCat.split(",");
 
     // Fetch filtered and sorted products
-    const products = await Products.find({ name: { $regex: search, $options: "i" } })
+    const products = await Products.find({ name: { $regex: search, $options: "i" }, status:true })
       .where("subcategories")
       .in(subCategories)
       .sort(sort)

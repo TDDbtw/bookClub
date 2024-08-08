@@ -46,13 +46,6 @@ app.use(express.static(__dirname + "/public"))
 // app.use("/admin/public", express.static(path.join(__dirname, "public")))
 app.use(express.static(__dirname + "/public/imgs"))
 
-//Dynamic path
-
-// app.use((req, res, next) => {
-//   res.locals.basePath = path.relative(__dirname, path.join('public', 'imgs', 'productImgs'));
-//   next();
-// });
-
 // dev loging middleware
 if (process.env.NODE_ENV === `development`) {
   app.use(morgan(`dev`))
@@ -76,7 +69,7 @@ app.use("/order", order)
 app.get(
   "/",
   asyncHandler(async (req, res, next) => {
-   let  products = await Products.find()
+   let  products = await Products.find({status:true} )
       .populate("category")
       .populate("subcategories")
       .exec()
@@ -87,17 +80,14 @@ console.log(`${products[0]}`)
     let user = ""
     console.log(req.cookies)
     if (req.cookies.jwt) {
-      // if (req.cookies.jwt) {
       let decoded = jwt.verify(req.cookies.jwt, process.env.SECRET)
       user = await User.findById(decoded.userId).select("-password")
-      // }
-      // console.log(typeof products[0].image[0])
-      // console.log(`in home ---> ${user}`)
 
       res.render("./users/home", { products, user, })
-    } else {
-      res.render("./users/home", { products, user, })
     }
+    // else {
+    //   res.render("./users/home", { products, user, })
+    // }
 async function getDiscountedPrice(product) {
   let discountedPrice = product.price;
 
