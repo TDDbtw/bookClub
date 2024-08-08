@@ -66,47 +66,50 @@ app.use("/admin", admin)
 app.use("/user", user)
 app.use("/cart", cart)
 app.use("/order", order)
-app.get(
-  "/",
-  asyncHandler(async (req, res, next) => {
-   let  products = await Products.find({status:true} )
-      .populate("category")
-      .populate("subcategories")
-      .exec()
-products.forEach((item,index)=>{
-item.discountedPrice=getDiscountedPrice(item)
-})
-console.log(`${products[0]}`)
-    let user = ""
-    console.log(req.cookies)
-    if (req.cookies.jwt) {
-      let decoded = jwt.verify(req.cookies.jwt, process.env.SECRET)
-      user = await User.findById(decoded.userId).select("-password")
+app.get('/', (req, res) => {
+  res.send('Hello from BookClub!');
+});
+// app.get(
+//   "/",
+//   asyncHandler(async (req, res, next) => {
+//     let  products = await Products.find( )
+//       .populate("category")
+//       .populate("subcategories")
+//       .exec()
+//     products.forEach((item,index)=>{
+//       item.discountedPrice=getDiscountedPrice(item)
+//     })
+//     console.log(`${products[0]}`)
+//     let user = ""
+//     console.log(req.cookies)
+//     if (req.cookies.jwt) {
+//       let decoded = jwt.verify(req.cookies.jwt, process.env.SECRET)
+//       user = await User.findById(decoded.userId).select("-password")
 
-      res.render("./users/home", { products, user, })
-    }
-    // else {
-    //   res.render("./users/home", { products, user, })
-    // }
-async function getDiscountedPrice(product) {
-  let discountedPrice = product.price;
+//       res.render("./users/home", { products, user, })
+//     }
+//     // else {
+//     //   res.render("./users/home", { products, user, })
+//     // }
+// async function getDiscountedPrice(product) {
+//   let discountedPrice = product.price;
 
-  if (product.offer) {
-    try {
-      const offer = await Offer.findById(product.offer._id);
-      if (offer && offer.isActive()) {
-        discountedPrice = offer.applyDiscount(product.price);
-        console.log(`Discounted Price: ${discountedPrice}`.cyan);
-        return discountedPrice
-      }
-    } catch (error) {
-      console.error(`Error applying discount: ${error.message}`.red);
-    }
-  }
+//   if (product.offer) {
+//     try {
+//       const offer = await Offer.findById(product.offer._id);
+//       if (offer && offer.isActive()) {
+//         discountedPrice = offer.applyDiscount(product.price);
+//         console.log(`Discounted Price: ${discountedPrice}`.cyan);
+//         return discountedPrice
+//       }
+//     } catch (error) {
+//       console.error(`Error applying discount: ${error.message}`.red);
+//     }
+//   }
 
-}
-  })
-)
+// }
+//   })
+// )
 
 app.use(errorHandler)
 
