@@ -67,6 +67,7 @@ const loadproducts = asyncHandler(async (req, res, next) => {
 
     // ... (your logic for handling user and cookies) ...
 
+  if (!req.cookies.jwt) {res.redirect('auth/login')}
   if (req.cookies.jwt != "") {
     let decoded = jwt.verify(req.cookies.jwt, process.env.SECRET)
     req.user = await User.findById(decoded.userId).select("-password")
