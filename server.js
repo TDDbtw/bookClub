@@ -69,7 +69,7 @@ app.use("/order", order)
 app.get(
   "/",
   asyncHandler(async (req, res, next) => {
-   let  products = await Products.find()
+   let  products = await Products.find({status:true})
       .populate("category")
       .populate("subcategories")
       .exec()

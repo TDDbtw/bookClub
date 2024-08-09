@@ -64,8 +64,7 @@ include ../partials/mixins
                       .layer
               td#ed
                 a.btn.btn-sm.text-warning(href=`/admin/products/${product._id}/edit` style="width:5rem;") Edit
-                | &nbsp;
-                a#deleteButton.btn.btn-sm.text-danger( data-id=product.id onclick="removeProduct()" style="width:5rem;") Delete 
+                //a#deleteButton.btn.btn-sm.text-danger( data-id=product.id onclick="removeProduct()" style="width:5rem;") Delete 
                 input#productId(type='hidden' value=`${product._id}`)
       .pagination
         ol#numbers
