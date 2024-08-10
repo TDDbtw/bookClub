@@ -8,16 +8,6 @@ const errorHandler = (err, req, res, next) => {
 console.log(`${err}`)
   // mongoose bad Object id
 
-  // if (err.name === `CastError`) {
-  //   const message = `The ${
-  //     err.model
-  //     // .modelName
-  //     // .toLowerCase()
-  //   } with id of ${err.value} was not found.`
-  //   error = new ErrorResponse(message, 404)
-  // }
-  // Mongoos duplicate key
-
 if (err.code === 11000 || err.name === "E11000") {
     const errorMessage = err.message;
     const regex = /dup key: { (.+?) }/;
@@ -45,19 +35,12 @@ if (err.code === 11000 || err.name === "E11000") {
   }
 
   if (err.code === 404) {
-    // res.render("/views/auth/errors/404.pug")
 
     res.redirect("/auth/login")
   }
-  // if (err.message === "Invalid Email or Password") {
-  //   errorMessage = error.message
-  //   res.render("./auth/user/logInForm")
-  // }
-  // Assuming this is your error handler middleware
   const errorMessage = err.message || "An error occurred"
   res
     .status(err.statusCode || 500)
-    // .redirect(`?error=${encodeURIComponent(errorMessage)}`)
 
     .json({
       successss: false,
