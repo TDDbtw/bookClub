@@ -86,38 +86,50 @@ function validateEmail() {
     emailinput.style.border = "2px solid #39ff14"
   }
 }
-
 function validatePassword() {
-  var password = document.getElementById("password").value
-  password = password.trim()
-  var passwordinput = document.getElementById("password")
-  var passwordError = document.getElementById("passwordError")
+  var password = document.getElementById("password").value.trim();
+  var passwordInput = document.getElementById("password");
+  var passwordError = document.getElementById("passwordError");
+  passwordError.innerHTML = "";
+  const errors = [];
 
-  passwordError.innerHTML = ""
-  const errors = []
+  // Length check
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters long");
+  }
 
-  if (password.length < 6) {
-    errors.push("Password must be at least 6 characters long")
+  // Complexity checks
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter");
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter");
   }
   if (!/[0-9]/.test(password)) {
-    errors.push("Password must contain a numbers")
+    errors.push("Password must contain at least one number");
+  }
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    errors.push("Password must contain at least one special character");
+  }
+
+
+  const commonWords = ['password', 'qwerty', 'admin', '123456', 'welcome'];
+  if (commonWords.some(word => password.toLowerCase().includes(word))) {
+    errors.push("Password contains a common word or pattern");
   }
 
   if (errors.length > 0) {
     // Display all accumulated errors
-
-    passwordinput.style.border = "2px solid red"
-
+    passwordInput.style.border = "2px solid red";
     errors.forEach((error) => {
-      const errorSpan = document.createElement("span")
-      errorSpan.innerText = error
-      passwordError.appendChild(errorSpan)
-      passwordError.appendChild(document.createElement("br")) // Add line break between errors
-    })
-
-    passwordError.style.color = "red"
+      const errorSpan = document.createElement("span");
+      errorSpan.innerText = error;
+      passwordError.appendChild(errorSpan);
+      passwordError.appendChild(document.createElement("br")); // Add line break between errors
+    });
+    passwordError.style.color = "red";
   } else {
-    passwordinput.style.border = "2px solid #39ff14"
+    passwordInput.style.border = "2px solid #39ff14";
   }
 }
 

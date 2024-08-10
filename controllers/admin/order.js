@@ -26,7 +26,6 @@ const getAdminOrderList = asyncHandler(async (req, res, next) => {
     .sort({ created_at: -1 }) // Sort by created_at in descending order (-1 for descending, 1 for ascending)
     .exec();
 
-
   const PAGE_SIZE = 7; // Number of transactions per page
   const page = parseInt(req.query.page) || 1;
   const skip = (page - 1) * PAGE_SIZE;
@@ -38,14 +37,8 @@ const getAdminOrderList = asyncHandler(async (req, res, next) => {
   const paginatedOrders = orders
     .sort((a, b) => b.date - a.date)
     .slice(skip, skip + PAGE_SIZE);
-  // const products = orders.flatMap((order) =>
-    //   order.items.filter((item) => item.name)
-    // )
 
   res.render(`./admin/orderList`, { orders:paginatedOrders ,formatDate,currentPage: page,totalPages,PAGE_SIZE})
-  // res.json( { orders:paginatedOrders ,formatDate,currentPage: page,totalPages,PAGE_SIZE})
-  // res.json("./admin")
-  // res.send(order)
 })
 
 const getCheckout = asyncHandler(async (req, res, next) => {
