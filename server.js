@@ -50,6 +50,7 @@ app.use(express.static(__dirname + "/public/imgs"))
 if (process.env.NODE_ENV === `development`) {
   app.use(morgan(`dev`))
 }
+
 //mount routes
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate")

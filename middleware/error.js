@@ -45,7 +45,9 @@ if (err.code === 11000 || err.name === "E11000") {
   }
 
   if (err.code === 404) {
-    res.render("/views/auth/errors/404.pug")
+    // res.render("/views/auth/errors/404.pug")
+
+    res.redirect("/auth/login")
   }
   // if (err.message === "Invalid Email or Password") {
   //   errorMessage = error.message
