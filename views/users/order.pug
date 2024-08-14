@@ -136,8 +136,8 @@ body
         button.btn.btn-cancel(onclick=`handleCancelOrder('${order._id}')`) Cancel Order
       if order.status === 'delivered' && !order.returnRequest.status && !allReturned && isReturnable
         button.btn.btn-return(onclick=`handleReturnOrder('${order._id}')`) Return Order
-      if order.status === 'delivered' && !order.returnRequest.status && !allReturned && !isReturnable
-        button.btn.btn-invoice.ms-3(onclick=`handleInvoice('${order._id}')`) Generate Invoice
+      //if order.status === 'delivered' && !order.returnRequest.status && !allReturned && !isReturnable
+      button.btn.btn-invoice.ms-3(onclick=`handleInvoice('${order._id}')`) Generate Invoice
 
 script(src="../../script/user/userOrderUpdate.js")
 style.
