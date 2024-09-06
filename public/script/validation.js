@@ -66,6 +66,9 @@ function validateEmail() {
   ) {
     errors.push("Please enter a valid email address")
   }
+  if(!/^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$/.test(email)){
+    errors.push("Disposible Email not allowed")
+  }
   if (errors.length > 0) {
     // Display all accumulated errors\
 
@@ -99,11 +102,8 @@ function validatePassword() {
   }
 
   // Complexity checks
-  if (!/[a-z]/.test(password)) {
-    errors.push("Password must contain at least one lowercase letter");
-  }
-  if (!/[A-Z]/.test(password)) {
-    errors.push("Password must contain at least one uppercase letter");
+  if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) ){
+    errors.push("Password must contain at least one lowercase letter an uppercase letter");
   }
   if (!/[0-9]/.test(password)) {
     errors.push("Password must contain at least one number");
@@ -111,7 +111,6 @@ function validatePassword() {
   if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
     errors.push("Password must contain at least one special character");
   }
-
 
   const commonWords = ['password', 'qwerty', 'admin', '123456', 'welcome'];
   if (commonWords.some(word => password.toLowerCase().includes(word))) {
