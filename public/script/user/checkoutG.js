@@ -114,7 +114,6 @@ function placeOrder() {
   }
 
   if (paymentMethod === 'razorpay') {
-    // Razorpay payment
     axios.post('/order/razorpayOrder', orderDetails, {
       headers: {
         'Content-Type': 'application/json',
@@ -157,7 +156,7 @@ function placeOrder() {
             prefill: {
               name: "bookClub",
               email: "bookClub@gmail.com",
-              contact: "9744266925"
+              contact: "9977884455"
             },
             notes: {
               address: "Razorpay Corporate Office"
