@@ -29,9 +29,9 @@ const getCart = asyncHandler(async (req, res, next) => {
     cart.items = cart.items.filter(item => item.productId !== null);
     await cart.save();
   }
-  res.render("./users/cart", { 
-    user, 
-    cart: cart || { items: [] }  
+  res.render("./users/cart", {
+    user,
+    cart: cart || { items: [] }
   });
 });
 
@@ -85,12 +85,12 @@ const getCartList = asyncHandler(async (req, res, next) => {
   });
 
   const cartTotal = processedItems.reduce((total, item) => total + item.subtotal, 0);
-console.log(`${cartTotal}`.yellow)
+  console.log(`${cartTotal}`.yellow)
   res.json({
     cartId: cart._id,
     userId,
     items: processedItems,
-    billTotal:cartTotal,
+    billTotal: cartTotal,
     itemCount: processedItems.length
   }).status(200);
 });
@@ -106,16 +106,16 @@ const getCheckout = asyncHandler(async (req, res, next) => {
   if (!cart || !cart.items.length) {
     return res.status(400).json({ message: 'Cart is empty' });
   }
-console.log(`${cart}`.red)
+  console.log(`${cart}`.red)
   let shippingTotal = 0;
   let needsAddress = false;
-  if (user.shipping_address ) {
+  if (user.shipping_address) {
     shippingTotal = calculateShippingTotal(user.shipping_address);
 
-  } else if( typeof user.shipping_address != 'object' && user.addresses.length<0) {
+  } else if (typeof user.shipping_address != 'object' && user.addresses.length < 0) {
     needsAddress = true;
   }
-console.log(`bill total is ${cart.billTotal}`.red)
+  console.log(`bill total is ${cart.billTotal}`.red)
   const totalAmount = calculateTotalAmount(cart.billTotal, shippingTotal);
 
   const CLIENT_ID = process.env.RAZORPAY_ID;
@@ -176,16 +176,16 @@ function logCheckoutDetails(user, products, billTotal, shippingTotal, totalAmoun
 
 // Add item to cart
 const addItemToCart = asyncHandler(async (req, res, next) => {
-  let { productId} = req.body
-  let quantity = Number(req.body.quantity)|| 1
-  let offerId=undefined 
-  const user= req.user._id
+  let { productId } = req.body
+  let quantity = Number(req.body.quantity) || 1
+  let offerId = undefined
+  const user = req.user._id
 
   if (!user) {
-    throw new Error({success:false,Error:"You need to login"});
+    throw new Error({ success: false, Error: "You need to login" });
   }
   const product = await Products.findById(productId)
-  let productPrice=product.price
+  let productPrice = product.price
   if (!product || product.stockCount < quantity) {
     return res.status(400).json({ message: "Product not available in requested quantity" })
   }
@@ -193,12 +193,12 @@ const addItemToCart = asyncHandler(async (req, res, next) => {
 
   let discountedPrice = productPrice
 
- const  offer = await Offer.findById(product.offer)
+  const offer = await Offer.findById(product.offer)
   if (offer && offer.isApplicable(product.price)) {
     discountedPrice = offer.applyDiscount(product.price);
-    offerId=offer._id
+    offerId = offer._id
   }
-console.log(`discounted price is ${discountedPrice}`)
+  console.log(`discounted price is ${discountedPrice}`)
   let cart = await Cart.findOne({ user })
   if (!cart) {
     cart = new Cart({ user, items: [] })
@@ -213,15 +213,15 @@ console.log(`discounted price is ${discountedPrice}`)
     existingItem.quantity += quantity
     existingItem.productPrice = discountedPrice // Update price in case offer changed
   } else {
-    cart.items.push({ productId, image:product.image[0],name:product.name, productPrice: discountedPrice, quantity, offerId })
+    cart.items.push({ productId, image: product.image[0], name: product.name, productPrice: discountedPrice, quantity, offerId })
   }
-  // Update product stock
-  product.stockCount -= quantity
-  await product.save()
+  // Update product stock -> REMOVED: Stock should not be reserved at cart stage
+  // product.stockCount -= quantity
+  // await product.save()
 
   // Save cart
-console.log(`${cart}`.magenta)
-cart.billTotal+=Number(discountedPrice)
+  console.log(`${cart}`.magenta)
+  cart.billTotal += Number(discountedPrice)
   await cart.save()
 
   res.redirect("/cart")
@@ -280,12 +280,13 @@ const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
   // Recalculate bill total
   cart.billTotal = cart.items.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
 
-  // Update product stock
-  product.stockCount -= quantityDifference;
+  // Update product stock -> REMOVED: Stock should not be reserved at cart stage
+  // product.stockCount -= quantityDifference;
 
   // Save changes
-console.log(`${cart}`.grey)
-  await Promise.all([cart.save(), product.save()]);
+  console.log(`${cart}`.grey)
+  await cart.save();
+  // await Promise.all([cart.save(), product.save()]);
   res.status(200).json(cart);
 });
 
@@ -298,13 +299,13 @@ const removeItemFromCart = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findById(req.session.cartId)
   console.log(`${req.body.quantity}`.bgRed)
   const product = await Products.findById(productId)
-  cart.items = cart.items.filter((item) => item.productId.toString()!== productId)
+  cart.items = cart.items.filter((item) => item.productId.toString() !== productId)
 
   await applyOffersToCartItems(cart.items); // Apply offers
   cart.billTotal = calculateBillTotal(cart.items);
   await cart.save()
 
-  res.status(200).json({ success: true ,data:cart})
+  res.status(200).json({ success: true, data: cart })
 })
 
 // Get cart details

@@ -7,10 +7,7 @@ const Subcategories = require("../../models/subcategory")
 const ErrorResponse = require(`../../utils/errorResponse`)
 const asyncHandler = require("../../middleware/async")
 const jwt = require("jsonwebtoken")
-// const colors = require("colors")
-const fs = require("fs")
-const path = require("path")
-const sharp = require("sharp")
+const { cloudinary } = require("../../utils/multerUpload")
 
 let userVar = ""
 
@@ -28,7 +25,7 @@ const loadEditProduct = asyncHandler(async (req, res, next) => {
 
   const iscat = await Products.findById(req.params.id)
 
-  const offers=await Offers.find().sort({name:1})
+  const offers = await Offers.find().sort({ name: 1 })
   const categories = await Categories.find();
 
   const subcategories = await Subcategories.find()
@@ -36,12 +33,12 @@ const loadEditProduct = asyncHandler(async (req, res, next) => {
     .exec();
 
   req.productId = req.params.id;
-console.log(`${product}`.red)
+  console.log(`${product}`.red)
   res.render("./admin/productEditG", {
     product,
     categories,
     subcategories,
-    items:offers,
+    items: offers,
     name: "Edit Product",
   });
 
@@ -74,8 +71,8 @@ console.log(`${product}`.red)
 
 const loadProductList = asyncHandler(async (req, res, next) => {
   const products = await Products.find()
-    .populate("category", "name") 
-    .populate("subcategories", "name") 
+    .populate("category", "name")
+    .populate("subcategories", "name")
     .exec();
 
   const totalCount = await Products.countDocuments();
@@ -94,13 +91,13 @@ const loadCreateProduct = asyncHandler(async (req, res, next) => {
   const subcategories = await Subcategories.find()
     .populate("category", "name")
     .exec();
-  const offers= await Offers.find().sort({name:1})
+  const offers = await Offers.find().sort({ name: 1 })
 
   res.render("./admin/createProductG", {
     categories,
     subcategories,
     name: "Create Product",
-    items:offers,
+    items: offers,
   });
 
 
@@ -111,34 +108,30 @@ const createProduct = asyncHandler(async (req, res, next) => {
   const existingProduct = await Products.findOne({ name: { $regex: new RegExp(req.body.name, 'i') } });
   if (existingProduct) {
     return next(
-      new ErrorResponse(`Product with the same name already exists` )
+      new ErrorResponse(`Product with the same name already exists`)
     );
   }
-  let offer=''
-  // file
-  let fileData = {}
-  if (req.files) {
-    // fileData = req.files[0]
-    console.log("file Is".yellow.inverse)
-    console.log(req.files[0])
-    images = req.files.map((item, index) => {
-      return item.path.replace("public", "..")
-    })
+  let offer = ''
+  // Get Cloudinary URLs from uploaded files
+  let images = []
+  if (req.files && req.files.length > 0) {
+    console.log("Files uploaded to Cloudinary")
+    images = req.files.map((file) => file.path) // Cloudinary URLs
     console.log(images)
   }
   const products = new Products({
     name: req.body.name,
     price: req.body.price,
     description: req.body.description,
-    author:req.body.author,
-    stockCount:req.body.stockCount,
-    category:req.body.category,
+    author: req.body.author,
+    stockCount: req.body.stockCount,
+    category: req.body.category,
 
   })
 
-  if(req.body.offer!=''){
-  products.offer=req.body.offer
-  
+  if (req.body.offer != '') {
+    products.offer = req.body.offer
+
   }
   products.image = images
   products.subcategories = req.body.subcategories
@@ -161,93 +154,90 @@ const getProducts = asyncHandler(async (req, res, next) => {
 
 ///////////////
 
-  const updateProducts = asyncHandler(async (req, res, next) => {
+const updateProducts = asyncHandler(async (req, res, next) => {
 
-    const productId = req.params.id;
-    const existingProduct = await Products.findById(productId);
+  const productId = req.params.id;
+  const existingProduct = await Products.findById(productId);
 
-    if (!existingProduct) {
-      return res.status(404).json({ error: "Product not found" });
-    }
+  if (!existingProduct) {
+    return res.status(404).json({ error: "Product not found" });
+  }
 
 
-    let fileData = {}
-    if (req.files) {
-      // fileData = req.files[0]
-      console.log("file Is".yellow.inverse)
-      console.log(req.files[0])
-      images = req.files.map((item, index) => {
-        return item.path.replace("public", "..")
-      })
-    }
+  // Get Cloudinary URLs from uploaded files
+  let images = []
+  if (req.files && req.files.length > 0) {
+    console.log("Files uploaded to Cloudinary")
+    images = req.files.map((file) => file.path) // Cloudinary URLs
+  }
 
-    const updatedProductData = {
-      name: req.body.name,
-      price: req.body.price,
-      description: req.body.description,
-      author:req.body.author,
-      stockCount:req.body.stockCount,
-      category:req.body.category,
-      subcategories:req.body.subcategory
+  const updatedProductData = {
+    name: req.body.name,
+    price: req.body.price,
+    description: req.body.description,
+    author: req.body.author,
+    stockCount: req.body.stockCount,
+    category: req.body.category,
+    subcategories: req.body.subcategory
 
-    }; // Create a copy of req.body
+  }; // Create a copy of req.body
 
-  if (req.body.offer!== 'none'){
-console.log(`${req.body.offer}`.bgCyan)
+  if (req.body.offer !== 'none') {
+    console.log(`${req.body.offer}`.bgCyan)
     updatedProductData.offer = req.body.offer;
   }
-    else{
+  else {
     console.log(`offer removed/ not found`.bgRed)
     updatedProductData.offer = null;
   }
-   if(req.files){ 
-      if(images.length==0){
-        updatedProductData.image= existingProduct.image
-      }
-      else{
-        updatedProductData.image=(existingProduct.image).concat(images)
-      }
+  if (req.files) {
+    if (images.length == 0) {
+      updatedProductData.image = existingProduct.image
     }
-
-    console.log(updatedProductData)
-    // Handle status toggle
-    if (req.body.status) {
-      updatedProductData.status =
-        req.body.status === "change" ? !existingProduct.status : existingProduct.status;
+    else {
+      updatedProductData.image = (existingProduct.image).concat(images)
     }
+  }
 
-    console.log(`${req.body.image}`)
-    // Handle image updates (if needed)
+  console.log(updatedProductData)
+  // Handle status toggle
+  if (req.body.status) {
+    updatedProductData.status =
+      req.body.status === "change" ? !existingProduct.status : existingProduct.status;
+  }
 
-    // Update the product
-    await Products.updateOne({ _id: productId }, { $set: updatedProductData });
+  console.log(`${req.body.image}`)
+  // Handle image updates (if needed)
 
-    res.json({ success: true });
+  // Update the product
+  await Products.updateOne({ _id: productId }, { $set: updatedProductData });
 
-  })
+  res.json({ success: true });
+
+})
 
 
 const updateImage = asyncHandler(async (req, res, next) => {
   const imageName = req.params.imageIndex;
   // const imagePath = path.join(__dirname, 'public/uploads', imageName);
-  const item=await Products.findById(req.productId)
+  const item = await Products.findById(req.productId)
   // fs.unlink(imagePath, (err) => {
-    //   if (err) {
-      //     console.error('Error deleting image:', err);
-      //     return res.status(500).json({ error: 'Error deleting image' });
-      //   }
-    //   res.status(200).json({ message: 'Image deleted successfully' });
-    // });
+  //   if (err) {
+  //     console.error('Error deleting image:', err);
+  //     return res.status(500).json({ error: 'Error deleting image' });
+  //   }
+  //   res.status(200).json({ message: 'Image deleted successfully' });
+  // });
 
   console.log(`${item}`)
 
 })
 //////////////////////////////////////////////////////////////////////////////
 
-  //  @desc     Delete one product
+//  @desc     Delete one product
 
 //  @routes delete /products/:id/delete
-  //  @access private
+//  @access private
 
 const deleteProducts = asyncHandler(async (req, res, next) => {
   try {
@@ -270,7 +260,7 @@ const deleteProducts = asyncHandler(async (req, res, next) => {
 const getSearchProducts = asyncHandler(async (req, res, next) => {
   let query = {}
   // if (req.query.search) {
-    // }
+  // }
   const products = await Products.find({
     name: { $regex: req.query.search, $options: "i" },
   })
@@ -304,54 +294,66 @@ const test = asyncHandler(async (req, res, next) => {
 })
 
 const removeImg = asyncHandler(async (req, res, next) => {
-let imageName = req.body.name;
-const  item=req.body.name
-const parts = imageName.split('/');
-imageName = parts[parts.length - 1];
-  if (removeImage(req.params.id,imageName,item)) {
+  const imageUrl = req.body.name;
+  const success = await removeImage(req.params.id, imageUrl);
+
+  if (success) {
     res.json({ success: true });
   } else {
     res.json({ success: false });
   }
-
 })
 
-const imagesDirectory = path.join(__dirname, '../../public/imgs/productImgs/');
+const removeImage = async (productId, imageUrl) => {
+  try {
+    console.log(`Attempting to remove image from Cloudinary: ${imageUrl}`);
 
-const removeImage = async (productId, imageName,item) => {
-  const imagePath = path.join(imagesDirectory, imageName);
-  console.log(`Attempting to remove image: ${imagePath}`.bgYellow);
+    // Extract public_id from Cloudinary URL
+    // URL format: https://res.cloudinary.com/[cloud_name]/image/upload/v[version]/[public_id].[format]
+    const urlParts = imageUrl.split('/');
+    const uploadIndex = urlParts.indexOf('upload');
+    if (uploadIndex === -1) {
+      console.error('Invalid Cloudinary URL format');
+      return false;
+    }
 
-  if (fs.existsSync(imagePath)) {
-    console.log('File exists.'.bgRed);
-    try {
-      fs.unlinkSync(imagePath);
-      console.log('File successfully deleted.'.bgGreen);
+    // Get everything after 'upload/v[version]/'
+    const publicIdWithExt = urlParts.slice(uploadIndex + 2).join('/');
+    // Remove file extension
+    const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf('.'));
 
+    console.log(`Extracted public_id: ${publicId}`);
+
+    // Delete from Cloudinary
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log('Cloudinary deletion result:', result);
+
+    if (result.result === 'ok' || result.result === 'not found') {
       // Update the MongoDB document
       const product = await Products.findById(productId);
       if (product) {
-       const ind = product.image.indexOf(item) 
-        product.image.splice(ind,1)
-        await product.save();
-        console.log('Image path successfully removed from database.'.bgCyan);
-        return true;
+        const ind = product.image.indexOf(imageUrl);
+        if (ind !== -1) {
+          product.image.splice(ind, 1);
+          await product.save();
+          console.log('Image URL successfully removed from database.');
+          return true;
+        }
       } else {
-        console.error('Product not found.'.yellow);
+        console.error('Product not found.');
         return false;
       }
-    } catch (error) {
-      console.error(`Error removing image: ${error.message}`);
-      return false;
     }
-  } else {
-    console.log('File does not exist.'.bgRed);
+
+    return false;
+  } catch (error) {
+    console.error(`Error removing image: ${error.message}`.red);
+    // Don't throw, just return false so the UI doesn't crash, but log specifically.
     return false;
   }
 };
 
 
-module.exports = removeImage;
 module.exports = {
   getProducts,
   updateProducts,
@@ -367,5 +369,4 @@ module.exports = {
   getSearchProducts,
   removeImg,
   test,
-
 }

@@ -30,7 +30,7 @@ const { protect, admin } = require("../middleware/authMiddleware")
 
 
 router.route("/profile").get(protect, getProfile)
-router.post("/profile").get(protect, getProfile)
+router.route("/profile").post(protect, getProfile)
 router.route("/profile/edit").get(protect, getEditInfo)
 router.route("/profile/update").get(protect, getEditInfo).patch(protect, uploadUser.single('croppedImage'),updateProfile)
 router

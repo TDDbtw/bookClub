@@ -4,7 +4,7 @@ const Category = require("../../models/category")
 const Order = require("../../models/order")
 const ErrorResponse = require(`../../utils/errorResponse`)
 const asyncHandler = require("../../middleware/async")
-const { formatDate,formatDateISO } = require("../../utils/date")
+const { formatDate, formatDateISO } = require("../../utils/date")
 const {
   getMonthlyDataArray,
   getDailyDataArray,
@@ -59,15 +59,30 @@ const getAdmin = asyncHandler(async (req, res, next) => {
   const users = await User.find()
   let totalRevenue = await Order.aggregate([
     { $match: { status: "delivered" } },
-    { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
+    { $unwind: "$items" },
+    {
+      $match: {
+        $or: [
+          { "items.request.status": { $exists: false } },
+          { "items.request.status": null },
+          { "items.request.status": { $ne: "accepted" } }
+        ]
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: { $multiply: ["$items.quantity", "$items.price"] } }
+      }
+    }
   ]);
 
   const order = await Order.find().populate("user")
   const totalOrders = order.length;
   const totalPages = Math.ceil(totalOrders / PAGE_SIZE);
   let totalRevenueValue = totalRevenue.length > 0 ? totalRevenue[0].totalAmount : 0;
-  totalRevenue =(Math.round(totalRevenue * 100) / 100).toFixed(2);
-  totalRevenueValue =(Math.round(totalRevenueValue * 100) / 100).toFixed(2);
+  totalRevenue = (Math.round(totalRevenue * 100) / 100).toFixed(2);
+  totalRevenueValue = (Math.round(totalRevenueValue * 100) / 100).toFixed(2);
   const products = await Products.find()
     .populate("category")
     .populate("subcategories")
@@ -76,7 +91,7 @@ const getAdmin = asyncHandler(async (req, res, next) => {
   const paginatedOrders = order
     .sort((a, b) => b.date - a.date)
     .slice(skip, skip + PAGE_SIZE);
-  res.render(`./admin/panel`, { users,order:paginatedOrders,formatDate, products,totalRevenue:totalRevenueValue ,currentPage: page,totalPages,PAGE_SIZE}
+  res.render(`./admin/panel`, { users, order: paginatedOrders, formatDate, products, totalRevenue: totalRevenueValue, currentPage: page, totalPages, PAGE_SIZE }
   )
 })
 
@@ -90,8 +105,23 @@ const getAdminData = asyncHandler(async (req, res, next) => {
       .exec()
     const users = await User.find()
     const totalRevenue = await Order.aggregate([
-      { $match: { status: "delivered" } }, // Include the conditions directly
-      { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
+      { $match: { status: "delivered" } },
+      { $unwind: "$items" },
+      {
+        $match: {
+          $or: [
+            { "items.request.status": { $exists: false } },
+            { "items.request.status": null },
+            { "items.request.status": { $ne: "accepted" } }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: { $multiply: ["$items.quantity", "$items.price"] } }
+        }
+      }
     ]);
 
     const totalUsers = await User.countDocuments({ status: 1 });
@@ -109,7 +139,22 @@ const getAdminData = asyncHandler(async (req, res, next) => {
           },
         },
       },
-      { $group: { _id: null, monthlyAmount: { $sum: "$totalAmount" } } },
+      { $unwind: "$items" },
+      {
+        $match: {
+          $or: [
+            { "items.request.status": { $exists: false } },
+            { "items.request.status": null },
+            { "items.request.status": { $ne: "accepted" } }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          monthlyAmount: { $sum: { $multiply: ["$items.quantity", "$items.price"] } }
+        }
+      }
     ]);
 
     const salesPerCategory = await Order.aggregate([
@@ -185,7 +230,7 @@ const getAdminData = asyncHandler(async (req, res, next) => {
         dailyOrderCounts,
         yearlyOrderCounts,
 
-      } )
+      })
   } catch (error) {
     console.log(error.message);
     // Handle errors appropriately
@@ -196,10 +241,10 @@ const getAdminData = asyncHandler(async (req, res, next) => {
 
 ///////////////////////////////////////////////////////
 
-  const getProfile = asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.user.id)
-    res.render(`./users/profile`, { user })
-  })
+const getProfile = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id)
+  res.render(`./users/profile`, { user })
+})
 
 const getEditInfo = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
@@ -209,11 +254,11 @@ const getEditInfo = asyncHandler(async (req, res, next) => {
 
 const loadUsers = asyncHandler(async (req, res, next) => {
   const users = await User.find()
- console.log(`user is ${req.user}`.red) 
-  const currentAdminEmail=req.user.email
+  console.log(`user is ${req.user}`.red)
+  const currentAdminEmail = req.user.email
   const userCount = await User.countDocuments()
-  const blockCount = await User.countDocuments({status:false})
-  res.render(`./admin/userList`, {userCount,blockCount, users,currentAdminEmail, name: "User List" })
+  const blockCount = await User.countDocuments({ status: false })
+  res.render(`./admin/userList`, { userCount, blockCount, users, currentAdminEmail, name: "User List" })
 })
 
 const getEditUsers = asyncHandler(async (req, res, next) => {
@@ -263,7 +308,7 @@ const updateUsers = asyncHandler(async (req, res, next) => {
 const getSearchUsers = asyncHandler(async (req, res, next) => {
   let query = {}
   // if (req.query.search) {
-    // }
+  // }
   const users = await User.find({
     name: { $regex: req.query.search, $options: "i" },
   })

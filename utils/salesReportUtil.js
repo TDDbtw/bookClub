@@ -44,12 +44,58 @@ async function getSalesReportData(startDate, endDate, filter) {
     {
       $group: {
         _id: '$items.productId',
-        totalSales: { $sum: { $cond: [{ $eq: ["$status", "delivered"] }, '$items.quantity', 0] } },
-        totalRevenue: { $sum: { $cond: [{ $eq: ["$status", "delivered"] }, { $multiply: ['$items.quantity', '$items.price'] }, 0] } },
+        totalSales: {
+          $sum: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$status", "delivered"] },
+                  {
+                    $or: [
+                      { $eq: [{ $ifNull: ["$items.request.status", null] }, null] },
+                      { $ne: ["$items.request.status", "accepted"] }
+                    ]
+                  }
+                ]
+              },
+              '$items.quantity',
+              0
+            ]
+          }
+        },
+        totalRevenue: {
+          $sum: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$status", "delivered"] },
+                  {
+                    $or: [
+                      { $eq: [{ $ifNull: ["$items.request.status", null] }, null] },
+                      { $ne: ["$items.request.status", "accepted"] }
+                    ]
+                  }
+                ]
+              },
+              { $multiply: ['$items.quantity', '$items.price'] },
+              0
+            ]
+          }
+        },
         totalDiscount: {
           $sum: {
             $cond: [
-              { $eq: ["$status", "delivered"] },
+              {
+                $and: [
+                  { $eq: ["$status", "delivered"] },
+                  {
+                    $or: [
+                      { $eq: [{ $ifNull: ["$items.request.status", null] }, null] },
+                      { $ne: ["$items.request.status", "accepted"] }
+                    ]
+                  }
+                ]
+              },
               {
                 $add: [
                   { $ifNull: [{ $sum: '$coupons.discount' }, 0] },
@@ -60,10 +106,50 @@ async function getSalesReportData(startDate, endDate, filter) {
             ]
           }
         },
+        returnedRevenue: {
+          $sum: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$items.request.type", "return"] },
+                  { $eq: ["$items.request.status", "accepted"] }
+                ]
+              },
+              { $multiply: ['$items.quantity', '$items.price'] },
+              0
+            ]
+          }
+        },
         cancelledOrders: { $sum: { $cond: [{ $eq: ["$status", "cancelled"] }, 1, 0] } },
         cancelledQuantity: { $sum: { $cond: [{ $eq: ["$status", "cancelled"] }, '$items.quantity', 0] } },
-        returnedOrders: { $sum: { $cond: [{ $eq: ["$status", "returned"] }, 1, 0] } },
-        returnedQuantity: { $sum: { $cond: [{ $eq: ["$status", "returned"] }, '$items.quantity', 0] } },
+        returnedOrders: {
+          $sum: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$items.request.type", "return"] },
+                  { $eq: ["$items.request.status", "accepted"] }
+                ]
+              },
+              1,
+              0
+            ]
+          }
+        },
+        returnedQuantity: {
+          $sum: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$items.request.type", "return"] },
+                  { $eq: ["$items.request.status", "accepted"] }
+                ]
+              },
+              '$items.quantity',
+              0
+            ]
+          }
+        },
       },
     },
     {
@@ -87,6 +173,7 @@ async function getSalesReportData(startDate, endDate, filter) {
         totalRevenue: 1,
         totalDiscount: 1,
         netRevenue: 1,
+        returnedRevenue: 1,
         cancelledOrders: 1,
         cancelledQuantity: 1,
         returnedOrders: 1,

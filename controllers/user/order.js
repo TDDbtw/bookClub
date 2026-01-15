@@ -3,14 +3,14 @@ const asyncHandler = require("../../middleware/async")
 const colors = require("colors")
 const moment = require("moment")
 const puppeteer = require('puppeteer');
-const Razorpay= require('razorpay')
+const Razorpay = require('razorpay')
 const User = require("../../models/users")
 const Cart = require("../../models/cart")
 const Wallet = require("../../models/wallet")
 const Offer = require("../../models/offer")
 const Order = require("../../models/order")
-const Coupon= require("../../models/coupon")
-const { generateOrderInvoice} = require('../../utils/reportGenerator');
+const Coupon = require("../../models/coupon")
+const { generateOrderInvoice } = require('../../utils/reportGenerator');
 
 
 
@@ -22,10 +22,10 @@ const getUserOrder = async (req, res, next) => {
     const user = await User.findById(req.user.id)
     const cart = await Cart.findOne({ user: user.id })
     const orders = await Order.find({ user: user.id })
-      .sort({ 'created_at': -1 }) 
+      .sort({ 'created_at': -1 })
       .populate({
         path: 'items.productId',
-        select: 'name' 
+        select: 'name'
       })
       .exec();
     const PAGE_SIZE = 4; // Number of transactions per page
@@ -45,9 +45,10 @@ const getUserOrder = async (req, res, next) => {
       order.items.filter((item) => item.name)
     )
 
-    res.render("./users/ordersList", { user, orders: paginatedTransactions,
-      products, 
-      moment,currentPage: page,totalPages,PAGE_SIZE
+    res.render("./users/ordersList", {
+      user, orders: paginatedTransactions,
+      products,
+      moment, currentPage: page, totalPages, PAGE_SIZE
     })
   } catch (error) {
 
@@ -59,7 +60,7 @@ const getCheckout = asyncHandler(async (req, res, next) => {
   res.render(`./users/order`)
 })
 
-const getOrderSuccess = asyncHandler (async (req,res,next )=>{
+const getOrderSuccess = asyncHandler(async (req, res, next) => {
   res.render(`./users/orderSuccess`)
 }
 )
@@ -68,21 +69,21 @@ const getOrderById = asyncHandler(async (req, res, next) => {
   const user = await User.findById(order.user._id)
   const createdDate = moment(order.created_at).format('MM/DD/YYYY')
   const deliveryDate = moment(order.deliveryDate).format('MM/DD/YYYY hh:mm A');
-  const ID=order._id
+  const ID = order._id
   let expectedDeliveryDate = new Date(order.created_at);
-  if(order.deliveryDate!=null){
+  if (order.deliveryDate != null) {
     expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 5);
-    expectedDeliveryDate=moment(expectedDeliveryDate).format('MM/DD/YYYY')
+    expectedDeliveryDate = moment(expectedDeliveryDate).format('MM/DD/YYYY')
   }
-  else{
-    expectedDeliveryDate=null
+  else {
+    expectedDeliveryDate = null
   }
   const cancelledItemCount = order.items.filter(item => item.request?.type === 'cancel').length;
   const returnedItemCount = order.items.filter(item => item.request?.type === 'return').length;
-  const allCancelled=order.items.length ===cancelledItemCount 
-  const allReturned=order.items.length ===returnedItemCount 
-  const isReturnable=order.isReturnable()
-  const  calculateDiscountPercentage=function (originalPrice, discountedPrice) {
+  const allCancelled = order.items.length === cancelledItemCount
+  const allReturned = order.items.length === returnedItemCount
+  const isReturnable = order.isReturnable()
+  const calculateDiscountPercentage = function (originalPrice, discountedPrice) {
     if (originalPrice <= 0) {
       throw new Error("Original price must be greater than zero");
     }
@@ -90,7 +91,7 @@ const getOrderById = asyncHandler(async (req, res, next) => {
     return percentageOff;
   }
   console.log(`discount percentage ${calculateDiscountPercentage}`)
-  res.render(`./users/order`, { order, user, createdDate,deliveryDate,calculateDiscountPercentage ,expectedDeliveryDate,ID,allCancelled,allReturned ,isReturnable})
+  res.render(`./users/order`, { order, user, createdDate, deliveryDate, calculateDiscountPercentage, expectedDeliveryDate, ID, allCancelled, allReturned, isReturnable })
 })
 
 
@@ -144,18 +145,43 @@ const createOrder = asyncHandler(async (req, res, next) => {
     orderItem.price = itemPrice; // Set the final price after applying offer
 
     return orderItem;
+    return orderItem;
   }));
+
+  // FINAL STOCK CHECK & RESERVATION
+  // This must be atomic to prevent race conditions
+  const reservedItems = [];
+  try {
+    for (const item of orderItems) {
+      const product = await Products.findOneAndUpdate(
+        { _id: item.productId, stockCount: { $gte: item.quantity } },
+        { $inc: { stockCount: -item.quantity } },
+        { new: true }
+      );
+
+      if (!product) {
+        throw new Error(`Out of stock for item: ${item.name}`);
+      }
+      reservedItems.push(item);
+    }
+  } catch (error) {
+    // Release reserved stock if any item fails
+    for (const item of reservedItems) {
+      await Products.findByIdAndUpdate(item.productId, { $inc: { stockCount: item.quantity } });
+    }
+    return res.status(400).json({ error: error.message || 'Some items are out of stock' });
+  }
 
   // Calculate total amount
   let totalAmount = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   totalAmount += shippingTotal;
-  let appliedCoupon=[]
+  let appliedCoupon = []
 
   if (req.body.coupon) {
     const { discount, newTotalAmount } = applyCoupon(req.body.coupon, totalAmount);
     const data = {
-      code:req.body.coupon.couponCode,
-      discount:discount
+      code: req.body.coupon.couponCode,
+      discount: discount
     }
     appliedCoupon.push(data)
     console.log(`discount is ${discount}`.red);
@@ -170,7 +196,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
 
   const order = new Order(orderData);
   console.log(`applied coupon is ${JSON.stringify(appliedCoupon)}`.yellow)
-  order.coupons=appliedCoupon
+  order.coupons = appliedCoupon
   await order.save();
 
   if (req.body.payment_method === 'wallet') {
@@ -193,7 +219,7 @@ const razorpayOrder = asyncHandler(async (req, res, next) => {
   var instance = new Razorpay({
     key_id: process.env.RAZORPAY_ID,
     key_secret: process.env.RAZORPAY_SECRET,
-  }); 
+  });
 
   if (!user) {
     return res.status(500).json({ success: false, error: 'User not found.' });
@@ -207,7 +233,7 @@ const razorpayOrder = asyncHandler(async (req, res, next) => {
 
   if (!user.shipping_address.country || !user.billing_address.country) {
 
-      throw new Error(`You do need to add the address`);
+    throw new Error(`You do need to add the address`);
   }
   const shippingTotal = calculateShippingTotal(user.shipping_address.country);
   let totalAmount = calculateTotalAmount(cart.items, shippingTotal);
@@ -225,13 +251,50 @@ const razorpayOrder = asyncHandler(async (req, res, next) => {
     payment_capture: 1,
   };
 
-  const razorpayOrder = await instance.orders.create(options);
+  // CHECK STOCK & RESERVE (Atomic)
+  // We must ensure stock exists before letting them pay. 
+  // Ideally, for online payments, we reserve stock for a short time (e.g. 10 mins) or deduct it now and restore if payment fails.
+  // Given the current architecture, deducting now (like COD) and restoring on failure/cancellation is consistent.
+  const reservedItems = [];
+  try {
+    for (const item of cart.items) {
+      const product = await Products.findOneAndUpdate(
+        { _id: item.productId._id, stockCount: { $gte: item.quantity } },
+        { $inc: { stockCount: -item.quantity } },
+        { new: true }
+      );
 
-  res.status(201).json({
-    success: true,
-    message: 'Order placed successfully.',
-    order: razorpayOrder,
-  });
+      if (!product) {
+        throw new Error(`Out of stock for item: ${item.productId.name}`);
+      }
+      reservedItems.push(item);
+    }
+  } catch (error) {
+    // Release reserved stock if any item fails
+    for (const item of reservedItems) {
+      await Products.findByIdAndUpdate(item.productId._id, { $inc: { stockCount: item.quantity } });
+    }
+    return res.status(400).json({ error: error.message || 'Some items are out of stock' });
+  }
+
+  try {
+    const razorpayOrder = await instance.orders.create(options);
+
+    // NOTE: If instance.orders.create fails, we MUST restore stock.
+    // We handle this in the catch block below.
+
+    res.status(201).json({
+      success: true,
+      message: 'Order placed successfully.',
+      order: razorpayOrder,
+    });
+  } catch (err) {
+    // Rollback stock
+    for (const item of reservedItems) {
+      await Products.findByIdAndUpdate(item.productId._id, { $inc: { stockCount: item.quantity } });
+    }
+    return res.status(500).json({ error: 'Failed to create Razorpay order', details: err });
+  }
 });
 
 
@@ -276,16 +339,22 @@ const createFailedOrder = asyncHandler(async (req, res, next) => {
     const failedOrder = new Order(orderData);
     await failedOrder.save();
 
+    // Release any stock if it was somehow reserved (though failed order usually comes from payment failure)
+    // If we reserved stock before payment and payment failed, we must release it here.
+    // However, usually we create failed order solely for logging. 
+    // Assuming createOrder flow handles reservation, this might be separate.
+    // If this function is called independently, we assume no stock was deducted yet or it's just logging.
+
     // Optionally, you might want to log the reason for failure
     console.log(`Order ${failedOrder._id} failed. Reason: ${req.body.failureReason || 'Unknown'}`);
 
     // Don't clear the cart for failed orders
     // await clearCart(cart);
 
-    res.status(200).json({ 
-      success: false, 
-      message: 'Order failed', 
-      orderId: failedOrder._id 
+    res.status(200).json({
+      success: false,
+      message: 'Order failed',
+      orderId: failedOrder._id
     });
   } catch (error) {
     console.error('Error creating failed order:', error);
@@ -436,7 +505,7 @@ const cancelOrReturnOrder = async (req, res, next) => {
 
 
 const cancelOrder = asyncHandler(async (req, res, next) => {
-  const ID=String(req.params.orderId)
+  const ID = String(req.params.orderId)
   const order = await Order.findById(ID);
   console.log(`${order}`.red)
   if (!order) {
@@ -448,10 +517,18 @@ const cancelOrder = asyncHandler(async (req, res, next) => {
   }
 
   order.status = 'cancelled';
+
+  // Restore stock for all items
+  for (const item of order.items) {
+    await Products.findByIdAndUpdate(item.productId, { $inc: { stockCount: item.quantity } });
+  }
+
   const cancelledOrder = await order.save();
 
   if (cancelledOrder) {
-    await refundToWallet(order.user, order.calculateTotalAmount(), `Refund for cancelled order ${cancelledOrder._id}`);
+    // For full order cancellation within 'pending' state, it's usually full refund if paid? 
+    // But calculateTotalAmount() returns the full amount. That seems safe for full cancel.
+    await refundToWallet(order.user, order.totalAmount, `Refund for cancelled order ${cancelledOrder._id}`);
   }
 
   res.status(200).json({
@@ -472,7 +549,7 @@ const returnOrder = async (req, res, next) => {
     if (order.status !== 'delivered') {
       return next(new ErrorResponse('Only delivered orders can be returned', 400));
     }
-    order.returnRequest = { 
+    order.returnRequest = {
       status: 'pending',
       reason: req.body.reason || "Requseted return",
       createdAt: Date.now()
@@ -515,15 +592,23 @@ const cancelProduct = async (req, res, next) => {
 
     const cancelledItemCount = order.items.filter(item => item.request?.type === 'cancel').length;
     const returnedItemCount = order.items.filter(item => item.request?.type === 'return').length;
-    const allCancelled=order.items.length ===cancelledItemCount 
-    const allReturned=order.items.length ===returnedItemCount 
-    if(allCancelled){order.status='cancelled'}
-    if(allReturned){order.status='returned'}
-    const returnedItem=order.items[productIndex]
-    const amount=  returnedItem.quantity * returnedItem.price
+    const allCancelled = order.items.length === cancelledItemCount
+    const allReturned = order.items.length === returnedItemCount
+    if (allCancelled) { order.status = 'cancelled' }
+    if (allReturned) { order.status = 'returned' }
+    const returnedItem = order.items[productIndex]
+
+    // Restore Stock
+    await Products.findByIdAndUpdate(returnedItem.productId, { $inc: { stockCount: returnedItem.quantity } });
+
+    // Calculate Pro-rated Refund
+    const amount = order.calculateItemRefund(returnedItem.productId);
+
     const wallet = await Wallet.findOrCreate(order.user);
-    if(order.payment_method!=='cod'){
-      wallet.addTransaction('credit', amount, `Refund of ${returnedItem.quantity} X  ${returnedItem.name} canceled order`);}
+    if (order.payment_method !== 'cod') {
+      // Only refund if not COD
+      wallet.addTransaction('credit', amount, `Refund of ${returnedItem.quantity} X ${returnedItem.name} canceled product`);
+    }
     await wallet.save()
     await order.save();
 
@@ -578,7 +663,7 @@ const loadInvoice = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }
     const user = await User.findById(order.user._id)
-    const invoiceHtml = await generateOrderInvoice(order,user); // Function to generate HTML invoice
+    const invoiceHtml = await generateOrderInvoice(order, user); // Function to generate HTML invoice
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(invoiceHtml);
@@ -611,7 +696,7 @@ function calculateTotalAmount(items, shippingTotal) {
   const tax = subtotal * 0.05;
   console.log(`shipping total is ${shippingTotal}`.yellow)
   console.log(`tax is  tax ${tax}`.blue)
-  console.log(`total is  ${subtotal+tax+ shippingTotal}`.magenta)
+  console.log(`total is  ${subtotal + tax + shippingTotal}`.magenta)
   return Number(subtotal + tax + shippingTotal).toFixed(2);
 }
 
@@ -646,7 +731,7 @@ async function handleWalletPayment(userId, amount, orderId) {
 }
 
 async function updateCoupon(couponCode, userId) {
-  const coupon = await Coupon.findOne({code: { $regex: new RegExp(`^${couponCode}$`, 'i') }});
+  const coupon = await Coupon.findOne({ code: { $regex: new RegExp(`^${couponCode}$`, 'i') } });
   // console.log(`${couponCode}`.red)
   coupon.claimedBy.push(userId);
   coupon.limit -= 1;

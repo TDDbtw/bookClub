@@ -35,8 +35,8 @@ const orderSchema = new mongoose.Schema({
       },
       offers: [
         {
-          offerName:  { type: String,},
-          discountValue: { type: Number,}
+          offerName: { type: String, },
+          discountValue: { type: Number, }
         }
       ]
       ,
@@ -60,16 +60,16 @@ const orderSchema = new mongoose.Schema({
   },
   payment_method: {
     type: String,
-    enum: ["cod", "razorpay",'wallet'],
+    enum: ["cod", "razorpay", 'wallet'],
     required: true,
   },
   payment_status: {
-    type:Boolean,
-    default:true,
+    type: Boolean,
+    default: true,
   },
   status: {
     type: String,
-    enum: ["pending", "processing", "shipped", "delivered", "cancelled","returned","Failed"],
+    enum: ["pending", "processing", "shipped", "delivered", "cancelled", "returned", "Failed"],
     default: "pending",
   },
   created_at: {
@@ -84,25 +84,25 @@ const orderSchema = new mongoose.Schema({
   },
   deliveryDate: {
     type: Date,
-    default:null,
+    default: null,
   },
   returnRequest: {
-    status: { 
+    status: {
       type: String,
-      enum: ['pending', 'accepted'], 
-      default: null 
+      enum: ['pending', 'accepted'],
+      default: null
     },
-    reason: String, 
+    reason: String,
     requestDate: {
       type: Date,
     }
   },
-    coupons: [
-        {
-            code: { type: String,},
-            discount: { type: Number,},
-        }
-    ],
+  coupons: [
+    {
+      code: { type: String, },
+      discount: { type: Number, },
+    }
+  ],
 })
 function generateShortOrderId() {
   const characters = "0123456789";
@@ -125,17 +125,17 @@ orderSchema.pre("save", function (next) {
   next();
 });
 
-orderSchema.methods.calculateTotalAmount = function() {
+orderSchema.methods.calculateTotalAmount = function () {
   return this.totalAmount;
 };
 
-orderSchema.methods.isReturnable = function() {
+orderSchema.methods.isReturnable = function () {
   const returnPeriod = 7; // 7 days return policy
-  return this.status === 'delivered' && 
+  return this.status === 'delivered' &&
     moment().diff(this.deliveryDate, 'days') <= returnPeriod;
 };
 
-orderSchema.methods.getOrderSummary = function() {
+orderSchema.methods.getOrderSummary = function () {
   return {
     orderId: this._id,
     totalAmount: this.totalAmount,
@@ -147,12 +147,48 @@ orderSchema.methods.getOrderSummary = function() {
 };
 
 
-orderSchema.methods.calculateRefundAmount = function() {
+orderSchema.methods.calculateItemRefund = function (itemId) {
+  const item = this.items.find(i => i.productId.toString() === itemId.toString());
+  if (!item) return 0;
+
+  const itemTotal = item.price * item.quantity;
+  const orderSubtotal = this.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+
+  if (orderSubtotal === 0) return 0;
+
+  // Calculate what percentage of the order this item represents
+  const itemShare = itemTotal / orderSubtotal;
+
+  // Calculate coupon impact
+  const totalCouponDiscount = this.coupons ? this.coupons.reduce((sum, c) => sum + c.discount, 0) : 0;
+
+  // Pro-rated discount for this item
+  const itemDiscountShare = totalCouponDiscount * itemShare;
+
+  return itemTotal - itemDiscountShare;
+};
+
+orderSchema.methods.calculateRefundAmount = function () {
   let refundableAmount = 0;
 
   this.items.forEach(item => {
     if (item.request.status !== 'accepted' || item.request.type !== 'return') {
-      refundableAmount += item.price * item.quantity;
+      // For items NOT returned, we don't refund.
+      // Wait, this function name implies getting the amount TO BE refunded for the whole order?
+      // Or is it calculating the *remaining* value of the order? 
+      // The original code was summing up items that were NOT returned. 
+      // That means it was calculating "Current Order Value".
+
+      // Let's keep the original logic intent if it is used for "Order Value" display, 
+      // BUT typically "calculateRefundAmount" implies "How much money do I give back?".
+
+      // However, looking at usage in controllers, it seems unused or used for logging.
+      // Let's Fix it to return the Total REFUNDABLE Amount for the whole order (if all valid items were returned)
+      // OR, let's make it calculate the amount ALREADY refunded?
+
+      // ACTUALLY: The best approach is to calculate the potential refund for the REMAINING items.
+      const refund = this.calculateItemRefund(item.productId);
+      refundableAmount += refund;
     }
   });
 

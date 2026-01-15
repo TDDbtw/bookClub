@@ -10,13 +10,13 @@ const Subcategories = require("../../models/subcategory")
 const ErrorResponse = require(`../../utils/errorResponse`)
 const asyncHandler = require("../../middleware/async")
 const { formatDate, formatDateISO } = require("../../utils/date")
-const jwt = require("jsonwebtoken") 
+const jwt = require("jsonwebtoken")
 const moment = require("moment");
 const colors = require("colors")
 const puppeteer = require("puppeteer")
 const express = require("express")
 const router = express.Router()
-const { getSalesReportData} = require('../../utils/salesReportUtil');
+const { getSalesReportData } = require('../../utils/salesReportUtil');
 const { generatePdfReport, generateExcelReport } = require('../../utils/reportGenerator');
 //get order
 
@@ -38,7 +38,7 @@ const getAdminOrderList = asyncHandler(async (req, res, next) => {
     .sort((a, b) => b.date - a.date)
     .slice(skip, skip + PAGE_SIZE);
 
-  res.render(`./admin/orderList`, { orders:paginatedOrders ,formatDate,currentPage: page,totalPages,PAGE_SIZE})
+  res.render(`./admin/orderList`, { orders: paginatedOrders, formatDate, currentPage: page, totalPages, PAGE_SIZE })
 })
 
 const getCheckout = asyncHandler(async (req, res, next) => {
@@ -54,55 +54,55 @@ const getOrderById = asyncHandler(async (req, res, next) => {
 })
 
 //
-  // Create Order
+// Create Order
 //
-  const createOrder = asyncHandler(async (req, res, next) => {
-    try {
-      const { totalAmount, payment_method } = req.body
-      const user = await User.findById(req.user.id)
-      console.log(user)
-      const cart = await Cart.findOne({ user: user.id })
-      console.log(cart)
+const createOrder = asyncHandler(async (req, res, next) => {
+  try {
+    const { totalAmount, payment_method } = req.body
+    const user = await User.findById(req.user.id)
+    console.log(user)
+    const cart = await Cart.findOne({ user: user.id })
+    console.log(cart)
 
-      if (!user || !cart) {
-        return next(new ErrorResponse("User or cart not found", 404))
-      }
-
-      console.log(`this is order -->${cart}`)
-      res.redirect("/order")
-    } catch (error) {
-
-      console.error(error)
-      next(new ErrorResponse("Internal Server Error", 500))
+    if (!user || !cart) {
+      return next(new ErrorResponse("User or cart not found", 404))
     }
-  })
+
+    console.log(`this is order -->${cart}`)
+    res.redirect("/order")
+  } catch (error) {
+
+    console.error(error)
+    next(new ErrorResponse("Internal Server Error", 500))
+  }
+})
 
 //
-  // Get All Orders
+// Get All Orders
 //
-  router.get("/orders", async (req, res) => {
-    try {
-      const orders = await Order.find()
+router.get("/orders", async (req, res) => {
+  try {
+    const orders = await Order.find()
 
-      res.status(200).send(orders)
-    } catch (error) {
-      res.status(500).send(error)
-    }
-  })
+    res.status(200).send(orders)
+  } catch (error) {
+    res.status(500).send(error)
+  }
+})
 
 // Get Single Order
 //
-  router.get("/orders/:id", async (req, res) => {
-    try {
-      const order = await Order.findById(req.params.id)
-      if (!order) {
-        return next(new ErrorResponse(`Order Not Found`, 404))
-      }
-      res.status(200).send(order)
-    } catch (error) {
-      res.status(500).send(error)
+router.get("/orders/:id", async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+    if (!order) {
+      return next(new ErrorResponse(`Order Not Found`, 404))
     }
-  })
+    res.status(200).send(order)
+  } catch (error) {
+    res.status(500).send(error)
+  }
+})
 
 // Update Order
 //
@@ -156,15 +156,21 @@ const manageProductReturn = async (req, res, next) => {
       type: 'return',
       status: 'accepted',
     }
-    const returnedItem=order.items[productIndex]
-    const amount=  returnedItem.quantity * returnedItem.price
+    const returnedItem = order.items[productIndex]
+
+    // Restore Stock
+    await Products.findByIdAndUpdate(returnedItem.productId, { $inc: { stockCount: returnedItem.quantity } });
+
+    // Calculate Pro-rated Refund
+    const amount = order.calculateItemRefund(returnedItem.productId);
+
     const wallet = await Wallet.findOrCreate(order.user);
-    wallet.addTransaction('credit', amount, `Refund for the cancellation of ${returnedItem.quantity} ${returnedItem.name}(s).`);
+    wallet.addTransaction('credit', amount, `Refund for the return of ${returnedItem.quantity} ${returnedItem.name}(s).`);
     await wallet.save()
     await order.save();
     res.status(200).json({
       success: true,
-      message: 'Product return request added successfully',
+      message: 'Product return request accepted successfully',
       data: order
     });
   } catch (error) {
@@ -185,15 +191,37 @@ const manageOrderReturn = async (req, res, next) => {
     if (order.status !== 'delivered') {
       return next(new ErrorResponse('Only delivered orders can be returned', 400));
     }
-    order.returnRequest = { 
+    order.returnRequest = {
       status: 'accepted',
     };
+
+    // Loop through all items to calculate total refund and restore stock
+    let totalRefundAmount = 0;
+
+    for (const item of order.items) {
+      // Only refund if not already returned/cancelled
+      if (!item.request || item.request.status !== 'accepted') {
+        const itemRefund = order.calculateItemRefund(item.productId);
+        totalRefundAmount += itemRefund;
+
+        // Restore Stock
+        await Products.findByIdAndUpdate(item.productId, { $inc: { stockCount: item.quantity } });
+
+        // Mark as returned
+        item.request = { type: 'return', status: 'accepted' };
+      }
+    }
+
+    const wallet = await Wallet.findOrCreate(order.user);
+    wallet.addTransaction('credit', totalRefundAmount, `Refund for return of order ${order._id}`);
+    await wallet.save();
+
     await order.save();
-    const amount =order.calculateRefundAmount()
-    console.log(`refundable amount is ${amount}`.bgRed) 
+    // const amount =order.calculateRefundAmount() // Deprecated use
+    console.log(`refundable amount is ${totalRefundAmount}`.bgRed)
     res.status(200).json({
       success: true,
-      message: 'Order return requested successfully',
+      message: 'Order return accepted successfully',
     });
   } catch (error) {
     next(error);
@@ -203,17 +231,17 @@ const manageOrderReturn = async (req, res, next) => {
 // Delete Order
 //
 
-  router.delete("/orders/:id", async (req, res) => {
-    try {
-      const order = await Order.findByIdAndDelete(req.params.id)
-      if (!order) {
-        return res.status(404).send("Order not found")
-      }
-      res.status(200).send(order)
-    } catch (error) {
-      res.status(500).send(error)
+router.delete("/orders/:id", async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id)
+    if (!order) {
+      return res.status(404).send("Order not found")
     }
-  })
+    res.status(200).send(order)
+  } catch (error) {
+    res.status(500).send(error)
+  }
+})
 const test = asyncHandler(async (req, res, next) => {
   const orders = await Order.find()
   const subcategories = await Subcategories.find()
@@ -261,7 +289,7 @@ const downloadPdf = asyncHandler(async (req, res) => {
     console.log(`Downloading PDF - Filter Type: ${filterType}, Start Date: ${startDate}, End Date: ${endDate}`);
 
     const salesReport = await getSalesReportData(startDate, endDate, filterType);
-console.log(`${salesReport}.red`)
+    console.log(`${salesReport}.red`)
     const reportHtml = await generatePdfReport(salesReport);
 
     const browser = await puppeteer.launch();
@@ -299,7 +327,7 @@ const downloadExcel = asyncHandler(async (req, res) => {
 async function aggregateTransactions() {
   try {
     const thirtyDaysAgo = new Date(new Date() - 30 * 24 * 60 * 60 * 1000);
-    
+
     const aggregationResult = await Order.aggregate([
       {
         $match: {
@@ -311,8 +339,8 @@ async function aggregateTransactions() {
         $group: {
           _id: '$payment_method',
           totalTransactions: { $sum: 1 },
-          totalRevenue: { 
-            $sum: { 
+          totalRevenue: {
+            $sum: {
               $cond: [
                 { $in: ['$status', ['delivered', 'processing', 'shipped']] },
                 '$totalAmount',
@@ -400,7 +428,7 @@ module.exports = {
   manageProductReturn,
   manageOrderReturn,
   renderSalesReport,
-generateSalesReport,
+  generateSalesReport,
   downloadPdf,
   downloadExcel,
 }

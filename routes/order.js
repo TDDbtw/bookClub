@@ -21,19 +21,19 @@ const couponController = require("../controllers/user/coupon")
 router.route("/").get(protect, getUserOrder).post(createOrder)
 router.route('/wallet')
 router.route("/razorpayOrder").post(protect, razorpayOrder)
-router.route(`/success`).get(protect,getOrderSuccess)
-router.route(`/failed`).post(protect,createFailedOrder)
+router.route(`/success`).get(protect, getOrderSuccess)
+router.route(`/failed`).post(protect, createFailedOrder)
 router.route(`/test`).get(protect, getAccessToken).post(protect, createOrder)
-router.post("/:id/change", protect,cancelOrReturnOrder);
+router.post("/:id/change", protect, cancelOrReturnOrder);
 router.route("/applyCoupon").post(couponController.applyCoupon)
 router.route("/removeCoupon").post(couponController.removeCoupon)
 // edit
 
-router.put('/:orderId/cancel', cancelOrder);
-router.put('/:orderId/return', returnOrder);
-router.get('/:id/invoice', loadInvoice);
-router.put('/:orderId/product/:productId/cancel', cancelProduct);
-router.put('/:orderId/product/:productId/return', returnProduct);
+router.put('/:orderId/cancel', protect, cancelOrder);
+router.put('/:orderId/return', protect, returnOrder);
+router.get('/:id/invoice', protect, loadInvoice);
+router.put('/:orderId/product/:productId/cancel', protect, cancelProduct);
+router.put('/:orderId/product/:productId/return', protect, returnProduct);
 
 
 

@@ -11,13 +11,13 @@ const couponController = require("../controllers/admin/coupons");
 const offerController = require("../controllers/admin/offer");
 const orderController = require("../controllers/admin/order");
 const userProductController = require("../controllers/user/products");
-const { getAllAdminData,getRecentOrders,getSalesDatas, getBestSellingData} = require("../controllers/admin/adminData")
+const { getAllAdminData, getRecentOrders, getSalesDatas, getBestSellingData } = require("../controllers/admin/adminData")
 // Admin routes
 router.get("/", protect, admin, adminController.getAdmin);
 router.get("/all", protect, admin, getAllAdminData);
-router.get('/orderItems', getRecentOrders);
-router.get('/sales-data', getSalesDatas);
-router.get('/best-selling', getBestSellingData)
+router.get('/orderItems', protect, admin, getRecentOrders);
+router.get('/sales-data', protect, admin, getSalesDatas);
+router.get('/best-selling', protect, admin, getBestSellingData)
 router.get("/data", protect, admin, adminController.getAdminData);
 
 // User management routes
