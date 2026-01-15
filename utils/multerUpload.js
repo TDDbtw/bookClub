@@ -1,46 +1,49 @@
 const multer = require('multer');
-const path = require('path');
+const cloudinary = require('../config/cloudinaryConfig');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// Storage configurations
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/imgs/productImgs');
-  },
-
-filename: function (req, file, cb) {
-    const randomNumber = Math.floor(Math.random() * 10000); // Adding a random number
-    const sanitizedFilename = req.body.name.replace(/\s+/g, '-'); // Replace whitespaces with hyphens
-    const fileName = `${sanitizedFilename}-${randomNumber}`; // No original filename
-    cb(null, fileName);
+// Cloudinary storage for product images
+const productStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'bookClub/products',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1000, height: 1000, crop: 'limit' }],
+    public_id: (req, file) => {
+      const randomNumber = Math.floor(Math.random() * 10000);
+      const sanitizedFilename = req.body.name ? req.body.name.replace(/\s+/g, '-') : 'product';
+      return `${sanitizedFilename}-${randomNumber}-${Date.now()}`;
+    }
   }
 });
 
-const categoryStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/imgs/categoryImg');
-  },
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname
-    );
+// Cloudinary storage for category images
+const categoryStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'bookClub/categories',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 800, height: 800, crop: 'limit' }],
+    public_id: (req, file) => {
+      return `category-${Date.now()}-${file.originalname.split('.')[0]}`;
+    }
   }
 });
 
-const userStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/imgs/usr');
-  },
-  
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname
-    );
+// Cloudinary storage for user profile images
+const userStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'bookClub/users',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }],
+    public_id: (req, file) => {
+      return `user-${Date.now()}-${file.originalname.split('.')[0]}`;
+    }
   }
 });
 
-// File filter
+// File filter for additional validation
 function fileFilter(req, file, cb) {
   if (
     file.mimetype === 'image/png' ||
@@ -50,13 +53,13 @@ function fileFilter(req, file, cb) {
   ) {
     cb(null, true);
   } else {
-    cb(null, false);
+    cb(new Error('Only image files (png, jpg, jpeg, webp) are allowed!'), false);
   }
 }
 
-// Multer instances
-const upload = multer({ storage, fileFilter });
+// Multer instances with Cloudinary storage
+const upload = multer({ storage: productStorage, fileFilter });
 const catImg = multer({ storage: categoryStorage, fileFilter });
 const uploadUser = multer({ storage: userStorage, fileFilter });
 
-module.exports = { upload, uploadUser, catImg };
+module.exports = { upload, uploadUser, catImg, cloudinary };
