@@ -33,7 +33,6 @@ const loadEditProduct = asyncHandler(async (req, res, next) => {
     .exec();
 
   req.productId = req.params.id;
-  console.log(`${product}`.red)
   res.render("./admin/productEditG", {
     product,
     categories,
@@ -45,29 +44,7 @@ const loadEditProduct = asyncHandler(async (req, res, next) => {
 
 })
 
-// const addProduct = asyncHandler(async (req, res, next) => {
 
-//   upload.fields([{ name: "image", maxCount: 10 }])(req, res, async (err) => {
-//     if (err) {
-//       return res.status(500).json({ error: err });
-//     }
-
-//     const imagePaths = getImagePathsFromRequest(req);
-//     console.log(`image path is${imagePaths}`)
-//     const newProduct = await Products.create({
-//       name: "Product", 
-//       description: "this and that",
-//       price: 22,
-//       stockCount: 22,
-//       image: imagePaths, 
-//       // ... other fields you want to set by default ...
-//     });
-
-//     console.log("New product created:", newProduct); 
-//     res.redirect("/admin/products");
-
-//   })
-// })
 
 const loadProductList = asyncHandler(async (req, res, next) => {
   const products = await Products.find()
@@ -115,30 +92,29 @@ const createProduct = asyncHandler(async (req, res, next) => {
   // Get Cloudinary URLs from uploaded files
   let images = []
   if (req.files && req.files.length > 0) {
-    console.log("Files uploaded to Cloudinary")
-    images = req.files.map((file) => file.path) // Cloudinary URLs
-    console.log(images)
-  }
-  const products = new Products({
-    name: req.body.name,
-    price: req.body.price,
-    description: req.body.description,
-    author: req.body.author,
-    stockCount: req.body.stockCount,
-    category: req.body.category,
+    if (req.files && req.files.length > 0) {
+      images = req.files.map((file) => file.path) // Cloudinary URLs
+    }
+    const products = new Products({
+      name: req.body.name,
+      price: req.body.price,
+      description: req.body.description,
+      author: req.body.author,
+      stockCount: req.body.stockCount,
+      category: req.body.category,
+
+    })
+
+    if (req.body.offer != '') {
+      products.offer = req.body.offer
+
+    }
+    products.image = images
+    products.subcategories = req.body.subcategories
+    products.save()
+    res.status(201).redirect("/admin/products")
 
   })
-
-  if (req.body.offer != '') {
-    products.offer = req.body.offer
-
-  }
-  products.image = images
-  products.subcategories = req.body.subcategories
-  products.save()
-  res.status(201).redirect("/admin/products")
-
-})
 
 // @desc     Get all products
 // @route    GET /products
@@ -167,54 +143,53 @@ const updateProducts = asyncHandler(async (req, res, next) => {
   // Get Cloudinary URLs from uploaded files
   let images = []
   if (req.files && req.files.length > 0) {
-    console.log("Files uploaded to Cloudinary")
-    images = req.files.map((file) => file.path) // Cloudinary URLs
-  }
-
-  const updatedProductData = {
-    name: req.body.name,
-    price: req.body.price,
-    description: req.body.description,
-    author: req.body.author,
-    stockCount: req.body.stockCount,
-    category: req.body.category,
-    subcategories: req.body.subcategory
-
-  }; // Create a copy of req.body
-
-  if (req.body.offer !== 'none') {
-    console.log(`${req.body.offer}`.bgCyan)
-    updatedProductData.offer = req.body.offer;
-  }
-  else {
-    console.log(`offer removed/ not found`.bgRed)
-    updatedProductData.offer = null;
-  }
-  if (req.files) {
-    if (images.length == 0) {
-      updatedProductData.image = existingProduct.image
+    if (req.files && req.files.length > 0) {
+      images = req.files.map((file) => file.path) // Cloudinary URLs
     }
-    else {
-      updatedProductData.image = (existingProduct.image).concat(images)
-    }
-  }
 
-  console.log(updatedProductData)
-  // Handle status toggle
-  if (req.body.status) {
-    updatedProductData.status =
-      req.body.status === "change" ? !existingProduct.status : existingProduct.status;
-  }
+    const updatedProductData = {
+      name: req.body.name,
+      price: req.body.price,
+      description: req.body.description,
+      author: req.body.author,
+      stockCount: req.body.stockCount,
+      category: req.body.category,
+      subcategories: req.body.subcategory
 
-  console.log(`${req.body.image}`)
-  // Handle image updates (if needed)
+    }; // Create a copy of req.body
 
-  // Update the product
-  await Products.updateOne({ _id: productId }, { $set: updatedProductData });
+    if (req.body.offer !== 'none') {
+      if (req.body.offer !== 'none') {
+        updatedProductData.offer = req.body.offer;
+      }
+      else {
+        updatedProductData.offer = null;
+      }
+      if (req.files) {
+        if (images.length == 0) {
+          updatedProductData.image = existingProduct.image
+        }
+        else {
+          updatedProductData.image = (existingProduct.image).concat(images)
+        }
+      }
 
-  res.json({ success: true });
 
-})
+      // Handle status toggle
+      if (req.body.status) {
+        updatedProductData.status =
+          req.body.status === "change" ? !existingProduct.status : existingProduct.status;
+      }
+
+
+      // Handle image updates (if needed)
+
+      // Update the product
+      await Products.updateOne({ _id: productId }, { $set: updatedProductData });
+
+      res.json({ success: true });
+
+    })
 
 
 const updateImage = asyncHandler(async (req, res, next) => {
@@ -229,8 +204,6 @@ const updateImage = asyncHandler(async (req, res, next) => {
   //   res.status(200).json({ message: 'Image deleted successfully' });
   // });
 
-  console.log(`${item}`)
-
 })
 //////////////////////////////////////////////////////////////////////////////
 
@@ -241,7 +214,6 @@ const updateImage = asyncHandler(async (req, res, next) => {
 
 const deleteProducts = asyncHandler(async (req, res, next) => {
   try {
-    console.log(req.params.id)
     const product = await Products.findByIdAndDelete(req.params.id)
 
     if (!product) {
@@ -276,7 +248,6 @@ const loadupload = asyncHandler(async (req, res, next) => {
 })
 const uploadImages = asyncHandler(async (req, res) => {
   await upload(req, res, function (err) {
-    console.log(`images uploaded successfully`.green.inverse)
     // At this point, the files are uploaded, and you can save the file paths or URLs in your MongoDB document
     const imagePaths = req.files.map(
       (file) => `http://localhost:3001/uploads/${file.filename}`
@@ -306,10 +277,7 @@ const removeImg = asyncHandler(async (req, res, next) => {
 
 const removeImage = async (productId, imageUrl) => {
   try {
-    console.log(`Attempting to remove image from Cloudinary: ${imageUrl}`);
-
     // Extract public_id from Cloudinary URL
-    // URL format: https://res.cloudinary.com/[cloud_name]/image/upload/v[version]/[public_id].[format]
     const urlParts = imageUrl.split('/');
     const uploadIndex = urlParts.indexOf('upload');
     if (uploadIndex === -1) {
@@ -322,11 +290,8 @@ const removeImage = async (productId, imageUrl) => {
     // Remove file extension
     const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf('.'));
 
-    console.log(`Extracted public_id: ${publicId}`);
-
     // Delete from Cloudinary
     const result = await cloudinary.uploader.destroy(publicId);
-    console.log('Cloudinary deletion result:', result);
 
     if (result.result === 'ok' || result.result === 'not found') {
       // Update the MongoDB document
@@ -336,7 +301,6 @@ const removeImage = async (productId, imageUrl) => {
         if (ind !== -1) {
           product.image.splice(ind, 1);
           await product.save();
-          console.log('Image URL successfully removed from database.');
           return true;
         }
       } else {
@@ -348,11 +312,9 @@ const removeImage = async (productId, imageUrl) => {
     return false;
   } catch (error) {
     console.error(`Error removing image: ${error.message}`.red);
-    // Don't throw, just return false so the UI doesn't crash, but log specifically.
     return false;
   }
 };
-
 
 module.exports = {
   getProducts,

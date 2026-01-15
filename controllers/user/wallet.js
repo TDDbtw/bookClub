@@ -43,20 +43,20 @@ const getWallet = asyncHandler(async (req, res, next) => {
 });
 
 
-const addTransaction =asyncHandler(async (req, res, next) => {
-    try {
-      const { type, amount, description } = req.body;
-      const userId = req.user._id;
+const addTransaction = asyncHandler(async (req, res, next) => {
+  try {
+    const { type, amount, description } = req.body;
+    const userId = req.user._id;
 
-      const wallet = await Wallet.findOrCreate(userId);
-      wallet.addTransaction(type, amount, description);
-      await wallet.save();
+    const wallet = await Wallet.findOrCreate(userId);
+    wallet.addTransaction(type, amount, description);
+    await wallet.save();
 
-      res.json(wallet);
-    } catch (error) {
-      res.status(500).json({ message: 'Error adding transaction', error: error.message });
-    }
-  })
+    res.json(wallet);
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding transaction', error: error.message });
+  }
+})
 
 const addToWallet = asyncHandler(async (req, res, next) => {
   const { type, amount, description } = req.body;
@@ -72,7 +72,7 @@ const handlePayPalPayment = asyncHandler(async (req, res, next) => {
   const { orderID } = req.body;
   const userId = req.user._id;
 
-  console.log(`Handling PayPal payment for order: ${orderID}`.cyan);
+
 
   const request = new paypal.orders.OrdersCaptureRequest(orderID);
   request.requestBody({});
@@ -80,14 +80,12 @@ const handlePayPalPayment = asyncHandler(async (req, res, next) => {
   try {
     const capture = await client.execute(request);
 
-const captureID = capture.result.purchase_units[0].payments.captures[0].id;
-const amount = parseFloat(capture.result.purchase_units[0].payments.captures[0].amount.value);
-console.log(`amout on handle ${amount}`.yellow)
+    const captureID = capture.result.purchase_units[0].payments.captures[0].id;
+    const amount = parseFloat(capture.result.purchase_units[0].payments.captures[0].amount.value);
     const wallet = await Wallet.findOrCreate(userId);
     wallet.addTransaction('credit', amount, `PayPal payment: ${captureID}`);
     await wallet.save();
 
-    console.log(`Payment captured successfully: ${captureID}`.green);
     res.json({ success: true, wallet });
   } catch (error) {
     console.error(`Error capturing payment: ${error}`.red);
@@ -97,12 +95,11 @@ console.log(`amout on handle ${amount}`.yellow)
 
 const createPayPalOrder = asyncHandler(async (req, res, next) => {
   const { amount } = req.body;
-console.log(`amount is  ${amount}`)
   if (!amount || isNaN(amount) || amount <= 0) {
     return next(new ErrorResponse('Invalid amount', 400));
   }
 
-  console.log(`Creating PayPal order for amount: ${amount}`.cyan);
+
 
   const request = new paypal.orders.OrdersCreateRequest();
   request.prefer("return=representation");
@@ -118,7 +115,6 @@ console.log(`amount is  ${amount}`)
 
   try {
     const order = await client.execute(request);
-    console.log(`PayPal order created: ${order.result.id}`.green);
     res.json({ id: order.result.id });
   } catch (error) {
     console.error(`Error creating PayPal order: ${error}`.red);

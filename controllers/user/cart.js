@@ -198,7 +198,7 @@ const addItemToCart = asyncHandler(async (req, res, next) => {
     discountedPrice = offer.applyDiscount(product.price);
     offerId = offer._id
   }
-  console.log(`discounted price is ${discountedPrice}`)
+
   let cart = await Cart.findOne({ user })
   if (!cart) {
     cart = new Cart({ user, items: [] })
@@ -220,7 +220,7 @@ const addItemToCart = asyncHandler(async (req, res, next) => {
   // await product.save()
 
   // Save cart
-  console.log(`${cart}`.magenta)
+
   cart.billTotal += Number(discountedPrice)
   await cart.save()
 
@@ -284,7 +284,7 @@ const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
   // product.stockCount -= quantityDifference;
 
   // Save changes
-  console.log(`${cart}`.grey)
+
   await cart.save();
   // await Promise.all([cart.save(), product.save()]);
   res.status(200).json(cart);

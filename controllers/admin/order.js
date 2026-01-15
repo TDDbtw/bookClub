@@ -60,15 +60,13 @@ const createOrder = asyncHandler(async (req, res, next) => {
   try {
     const { totalAmount, payment_method } = req.body
     const user = await User.findById(req.user.id)
-    console.log(user)
     const cart = await Cart.findOne({ user: user.id })
-    console.log(cart)
 
     if (!user || !cart) {
       return next(new ErrorResponse("User or cart not found", 404))
     }
 
-    console.log(`this is order -->${cart}`)
+
     res.redirect("/order")
   } catch (error) {
 
@@ -128,7 +126,7 @@ const updateOrderById = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Order Not Found`, 404));
   }
 
-  console.log(`Order ${order._id} status updated to ${status}`);
+
 
   res.status(200).json({
     success: true,
@@ -144,9 +142,6 @@ const manageProductReturn = async (req, res, next) => {
     }
 
     const productIndex = order.items.findIndex(item => item.productId.toString() == req.params.productId);
-    console.log(`${req.params.productId}`.red)
-
-    console.log(`${productIndex}`.blue)
     if (productIndex === -1) {
       return next(new ErrorResponse('Product not found in order', 404));
     }
@@ -187,7 +182,7 @@ const manageOrderReturn = async (req, res, next) => {
     if (!order) {
       return next(new ErrorResponse('Order not found', 404));
     }
-    console.log(`${order}`.red)
+
     if (order.status !== 'delivered') {
       return next(new ErrorResponse('Only delivered orders can be returned', 400));
     }
@@ -217,8 +212,6 @@ const manageOrderReturn = async (req, res, next) => {
     await wallet.save();
 
     await order.save();
-    // const amount =order.calculateRefundAmount() // Deprecated use
-    console.log(`refundable amount is ${totalRefundAmount}`.bgRed)
     res.status(200).json({
       success: true,
       message: 'Order return accepted successfully',
@@ -258,10 +251,8 @@ const renderSalesReport = asyncHandler(async (req, res) => {
 const generateSalesReport = asyncHandler(async (req, res) => {
   try {
     const { filterType, startDate, endDate } = req.body;
-    console.log(`Filter Type: ${filterType}, Start Date: ${startDate}, End Date: ${endDate}`);
 
     const report = await getSalesReportData(startDate, endDate, filterType);
-    console.log('Generated Report:', report);
 
     if (report && report.length > 0) {
       const totalRevenue = report.reduce((sum, item) => sum + item.totalRevenue, 0);
@@ -286,10 +277,8 @@ const generateSalesReport = asyncHandler(async (req, res) => {
 const downloadPdf = asyncHandler(async (req, res) => {
   try {
     const { filterType, startDate, endDate } = req.query;
-    console.log(`Downloading PDF - Filter Type: ${filterType}, Start Date: ${startDate}, End Date: ${endDate}`);
 
     const salesReport = await getSalesReportData(startDate, endDate, filterType);
-    console.log(`${salesReport}.red`)
     const reportHtml = await generatePdfReport(salesReport);
 
     const browser = await puppeteer.launch();
@@ -357,7 +346,7 @@ async function aggregateTransactions() {
       { $sort: { totalRevenue: -1 } }
     ]);
 
-    console.log('Transaction Aggregation Results:', aggregationResult);
+
     return aggregationResult;
   } catch (error) {
     console.error('Error in transaction aggregation:', error);

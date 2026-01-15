@@ -17,7 +17,6 @@ const getCreateUser = asyncHandler(async (req, res, next) => {
 
 
 const createUsers = asyncHandler(async (req, res, next) => {
-  console.log(req.body)
   const users = await User.create(req.body)
   res.redirect("/admin/users")
 })
@@ -254,7 +253,6 @@ const getEditInfo = asyncHandler(async (req, res, next) => {
 
 const loadUsers = asyncHandler(async (req, res, next) => {
   const users = await User.find()
-  console.log(`user is ${req.user}`.red)
   const currentAdminEmail = req.user.email
   const userCount = await User.countDocuments()
   const blockCount = await User.countDocuments({ status: false })

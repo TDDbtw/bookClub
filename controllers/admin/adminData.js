@@ -160,12 +160,9 @@ const getBestSellingData = asyncHandler(async (req, res, next) => {
     if (bestSellingData.length === 0) {
       return res.status(404).json({ message: "No best selling data found" });
     }
-    console.log(`best selling data ${bestSellingData}`.red)
-
     const PAGE_SIZE = 2; // Number of transactions per page
     const page = parseInt(req.query.chart2) || 1;
-    // console.log(`${(req.query.page)}`.red)
-    const skip = (page - 1) * PAGE_SIZE;
+    // const skip = (page - 1) * PAGE_SIZE;
 
 
     const totalItems = bestSellingData.length;
@@ -229,7 +226,6 @@ const getBestSellingProducts = asyncHandler(async (req, res, next) => {
       { $sort: { totalSales: -1 } },
       { $limit: 10 }
     ]);
-    console.log(`${JSON.stringify(bestSellingProducts)}`.green);
     res.status(200).json(bestSellingProducts);
 
   } catch (err) {

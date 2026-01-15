@@ -139,7 +139,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
         offerName: product.offer.name || 'Unnamed Offer',
         discountValue: discountValue
       });
-      console.log(`${discountedPrice}`.red)
+
       itemPrice = discountedPrice;
     }
     orderItem.price = itemPrice; // Set the final price after applying offer
@@ -184,7 +184,6 @@ const createOrder = asyncHandler(async (req, res, next) => {
       discount: discount
     }
     appliedCoupon.push(data)
-    console.log(`discount is ${discount}`.red);
     totalAmount = newTotalAmount;
   }
 
@@ -195,7 +194,6 @@ const createOrder = asyncHandler(async (req, res, next) => {
   };
 
   const order = new Order(orderData);
-  console.log(`applied coupon is ${JSON.stringify(appliedCoupon)}`.yellow)
   order.coupons = appliedCoupon
   await order.save();
 
@@ -349,7 +347,6 @@ const createFailedOrder = asyncHandler(async (req, res, next) => {
     console.log(`Order ${failedOrder._id} failed. Reason: ${req.body.failureReason || 'Unknown'}`);
 
     // Don't clear the cart for failed orders
-    // await clearCart(cart);
 
     res.status(200).json({
       success: false,
@@ -507,7 +504,6 @@ const cancelOrReturnOrder = async (req, res, next) => {
 const cancelOrder = asyncHandler(async (req, res, next) => {
   const ID = String(req.params.orderId)
   const order = await Order.findById(ID);
-  console.log(`${order}`.red)
   if (!order) {
     return next(new ErrorResponse('Order not found', 404));
   }
